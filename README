@@ -1,0 +1,51 @@
+
+Biggles : Scientific Plotting with/in/for Python
+------------------------------------------------
+
+Biggles is a Python module for creating publication-quality 2D scientific
+plots. It supports multiple output formats (postscript, x11, png, svg, gif),
+understands simple TeX, and sports a high-level, elegant interface. It's
+intended for technical users with sophisticated plotting needs. 
+
+The goal is to produce a plotting package that isn't deeply frustrating. 
+
+Simple Example
+--------------
+
+Here's a simple biggles script:
+
+	#!/usr/bin/env python
+
+	import biggles
+
+	x = [1, 2, 3, 4, 5]
+	y = [5, 4, 3, 2, 1]
+
+	p = biggles.FramedPlot()
+	p.add( biggles.Curve(x, y) )
+	p.show()
+
+This produces an X window with a framed plot of the curve y(x).
+You can find more in the 'examples/' directory included with the
+source distribution.
+
+More Information
+----------------
+
+Complete documentaion is available at the biggles website:
+
+	http://biggles.sourceforge.net/
+
+If you'd like to receive announcements of new biggles releases,
+subscribe to the biggles-announce mailing list:
+
+	http://lists.sourceforge.net/mailman/listinfo/biggles-announce
+
+Questions about biggles usage should be send to:
+
+	biggles-help@lists.sourceforge.net
+
+Bug reports, feature requests, and patches should be sent to:
+
+	biggles-devel@lists.sourceforge.net
+

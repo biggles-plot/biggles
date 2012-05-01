@@ -1,0 +1,88 @@
+# Makefile for libplot.pyd for the Biggles plot library  on Microsoft Visual C/C++ 6
+#
+# Targets:
+#    TARGET:        build the target libplot.pyd
+#    ALL (default): same as TARGET
+#    CLEAN:         delete all generated files
+#    REBUILD:       CLEAN + TARGET
+#    LISTDLL:       list the contents of the dll (pyd)
+
+PROJ = libplot
+
+TARGET = $(PROJ).pyd
+
+
+# Locations of required files
+
+# Python header location
+PYTHONDIR = $(PYTHONHOME)
+
+# numpy header location
+NUMPYDIR  = $(PYTHONHOME)\Lib\site-packages\numpy
+
+
+
+# This is the location of plot.h (which mysteriously doesn't come bundled with the
+# win32 Biggles distribution)
+PLOTUTILDIR = .
+
+
+# Check that the given file locations exist
+
+!if !exist($(PYTHONDIR))
+!   ERROR PYTHONDIR ($(PYTHONDIR)) doesn't exist. Aborting.
+!endif
+
+!if !exist($(NUMPYDIR))
+!   ERROR NUMPYDIR ($(NUMPYDIR)) doesn't exist. Aborting.
+!endif
+
+!if !exist($(PLOTUTILDIR))
+!   ERROR PLOTUTILDIR ($(PLOTUTILDIR)) doesn't exist. Aborting.
+!endif
+
+
+INCLUDE = $(NUMPYDIR);$(PYTHONDIR)\include;$(PLOTUTILDIR);$(INCLUDE)
+
+
+# Define the targets
+
+ALL: $(TARGET)
+
+TARGET: $(TARGET)
+
+CPP = cl.exe
+CPPFLAGS = /nologo /MD /W3 /GX /O2 /DWIN32 /DNDEBUG /D_WINDOWS /D_USRDLL
+
+LINK_CMD = link
+LINK_FLAGS = /nologo /dll /incremental:no /machine:I386 /LIBPATH:$(PYTHONDIR)\libs
+
+$(PROJ).obj: $(PROJ).c
+   $(CPP) /c $(CPPFLAGS) $**
+
+
+LIBPLOTEXPORTSIMPLIB = $(PROJ)exports.lib
+
+EXPORTSFILENAME = $(LIBPLOTEXPORTSIMPLIB:.lib=.exp)
+
+# Build the libplot import library
+$(LIBPLOTEXPORTSIMPLIB): $$(@B).def
+   lib /NOLOGO /MACHINE:IX86 /DEF:$? /OUT:$@
+
+$(TARGET): $(LIBPLOTEXPORTSIMPLIB) $(PROJ).obj
+   $(LINK_CMD) $(LINK_FLAGS) $** /export:init$(PROJ) /out:$@
+
+CLEAN:
+   if exist $(PROJ).obj del $(PROJ).obj
+   if exist $(PROJ).lib del $(PROJ).lib
+   if exist $(PROJ).exp del $(PROJ).exp
+   if exist $(TARGET) del $(TARGET)
+   if exist $(LIBPLOTEXPORTSIMPLIB) del $(LIBPLOTEXPORTSIMPLIB)
+   if exist $(EXPORTSFILENAME) del $(EXPORTSFILENAME)
+
+REBUILD: CLEAN TARGET
+
+LISTDLL:
+   @dumpbin /EXPORTS $(TARGET)
+
+# end of file

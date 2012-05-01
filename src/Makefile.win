@@ -1,0 +1,77 @@
+# Makefile for the Biggles plot library on Microsoft Visual C/C++ 6
+#
+# Targets:
+#    TARGET:        build the target _biggles.pyd only
+#    ALL (default): build _biggles.pyd and libplot.pyd
+#    CLEAN:         delete all generated files (for _biggles.pyd only)
+#    REBUILD:       CLEAN + TARGET
+#    CLEANALL:      delete all generated files for _biggles.pyd and libplot.pyd
+#    REBUILDALL:    CLEANALL + ALL
+#    LISTDLL:       list the contents of the dll (pyd)
+
+
+PROJ = _biggles
+
+TARGET = $(PROJ).pyd
+
+
+# Locations of required files
+
+# Python header location
+PYTHONDIR = $(PYTHONHOME)
+
+
+# Check that the given file locations exist
+
+!if !exist($(PYTHONDIR))
+!   ERROR PYTHONDIR ($(PYTHONDIR)) doesn't exist. Aborting.
+!endif
+
+
+INCLUDE = $(PYTHONDIR)\include;$(INCLUDE)
+
+
+# Define the targets
+
+ALL: $(TARGET) MAKELIBPLOTALL
+
+TARGET: $(TARGET)
+
+CPP = cl.exe
+CPPFLAGS = /nologo /MD /W3 /GX /O2 /DWIN32 /DNDEBUG /D_WINDOWS /D_USRDLL
+
+LINK_CMD = link
+LINK_FLAGS = /nologo /dll /incremental:no /machine:I386 /LIBPATH:$(PYTHONDIR)\libs
+
+
+$(PROJ).obj: $(PROJ).c
+   $(CPP) /c $(CPPFLAGS) $**
+
+
+$(TARGET): $(PROJ).obj
+   $(LINK_CMD) $(LINK_FLAGS) /export:init$(PROJ) $** /out:$@
+
+MAKELIBPLOTALL:
+   @cd libplot
+   $(MAKE) /$(MAKEFLAGS) /nologo /f Makefile.ms ALL
+   @cd ..
+
+CLEAN:
+   if exist $(PROJ).obj del $(PROJ).obj
+   if exist $(PROJ).lib del $(PROJ).lib
+   if exist $(PROJ).exp del $(PROJ).exp
+   if exist $(TARGET) del $(TARGET)
+
+REBUILD: CLEAN TARGET
+
+CLEANALL: CLEAN
+   @cd libplot
+   $(MAKE) /$(MAKEFLAGS) /nologo /f Makefile.ms CLEAN
+   @cd ..
+
+REBUILDALL: CLEANALL ALL
+
+LISTDLL:
+   @dumpbin /EXPORTS $(TARGET)
+
+# end of file

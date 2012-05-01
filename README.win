@@ -1,0 +1,67 @@
+Building Biggles for Microsoft Visual C++
+-----------------------------------------
+
+Prerequisites:
+   - Set the PYTHONHOME environment variable if not already set (e.g.
+     C:\Python22)
+   - Install the Numerical Python (NumPy) package, if not already installed.
+   - Make sure the NUMPYDIR and PLOTUTILDIR macros in libplot\Makefile.win
+     are set correctly.
+   - Get the necessary files for the build:
+         Main folder:
+            _biggles.c
+
+         libplot subfolder:
+            libplot.c
+            plot.h
+            libplotexports.def
+
+      The *.c files can be found in the Biggles distribution.  plot.h can be
+      obtained from the Biggles CVS archive (if not in newer source
+      distributions).  libplotexports.def should be included with the Biggles
+      Win32 Makefiles.  If not, it can be generated using DUMPBIN /exports
+      on libplot.dll.
+
+Building:
+   - Build both _biggles.pyd and libplot.pyd by running the main Makefile
+     (not the one in the libplot folder).
+
+        nmake -f Makefile.win
+
+   - The Makefile will generate a libplotexports.lib import library for
+     libplot.  If you happen to have one you're particularly fond of,
+     modify the Makefile to use it instead.
+
+   - See the comments in the individual Makefiles for details on how to
+     build the pieces separately (if desired).
+
+Preparing for Use:
+   - As described on the Biggles installation page, you will need these
+     three DLLs:
+
+        libplot.dll (tested version from plotutils-2.4.1-1-bin.zip)
+        libpng.dll  (tested version from libpng-1.0.12-bin.zip)
+        zlib.dll    (tested version from zlib-1.1.3-bin.zip)
+
+   - Care must be taken where the files are located because libplot.dll and
+     libplot.pyd have the same base name.  Python must find libplot.pyd
+     on the PYTHONPATH before it finds libplot.dll and these must be found
+     before the scripts (as I understand it).  The way I have found least messy
+     is to put all the .dll and .pyd files in the %PYTHONHOME%\DLLs folder and
+     then add this to your PYTHONPATH before the location of the script files.
+     If the Biggles scripts are in the %PYTHONHOME%\Lib\site-packages\biggles
+     folder, the your PYTHONPATH environment variable should have the following
+     two entries in the given order:
+
+        %PYTHONHOME%\DLLs;%PYTHONHOME%\Lib\site-packages
+
+     These two entries don't have to be back-to-back like this, just in this
+     order.
+
+     Don't rely on these being set from the registry or path configuration
+     files (.pth) as the order may change when other modules are installed or
+     removed.
+
+Notes:
+   - This has only been tested on Windows XP with Microsoft Visual C++ 6 and
+     Python 2.2.1 but will likely work on many other combinations.

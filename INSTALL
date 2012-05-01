@@ -1,0 +1,52 @@
+
+Prerequistites
+--------------
+
+ 1. Python
+
+    Available at <http://www.python.org/>.
+
+ 2. Numeric Python
+
+    Available at <http://numpy.sourceforge.net/>. Be careful which version
+    you install; newer versions tend to support only the most recent
+    Python release.
+
+ 3. GNU plotutils package
+
+    Available at <http://www.gnu.org/software/plotutils/>. After installing,
+    you need to make sure biggles can find libplot.so. On most systems adding
+    $(prefix)/lib to LD_LIBRARY_PATH will work, where $(prefix) is the 
+    directory plotutils was installed in (usually /usr/local).
+
+Distutils Installation
+----------------------
+
+If you're running Python 2.0 or greater, or have Distutils installed, you can
+install biggles using the setup.py file. Try:
+
+	$ cd python-biggles-x.y.z/
+	$ python setup.py build_ext -I/path/to/libplot/include
+	$ python setup.py install
+
+See the distutils documentation for more information.
+
+Makefile Installation
+---------------------
+
+If you don't want to install using Distutils, you can use the Makefile
+provided. On most systems running:
+
+	$ cd python-biggles-x.y.z/
+	$ gmake
+	$ gmake install
+
+will work. The PYTHON variable in make.inc should be set to the command
+you use to start the python interpreter (defaults to "python"). The directory
+the Makefile chooses to install the module is based on information from the
+python sys module, which you can override by changing PYSITEPKGS.
+
+If the libplot library is not installed under /usr/local, and you installed
+it from source, edit the "LIBPLOT_PREFIX" line in make.inc to point to the
+right directory.
+

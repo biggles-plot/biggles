@@ -1,0 +1,48 @@
+
+Written By:
+
+ * Mike Nolta <mrnolta/users*sourceforge*net>
+
+Contributors:
+
+ * Walter Brisken <walterfb/users*sourceforge*net>
+   lots of testing and suggestions
+   HammerAitoff plots
+
+ * Berthold Höllmann <bhoel/starship*python*net>
+   setup.py file
+
+ * Phil Kromer <flip/mrflip*com>
+   ColoredPoints, DensityPlot
+
+ * Jamie Mazer <mazer/socrates*berkeley*edu>
+   matlab emulation
+
+ * Martin Lamar <malamar/excite*com>
+   windows patches, installer, and instructions
+
+ * Spiros Papadimitriou <spapadim+/cs*cmu*edu>
+   port to piddle
+
+ * Tavis Rudd <tavis/calrudd*com>
+   latex doc skeleton
+
+ * Todd Fox <Tfox/escape-eng*com>
+   makefiles and readme for windows
+
+Bug Reports, Ideas, Patches:
+
+ * Alexander Wissner-Gross <alexwg/mit*edu>
+ * Antti Honkela <ahonkela/cc*hut*fi>
+ * Chad Netzer <cnetzer/mail*arc*nasa*gov>
+ * Evelyn Mitchell <efm/tummy*com>
+ * Herb Schilling <Herbert.W.Schilling/grc*nasa*gov>
+ * Kurt Riedel <kriedel/mlp*com>
+ * Mark Coletti <mcoletti/lychnobite*org>
+ * Michele De la Pena <delapena/noao*edu>
+ * Mike Romberg <romberg/fsl*noaa*gov>
+ * Olivier Andrieu <andrieu/ijm*jussieu*fr>
+ * Robert Kern <kern/caltech*edu>
+ * Rob Lowrie <lowrie/lanl*gov>
+ * SungPil Yoon <yoonseo/csr*utexas*edu>
+

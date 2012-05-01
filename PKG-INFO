@@ -1,0 +1,14 @@
+Metadata-Version: 1.0
+Name: python2-biggles
+Version: 1.6.6
+Summary: scientific plotting module
+Home-page: http://biggles.sourceforge.net/
+Author: Mike Nolta
+Author-email: mike@nolta.net
+License: GPL
+Description: Biggles is a Python module for creating publication-quality 2D scientific
+        plots. It supports multiple output formats (postscript, x11, png, svg, gif),
+        understands simple TeX, and sports a high-level, elegant interface. It's
+        intended for technical users with sophisticated plotting needs.
+        
+Platform: UNKNOWN

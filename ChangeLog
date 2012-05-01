@@ -1,0 +1,259 @@
+
+1.6.6 (27 Nov 2008)
+--------------------
+
+* Fixed issue that caused all images to be 570x570 on some systems, due to a
+  change in the python2.5 C API.
+
+* Improved setup.py and Makefiles.
+
+* Contours can now be used with PlotKey.
+
+* Added Labels component. Similar to Points, but with text labels instead
+  of symbols.
+
+1.6.5 (20 Mar 2007)
+-------------------
+
+* Replaced Numeric with numpy.
+
+1.6.4 (08 Mar 2004)
+-------------------
+
+* Phil Kromer contributed the new ColoredPoints and Density components.
+  See example9.py for details.
+
+* Todd Fox contributed Makefiles for building with MS Visual C++.
+
+* Can now specify the width/height of postscript output, by passing (e.g.)
+  width="5in" or height="10in" to the functions which produce postscript
+  output. Default values are in the [postscript] section of config.ini.
+  The old [printer]/paper option is now [postscript]/paper.
+
+* Added UpperLimits, LowerLimits components. These produce symbols
+  with half-arrows indicating the true value is below/above the
+  point.
+
+* Added TeX codes \`,\',\^,\",\~ for character accents.
+
+1.6.3 (16 Jul 2002)
+-------------------
+
+* Mike Romberg fixed bugs related to packaging biggles with imputil.
+
+1.6.2 (23 May 2002)
+-------------------
+
+* Spiros Papadimitriou contributed an experimental piddle port.
+
+* You can now specify partial ranges for plots. So "p.xrange = 2, None"
+  will set the lower bound of the plot p to be 2, and the upper bound
+  will be guessed from the data contained in the plot.
+
+* Replaced "!= None" with "is not None" everywhere.
+
+* Fixed bug with added space in scientific notation ticklabels.
+
+1.6.1 (14 Nov 2001)
+-------------------
+
+* Martin Lamar ported the code to Windows.
+
+* Replaced "== None" with "is None" everywhere (again thanks to Martin).
+  This should fix crashes with recent versions of numpy.
+
+1.6.0 (07 Nov 2001)
+-------------------
+
+* Clipping!
+
+* Better performance for plots with lots of data. Parts of the code
+  were vectorized, and a new integrated libplot interface was written.
+  Biggles no longer uses the python-libplot module.
+
+* Jamie Mazer contributed code for Matlab emulation, accessible by
+  "import biggles.matlab".
+
+* Added the multipage() function for multipage postscript output.
+  Thanks to Olivier Andrieu for the original patch.
+
+* Changed the default plot window size to 512x512 from 570x570.
+
+* Bug fixes: better tick generation on huge-ranged log axes; the
+  "thousand tiny lines" problem with contour plots.
+
+1.5.0 (31 Aug 2001)
+-------------------
+
+* Completely rewrote FramedPlot. Fully backward compatible with
+  the old FramedPlot, it adds a tremendous number of new features.
+  CustomFramedPlot is now deprecated.
+
+* Configuration options are now read when objects are instantiated,
+  instead of during class definition. This means you can change them
+  in the middle of a script, using the new configure() function.
+
+* Added read_rows(),read_matrix() functions. They read text data files,
+  returning a list of rows and a matrix, respectively. Numeric Python
+  arrays are returned by default. The readcolumn() function has been
+  renamed read_column().
+
+* TeX font control sequences \it and \bf are now recognized. Spaces
+  are no longer ignored during math mode.
+
+* You can now specify single characters as plotting symbols.
+
+* Added DataBox/PlotBox components.
+
+* Added .align_interiors option to Table.
+
+* Added .drop_to_zero option to Histogram.
+
+* Added .title_style attribute to all containers.
+
+* The container methods .save_as_XXX() were renamed .write_XXX().
+  While the old names are not deprecated, they will no longer
+  appear in the documentation.
+
+* Bug fixes: fixed crash when used by a CGI script, dropped minus
+  sign for axis labels which are powers of ten, compile problem on
+  Suns.
+
+1.4.0 (06 Mar 2001)
+-------------------
+
+* Biggles now requires the Numeric Python module, and is no longer
+  a pure Python module.
+
+* Added support for contour plots with new Contours() component.
+
+* HammerAitoffPlot(): new & improved geodesic algorithm; added
+  support for rotated coordinates.
+
+* Added FillAbove(), FillBelow() components. Fill*() objects now
+  work with PlotKey().
+
+* More robust interactive session detection. The config.ini option
+  "[screen] guess_interactive" has been renamed "persistent".
+  Removed interactive() function.
+
+* Better tick guesses for log axes.
+
+* Bug fixes: apparent data scaling by FramedArray when aspect_ratio
+  is set; several related to calculating limits.
+
+1.3.0 (17 Dec 2000)
+-------------------
+
+* Breaks old Table cell{spacing,padding} values; multipying them by
+  100 should work in most cases.
+
+* Renamed Label{Data,Plot} -> {Data,Plot}Label, LineSlope -> Slope, 
+  and ErrorEllipses -> Ellipses. The old names still work but are
+  deprecated.
+
+* {Line,Symbol}Key have been superceded by PlotKey and are now
+  deprecated.
+
+* New plot type: CustomFramedPlot(). Similar to FramedPlot(), but
+  allows finer control over the frame style.
+
+* New plot type: HammerAitoffPlot(). An equal-area projection of the
+  sphere, Hammer-Aitoff plots are commonly used in astrophysics.
+
+* New FramedArray options: .uniform_limits & .cellspacing.
+
+* New components: Circle(s), Ellipse, Geodesic, Point, PlotInset,
+  and PlotLine.
+
+* You can now specify a minimum fontsize with "fontsize_min" in
+  config.ini.
+
+* Various speed improvements, bug fixes, and infrastructure work.
+
+1.2.1 (31 Oct 2000)
+-------------------
+
+* Reorganized config.ini file.
+
+* The readcolumn() function can be configured to return Numeric arrays.
+
+* Added interactive() function to let users control X window behavior.
+
+* Fixed a couple of axis bugs triggered by very large limits.
+
+1.2.0 (09 Oct 2000)
+-------------------
+
+* Added distutils setup.py file. [contributed by Berthold Höllmann]
+
+* Added FramedArray container for grouping similar plots.
+
+* Added SymmetricErrorBars[XY] helper functions.
+
+* You can now say "t[i,j]=x" instead of "t.set(i,j,x)" for Table
+  objects.
+
+* Broke readcolumn() so users can pass in their own string -> number
+  conversion functions. Also, readcolumn now ignores blank lines and
+  those starting with a comment character.
+
+* When used interactively, biggles now reuses the same X window
+  insteading of creating a new window each time .show() is called.
+
+* Fixed stupid printing bug.
+
+1.1.0 (22 Sep 2000)
+-------------------
+
+* LineKey, SymbolKey, and Inset now take plot coordinates instead of
+  data coordinates. Plot coordinates run from 0 -> 1 for each axis.
+  Sorry about the breakage.
+
+* Inset coordinates now specify the frame location, not the bounding
+  box. More breakage.
+
+* Replaced Label with LabelData & LabelPlot. LabelData works the same
+  as Label, and LabelPlot takes plot coordinates instead of data
+  coordinates.
+
+* Added LineSlope, Line[XY] components.
+
+* Added readcolumn() function. Returns a list of column values from
+  a flat ASCII file.
+
+* More namespace cleanup.
+
+1.0.3 (02 Sep 2000)
+-------------------
+
+* Fixed a couple of layout bugs. Handling of large tables and
+  elongated plots is greatly improved. [thanks to Jamie Mazer]
+
+* .save_as_{eps,img}() now recognize the filename "-" as stdout.
+
+* Better log ticks.
+
+* Namespace cleanup.
+
+1.0.2 (18 Aug 2000)
+-------------------
+
+* Top level layout overhauled. Ugly-hack-that-sorta-worked replaced
+  with Elegant Solution. Naturally, it's quite a bit slower.
+
+* Added "cellpadding" and "cellspacing" to Table, similar to HTML
+  tables.
+
+1.0.1 (14 Aug 2000)
+-------------------
+
+* Prettier tick labels. 
+
+* Fixed stupid aspect_ratio bug.
+
+1.0.0 (12 Aug 2000)
+-------------------
+
+* First stable release.
+
