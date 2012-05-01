@@ -21,7 +21,7 @@
 
 include make.inc
 
-SRCDIR		= ./src
+SRCDIR		= ./biggles
 EXAMPLESDIR	= ./examples
 
 .PHONY: all install uninstall clean

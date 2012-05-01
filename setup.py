@@ -175,23 +175,23 @@ setup(
 	# Description of the modules and packages in the distribution
 
 	packages	= [ "biggles", "biggles.libplot" ],
-	package_dir	= { "biggles" : "src" },
+	package_dir	= { "biggles" : "biggles" },
 
 	ext_package	= "biggles",
 	ext_modules	= [
 		Extension( "_biggles",
-			["src/_biggles.c"],
+			["biggles/_biggles.c"],
 			include_dirs = _biggles_module_inc_dirs ),
 
 		Extension( "libplot.libplot",
-			["src/libplot/libplot.c"],
+			["biggles/libplot/libplot.c"],
 			include_dirs = libplot_module_inc_dirs,
 			library_dirs = libplot_module_lib_dirs,
 			libraries = libplot_module_libs ), 
 	],
 
 	cmdclass	= { "install_data" : my_install_data },
-	data_files	= [ ("biggles", ["src/config.ini"]) ]
+	data_files	= [ ("biggles", ["biggles/config.ini"]) ]
 )
 
 # vim: sts=8 sw=8 noexpandtab

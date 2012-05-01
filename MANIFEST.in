@@ -20,10 +20,10 @@
 #
 
 include ChangeLog COPYING CREDITS INSTALL README* TODO
-include make.* Makefile src/Makefile src/libplot/Makefile
-include src/Makefile.win src/libplot/Makefile.win src/libplot/libplotexports.def
+include make.* Makefile biggles/Makefile biggles/libplot/Makefile
+include biggles/Makefile.win biggles/libplot/Makefile.win biggles/libplot/libplotexports.def
 include *.spec MANIFEST.in
-include src/config.ini
+include biggles/config.ini
 recursive-include examples *.py
-recursive-include src *.pyc
+recursive-include biggles *.pyc
 

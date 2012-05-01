@@ -51,14 +51,14 @@ make
 %install
 rm -rf %{buildroot}
 mkdir -p %{buildroot}%{bigglesdir}
-install -m644 src/config.ini %{buildroot}%{bigglesdir}/config.ini
-install -m644 src/*.py  %{buildroot}%{bigglesdir}/
-install -m644 src/*.pyc %{buildroot}%{bigglesdir}/
-install -m755 src/*.so  %{buildroot}%{bigglesdir}/
+install -m644 biggles/config.ini %{buildroot}%{bigglesdir}/config.ini
+install -m644 biggles/*.py  %{buildroot}%{bigglesdir}/
+install -m644 biggles/*.pyc %{buildroot}%{bigglesdir}/
+install -m755 biggles/*.so  %{buildroot}%{bigglesdir}/
 mkdir -p %{buildroot}%{bigglesdir}/libplot
-install -m644 src/libplot/*.py  %{buildroot}%{bigglesdir}/libplot
-install -m644 src/libplot/*.pyc %{buildroot}%{bigglesdir}/libplot
-install -m755 src/libplot/*.so  %{buildroot}%{bigglesdir}/libplot
+install -m644 biggles/libplot/*.py  %{buildroot}%{bigglesdir}/libplot
+install -m644 biggles/libplot/*.pyc %{buildroot}%{bigglesdir}/libplot
+install -m755 biggles/libplot/*.so  %{buildroot}%{bigglesdir}/libplot
 
 %files
 %defattr(-,root,root)
