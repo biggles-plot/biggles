@@ -29,23 +29,3 @@ This produces an X window with a framed plot of the curve y(x).
 You can find more in the 'examples/' directory included with the
 source distribution.
 
-More Information
-----------------
-
-Complete documentaion is available at the biggles website:
-
-	http://biggles.sourceforge.net/
-
-If you'd like to receive announcements of new biggles releases,
-subscribe to the biggles-announce mailing list:
-
-	http://lists.sourceforge.net/mailman/listinfo/biggles-announce
-
-Questions about biggles usage should be send to:
-
-	biggles-help@lists.sourceforge.net
-
-Bug reports, feature requests, and patches should be sent to:
-
-	biggles-devel@lists.sourceforge.net
-
