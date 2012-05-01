@@ -131,7 +131,8 @@ class LibplotRenderer:
 
 	def open( self ):
 		self.state = RendererState()
-		raw.begin_page( self.pl )
+		stat = raw.begin_page( self.pl )
+		assert stat >= 0
 		apply( raw.space, \
 			(self.pl,) + self.lowerleft + self.upperright )
 		raw.clear( self.pl )

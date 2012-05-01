@@ -232,6 +232,24 @@ new( PyObject *self, PyObject *args )
 /******************************************************************************
  */
 
+static PyObject *
+begin_page( PyObject *self, PyObject *args )
+{
+	PyObject *o;
+	void *vptr;
+	int stat;
+
+	if ( !PyArg_ParseTuple( args, "O", &o ) )
+		return NULL;
+	vptr = (void *) PyCObject_AsVoidPtr( o );
+
+	stat = pl_openpl_r( (plPlotter *) vptr );
+	return Py_BuildValue("i", stat);
+}
+
+/******************************************************************************
+ */
+
 #define BGL_PL_FUNC(NAME,FUNCTION)\
 static PyObject *\
 NAME ( PyObject *self, PyObject *args )\
@@ -254,7 +272,6 @@ BGL_PL_FUNC( delete, pl_deletepl_r )
 BGL_PL_FUNC( flush, pl_flushpl_r )
 BGL_PL_FUNC( gsave, pl_savestate_r )
 BGL_PL_FUNC( grestore, pl_restorestate_r )
-BGL_PL_FUNC( begin_page, pl_openpl_r )
 
 /******************************************************************************
  */
