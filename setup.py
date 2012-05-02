@@ -187,7 +187,7 @@ setup(
 			["biggles/libplot/libplot.c"],
 			include_dirs = libplot_module_inc_dirs,
 			library_dirs = libplot_module_lib_dirs,
-			libraries = libplot_module_libs ), 
+			libraries = libplot_module_libs ),
 	],
 
 	cmdclass	= { "install_data" : my_install_data },
