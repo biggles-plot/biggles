@@ -222,29 +222,15 @@ new( PyObject *self, PyObject *args )
 	}
 
 	pl = pl_newpl_r( type, NULL, outfile, NULL, params );
-
 	pl_deleteplparams( params );
+
+	if (!pl) {
+		PyErr_SetString(PyExc_RuntimeError, "could not create plotter");
+		return NULL;
+	}
 
 	o = PyCObject_FromVoidPtr( (void *) pl, NULL );
 	return Py_BuildValue( "O", o );
-}
-
-/******************************************************************************
- */
-
-static PyObject *
-begin_page( PyObject *self, PyObject *args )
-{
-	PyObject *o;
-	void *vptr;
-	int stat;
-
-	if ( !PyArg_ParseTuple( args, "O", &o ) )
-		return NULL;
-	vptr = (void *) PyCObject_AsVoidPtr( o );
-
-	stat = pl_openpl_r( (plPlotter *) vptr );
-	return Py_BuildValue("i", stat);
 }
 
 /******************************************************************************
@@ -272,6 +258,7 @@ BGL_PL_FUNC( delete, pl_deletepl_r )
 BGL_PL_FUNC( flush, pl_flushpl_r )
 BGL_PL_FUNC( gsave, pl_savestate_r )
 BGL_PL_FUNC( grestore, pl_restorestate_r )
+BGL_PL_FUNC( begin_page, pl_openpl_r )
 
 /******************************************************************************
  */

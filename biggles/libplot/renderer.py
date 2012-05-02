@@ -131,8 +131,7 @@ class LibplotRenderer:
 
 	def open( self ):
 		self.state = RendererState()
-		stat = raw.begin_page( self.pl )
-		assert stat >= 0
+		raw.begin_page( self.pl )
 		apply( raw.space, \
 			(self.pl,) + self.lowerleft + self.upperright )
 		raw.clear( self.pl )
@@ -145,6 +144,8 @@ class LibplotRenderer:
 			raw.end_page( self.pl )
 
 	def delete( self ):
+		if not hasattr(self, 'pl'):
+			return
 		if self.pl is not None:
 			raw.delete( self.pl )
 			self.pl = None
