@@ -1,7 +1,7 @@
 #
 # $Id: config.py,v 1.34 2003/04/17 00:51:02 mrnolta Exp $
 #
-# Copyright (C) 2000-2001 Mike Nolta <mrnolta@users.sourceforge.net>
+# Copyright (C) 2000-2001 Mike Nolta <mike@nolta.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License

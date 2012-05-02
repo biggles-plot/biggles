@@ -1,7 +1,7 @@
 #
 # $Id: renderer.py,v 1.17 2004/03/08 23:30:05 mrnolta Exp $
 #
-# Copyright (C) 2000-2001 Mike Nolta <mrnolta@users.sourceforge.net>
+# Copyright (C) 2000-2001 Mike Nolta <mike@nolta.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License

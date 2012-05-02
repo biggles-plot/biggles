@@ -1,7 +1,7 @@
 #
 # $Id: tex2libplot.py,v 1.5 2002/08/18 22:04:07 mrnolta Exp $
 #
-# Copyright (C) 2000 Mike Nolta <mrnolta@users.sourceforge.net>
+# Copyright (C) 2000 Mike Nolta <mike@nolta.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License

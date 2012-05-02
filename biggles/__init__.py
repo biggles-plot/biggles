@@ -1,7 +1,7 @@
 #
 # $Id: __init__.py,v 1.82 2010/04/09 21:28:15 mrnolta Exp $
 #
-# Copyright (C) 2000-2001 Mike Nolta <mrnolta@users.sourceforge.net>
+# Copyright (C) 2000-2001 Mike Nolta <mike@nolta.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License

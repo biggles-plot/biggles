@@ -1,7 +1,7 @@
 #
 # $Id: make.inc,v 1.9 2010/04/09 20:50:18 mrnolta Exp $
 #
-# Copyright (C) 2001 Mike Nolta <mrnolta@users.sourceforge.net>
+# Copyright (C) 2001 Mike Nolta <mike@nolta.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License

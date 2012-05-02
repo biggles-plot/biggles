@@ -1,7 +1,7 @@
 #
 # $Id: python-biggles.spec,v 1.28 2010/04/09 21:28:15 mrnolta Exp $
 #
-# Copyright (C) 2001 Mike Nolta <mrnolta@users.sourceforge.net>
+# Copyright (C) 2001 Mike Nolta <mike@nolta.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -22,7 +22,7 @@ Version: 1.6.6
 Release: 1
 Name: python-biggles
 Summary: high-level scientific plotting module for Python
-Packager: Michael Nolta <mrnolta@users.sourceforge.net>
+Packager: Michael Nolta <mike@nolta.net>
 Source: http://download.sourceforge.net/biggles/python-biggles-%{version}.tar.gz
 URL: http://biggles.sourceforge.net/
 Copyright: GPL
@@ -74,17 +74,17 @@ install -m755 biggles/libplot/*.so  %{buildroot}%{bigglesdir}/libplot
 %{bigglesdir}/libplot/*.so
 
 %changelog
-* Sat Nov 03 2001 Michael Nolta <mrnolta@users.sourceforge.net>
+* Sat Nov 03 2001 Michael Nolta <mike@nolta.net>
 - Removed *.pyo files. Made code slower.
 
-* Fri Oct 26 2001 Michael Nolta <mrnolta@users.sourceforge.net>
+* Fri Oct 26 2001 Michael Nolta <mike@nolta.net>
 - Updated for new file layout. Added *.pyo files.
 
-* Sun Jan 25 2001 Michael Nolta <mrnolta@users.sourceforge.net>
+* Sun Jan 25 2001 Michael Nolta <mike@nolta.net>
 - Added support for *.so files.
 
-* Sun Dec 17 2000 Michael Nolta <mrnolta@users.sourceforge.net>
+* Sun Dec 17 2000 Michael Nolta <mike@nolta.net>
 - Added *.pyc files.
 
-* Tue Nov 24 2000 Michael Nolta <mrnolta@users.sourceforge.net>
+* Tue Nov 24 2000 Michael Nolta <mike@nolta.net>
 - Created.

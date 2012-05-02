@@ -4,7 +4,7 @@
 # Copyright (C) 2001 :
 #
 #   Jamie Mazer <mazer@socrates.berkeley.edu>
-#   Mike Nolta <mrnolta@users.sourceforge.net>
+#   Mike Nolta <mike@nolta.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License

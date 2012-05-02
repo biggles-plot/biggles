@@ -1,7 +1,7 @@
 #
 # $Id: contour.py,v 1.23 2008/01/29 04:08:31 mrnolta Exp $
 #
-# Copyright (C) 2001 Mike Nolta <mrnolta@users.sourceforge.net>
+# Copyright (C) 2001 Mike Nolta <mike@nolta.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License

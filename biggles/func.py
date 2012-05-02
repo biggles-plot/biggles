@@ -1,7 +1,7 @@
 #
 # $Id: func.py,v 1.21 2007/04/19 15:51:46 mrnolta Exp $
 #
-# Copyright (C) 2000-2001 Mike Nolta <mrnolta@users.sourceforge.net>
+# Copyright (C) 2000-2001 Mike Nolta <mike@nolta.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License

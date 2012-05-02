@@ -1,7 +1,7 @@
 #
 # $Id: Makefile,v 1.11 2001/11/03 20:52:17 mrnolta Exp $
 #
-# Copyright (C) 2000-2001 Mike Nolta <mrnolta@users.sourceforge.net>
+# Copyright (C) 2000-2001 Mike Nolta <mike@nolta.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
