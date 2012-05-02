@@ -164,7 +164,7 @@ setup(
 	# Distribution meta-data
 
 	name		= "python2-biggles",
-	version		= "1.6.6",
+	version		= "1.6.7",
 	author		= "Mike Nolta",
 	author_email	= "mike@nolta.net",
 	url		= "http://biggles.sourceforge.net/",

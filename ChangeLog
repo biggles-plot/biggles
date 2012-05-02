@@ -1,6 +1,14 @@
 
+1.6.7 (02 May 2012)
+-------------------
+
+* Fix segfault when libplot isn't built with X11 (reported by Daniel Ericsson
+  & Sebastien Maret).
+
+* Move to github.
+
 1.6.6 (27 Nov 2008)
---------------------
+-------------------
 
 * Fixed issue that caused all images to be 570x570 on some systems, due to a
   change in the python2.5 C API.

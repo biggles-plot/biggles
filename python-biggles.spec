@@ -18,7 +18,7 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA  02111-1307, USA.
 #
-Version: 1.6.6
+Version: 1.6.7
 Release: 1
 Name: python-biggles
 Summary: high-level scientific plotting module for Python

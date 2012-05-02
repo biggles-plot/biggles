@@ -7,8 +7,6 @@ plots. It supports multiple output formats (postscript, x11, png, svg, gif),
 understands simple TeX, and sports a high-level, elegant interface. It's
 intended for technical users with sophisticated plotting needs. 
 
-The goal is to produce a plotting package that isn't deeply frustrating. 
-
 Simple Example
 --------------
 
