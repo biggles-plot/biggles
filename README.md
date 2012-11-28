@@ -32,6 +32,6 @@ Installation
 
 Macports:
 
-   $ sudo port install plotutils +x11
-   $ sudo port install py27-biggles
+    $ sudo port install plotutils +x11
+    $ sudo port install py27-biggles
 
