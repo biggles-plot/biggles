@@ -213,6 +213,7 @@ _math_token_dict = {
 	r'\diamondsuit'			: r'\DI',
 	r'\heartsuit'			: r'\HE',
 	r'\spadesuit'			: r'\SP',
+	r'\int'                         : r'\is',
 
 	## binary operations
 	r'\pm'				: r'\+-',
