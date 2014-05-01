@@ -141,6 +141,12 @@ else:
 
     libplot_module_libs = ["plot","Xaw","Xmu","Xt","SM","ICE","Xext","X11"]
 
+        # use 2to3 to build for python 3.x
+    try:
+        from distutils.command.build_py import build_py_2to3 as build_py
+    except ImportError:
+        from distutils.command.build_py import build_py
+
 # own install_data class to allow installation of data file
 # (config.ini) to biggles directory
 
@@ -198,7 +204,8 @@ setup(
 
         ],
 
-        cmdclass        = { "install_data" : my_install_data },
+        cmdclass        = { "install_data" : my_install_data,
+                            'build_py' : build_py },
         data_files      = [ ("biggles", ["biggles/config.ini"]) ]
 )
 
