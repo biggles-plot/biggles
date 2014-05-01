@@ -47,7 +47,7 @@ def search_for_file( name, dirs ):
         fn = os.path.join( dir, name )
         if os.path.exists(fn):
             return dir
-    #print "%s not found" % name
+    #print( "%s not found" % name )
     return None
 
 def search_for_library( name, dirs ):
@@ -56,7 +56,7 @@ def search_for_library( name, dirs ):
         dir = search_for_file( 'lib'+name+'.'+extn, dirs )
         if dir is not None:
             return dir
-    #print "lib%s not found" % name
+    #print( "lib%s not found" % name )
     return None
 
 def dir_ends_in( dir, x ):
@@ -83,7 +83,7 @@ else:
         _biggles_module_inc_dirs.append( numpy_inc_dir )
         libplot_module_inc_dirs.append( numpy_inc_dir )
     except:
-        print "numpy module not found; add /path/to/numpy to PYTHONPATH"
+        print( "numpy module not found; add /path/to/numpy to PYTHONPATH" )
 
     candidate_dirs = [
             '/usr',
@@ -112,28 +112,28 @@ else:
 
     if plot_h_dir is None:
         plot_h_dir = search_for_file( 'plot.h', candidate_inc_dirs )
-        print "found plot.h in %s" % plot_h_dir
+        print( "found plot.h in %s" % plot_h_dir )
     if libplot_dir is None:
         libplot_dir = search_for_library( 'plot', candidate_lib_dirs )
-        print "found libplot in %s" % libplot_dir
+        print( "found libplot in %s" % libplot_dir )
     if libX11_dir is None:
         libX11_dir = search_for_library( 'X11', candidate_lib_dirs )
-        print "found libX11 in %s" % libX11_dir
+        print( "found libX11 in %s" % libX11_dir )
 
     if plot_h_dir is not None:
         libplot_module_inc_dirs.append( plot_h_dir )
     else:
-        print 'unable to find plot.h; add "-I/path/to/plot.h"'
+        print( 'unable to find plot.h; add "-I/path/to/plot.h"' )
 
     if libplot_dir is not None:
         libplot_module_lib_dirs.append( libplot_dir )
     else:
-        print 'unable to find libplot; add "-L/path/to/libplot"'
+        print( 'unable to find libplot; add "-L/path/to/libplot"' )
 
     if libX11_dir is not None:
         libplot_module_lib_dirs.append( libX11_dir )
     else:
-        print 'unable to find plot.h; add "-L/path/to/libX11"'
+        print( 'unable to find plot.h; add "-L/path/to/libX11"' )
 
     #_biggles_module_inc_dirs = [ numpy_inc_dir ]
     #libplot_module_inc_dirs = [ plot_h_dir, numpy_inc_dir ]
