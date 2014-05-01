@@ -491,7 +491,11 @@ static PyMethodDef BigglesMethods[] =
 	{ NULL, NULL }
 };
 
+#if PY_MAJOR_VERSION >= 3
+int
+#else
 void
+#endif
 init_biggles( void )
 {
 	Py_InitModule( "_biggles", BigglesMethods );

@@ -992,7 +992,11 @@ static PyMethodDef LibplotMethods[] =
 	{ NULL, NULL }
 };
 
+#if PY_MAJOR_VERSION >= 3
+int
+#else
 void
+#endif
 initlibplot( void )
 {
 	Py_InitModule( "libplot", LibplotMethods );
