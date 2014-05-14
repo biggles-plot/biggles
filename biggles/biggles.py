@@ -22,8 +22,8 @@
 import copy, math, os, string
 import numpy
 
-from . import config, _biggles, libplot
-from .geometry import *
+from . import config, _biggles
+from geometry import *
 
 from .libplot import renderer
 
