@@ -917,6 +917,15 @@ quit:
  *  module init
  */
 
+struct module_state { PyObject *error; };
+
+#if PY_MAJOR_VERSION >= 3
+#define GETSTATE(m) ((struct module_state*)PyModule_GetState(m))
+#else
+#define GETSTATE(m) (&_state)
+static struct module_state _state;
+#endif
+
 static PyMethodDef LibplotMethods[] = 
 {
 	{ "new", new, METH_VARARGS },
@@ -993,12 +1002,62 @@ static PyMethodDef LibplotMethods[] =
 };
 
 #if PY_MAJOR_VERSION >= 3
-int
-#else
-void
-#endif
-initlibplot( void )
+
+static int LibplotTraverse(PyObject *m, visitproc visit, void *arg)
 {
-	Py_InitModule( "libplot", LibplotMethods );
+	Py_VISIT(GETSTATE(m)->error);
+	return 0;
+}
+
+static int LibplotClear(PyObject *m)
+{
+	Py_CLEAR(GETSTATE(m)->error);
+	return 0;
+}
+
+static struct PyModuleDef moduledef = {
+        PyModuleDef_HEAD_INIT,
+        "libplot",
+        NULL,
+        sizeof(struct module_state),
+        LibplotMethods,
+        NULL,
+        LibplotTraverse,
+        LibplotClear,
+        NULL
+};
+
+#define INITERROR return NULL
+
+PyObject *
+PyInit_libplot(void)
+
+#else
+#define INITERROR return
+
+void
+initlibplot(void)
+#endif
+{
+#if PY_MAJOR_VERSION >= 3
+	PyObject *module = PyModule_Create(&moduledef);
+#else
+	PyObject *module = Py_InitModule("biggles", LibplotMethods);
+#endif
+
+	if (module == NULL)
+		INITERROR;
+	struct module_state *st = GETSTATE(module);
+
+	st->error = PyErr_NewException("biggles.Error", NULL, NULL);
+	if (st->error == NULL)
+	{
+		Py_DECREF(module);
+		INITERROR;
+	}
 	import_array();
+
+#if PY_MAJOR_VERSION >= 3
+	return module;
+#endif
 }
