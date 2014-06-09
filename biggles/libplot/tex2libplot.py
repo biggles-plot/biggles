@@ -244,7 +244,7 @@ _math_token_dict = {
 #	r'\ominus'			: r'',
 	r'\otimes'			: r'\c*',
 #	r'\oslash'			: r'',
-#	r'\odot'			: r'',
+	r'\odot'			: r'\SO',
 	r'\dagger'			: r'\dg',
 	r'\ddagger'			: r'\dd',
 #	r'\amalg'			: r'',
