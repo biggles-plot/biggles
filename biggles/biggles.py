@@ -2397,6 +2397,8 @@ class FramedArray( _PlotContainer ):
 		apply( _PlotContainer.__init__, (self,) )
 		self.nrows = nrows
 		self.ncols = ncols
+                self.row_fractions = None
+                self.col_fractions = None
 		self.content = {}
 		for i in range(nrows):
 			for j in range(ncols):
