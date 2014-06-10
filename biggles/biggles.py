@@ -2288,7 +2288,7 @@ class _Grid:
 	def __init__( self, nrows, ncols, bbox, cellpadding=0, cellspacing=0, row_fractions=None, col_fractions=None):
 		self.nrows = nrows
 		self.ncols = ncols
-                
+
                 if row_fractions is None:
                         self.row_fractions = numpy.ones(self.nrows)/self.nrows
                 else:
