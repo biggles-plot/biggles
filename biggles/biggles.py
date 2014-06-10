@@ -2285,24 +2285,42 @@ class OldCustomFramedPlot( FramedPlot ):
 
 class _Grid:
 
-	def __init__( self, nrows, ncols, bbox, cellpadding=0, cellspacing=0 ):
+	def __init__( self, nrows, ncols, bbox, cellpadding=0, cellspacing=0, row_fractions=None, col_fractions=None):
 		self.nrows = nrows
 		self.ncols = ncols
+                
+                if row_fractions is None:
+                        self.row_fractions = numpy.ones(self.nrows)/self.nrows
+                else:
+                        self.row_fractions = numpy.array(row_fractions[::-1])/numpy.sum(row_fractions)
+
+                if len(self.row_fractions) != self.nrows:
+                        raise BigglesError( "row_fractions must have length nrows!" )
+
+                if col_fractions is None:
+                        self.col_fractions = numpy.ones(self.ncols)/self.ncols
+                else:
+                        self.col_fractions = numpy.array(col_fractions[::-1])/numpy.sum(col_fractions)
+
+                if len(self.col_fractions) != self.ncols:
+                        raise BigglesError( "col_fractions must have length ncols!" )
 
 		w, h = bbox.width(), bbox.height()
 		cp = _size_relative( cellpadding, bbox )
+                self.cp = cp
 		cs = _size_relative( cellspacing, bbox )
+                self.cs = cs
 
 		self.origin = pt_add( bbox.lowerleft(), (cp,cp) )
-		self.step_x = (w + cs)/ncols
-		self.step_y = (h + cs)/nrows
-		self.cell_dimen = self.step_x - cs - 2*cp, \
-			self.step_y - cs - 2*cp
+		self.step_x = w*self.col_fractions + cs/ncols 
+		self.step_y = h*self.row_fractions + cs/nrows
 
 	def cell( self, i, j ):
 		ii = self.nrows-1 - i
-		p = pt_add( self.origin, (j*self.step_x,ii*self.step_y) )
-		q = pt_add( p, self.cell_dimen )
+                p = pt_add( self.origin, (numpy.sum(self.step_x[:j]),numpy.sum(self.step_y[:ii])) )
+		cell_dimen = self.step_x[j] - self.cs - 2*self.cp, \
+			self.step_y[ii] - self.cs - 2*self.cp
+                q = pt_add( p, cell_dimen )
 		return BoundingBox( p, q )
 
 class Table( _PlotContainer ):
@@ -2434,7 +2452,9 @@ class FramedArray( _PlotContainer ):
 
 	def _grid( self, interior ):
 		return _Grid( self.nrows, self.ncols, interior,
-			cellspacing=self.cellspacing )
+			cellspacing=self.cellspacing,
+                        row_fractions=self.row_fractions,
+                        col_fractions=self.col_fractions)
 
 	def _frames_bbox( self, device, interior ):
 		bb = BoundingBox()
