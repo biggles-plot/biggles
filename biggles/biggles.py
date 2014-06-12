@@ -2285,24 +2285,42 @@ class OldCustomFramedPlot( FramedPlot ):
 
 class _Grid:
 
-	def __init__( self, nrows, ncols, bbox, cellpadding=0, cellspacing=0 ):
+	def __init__( self, nrows, ncols, bbox, cellpadding=0, cellspacing=0, row_fractions=None, col_fractions=None):
 		self.nrows = nrows
 		self.ncols = ncols
 
+                if row_fractions is None:
+                        self.row_fractions = numpy.ones(self.nrows)/self.nrows
+                else:
+                        self.row_fractions = numpy.array(row_fractions[::-1])/numpy.sum(row_fractions)
+
+                if len(self.row_fractions) != self.nrows:
+                        raise BigglesError( "row_fractions must have length nrows!" )
+
+                if col_fractions is None:
+                        self.col_fractions = numpy.ones(self.ncols)/self.ncols
+                else:
+                        self.col_fractions = numpy.array(col_fractions[::-1])/numpy.sum(col_fractions)
+
+                if len(self.col_fractions) != self.ncols:
+                        raise BigglesError( "col_fractions must have length ncols!" )
+
 		w, h = bbox.width(), bbox.height()
 		cp = _size_relative( cellpadding, bbox )
+                self.cp = cp
 		cs = _size_relative( cellspacing, bbox )
+                self.cs = cs
 
 		self.origin = pt_add( bbox.lowerleft(), (cp,cp) )
-		self.step_x = (w + cs)/ncols
-		self.step_y = (h + cs)/nrows
-		self.cell_dimen = self.step_x - cs - 2*cp, \
-			self.step_y - cs - 2*cp
+		self.step_x = w*self.col_fractions + cs/ncols 
+		self.step_y = h*self.row_fractions + cs/nrows
 
 	def cell( self, i, j ):
 		ii = self.nrows-1 - i
-		p = pt_add( self.origin, (j*self.step_x,ii*self.step_y) )
-		q = pt_add( p, self.cell_dimen )
+                p = pt_add( self.origin, (numpy.sum(self.step_x[:j]),numpy.sum(self.step_y[:ii])) )
+		cell_dimen = self.step_x[j] - self.cs - 2*self.cp, \
+			self.step_y[ii] - self.cs - 2*self.cp
+                q = pt_add( p, cell_dimen )
 		return BoundingBox( p, q )
 
 class Table( _PlotContainer ):
@@ -2373,16 +2391,48 @@ def _range_union( a, b ):
 	if b is None: return a
 	return min(a[0],b[0]), max(a[1],b[1])
 
+def _set_triangle(nrows,ncols,lower,upper):
+        dct = {}
+        for i in xrange(nrows):
+                for j in xrange(ncols):
+                        dct[i,j] = False
+                        if lower and i >= j:
+                                dct[i,j] = True
+                        if upper and i <= j:
+                                dct[i,j] = True
+        return dct
+
+def _false_eye_dct(nrows,ncols):
+        dct = {}
+        for i in xrange(nrows):
+                for j in xrange(ncols):
+                        if i != j:
+                                dct[i,j] = True
+                        else:
+                                dct[i,j] = False
+        return dct
+
 class FramedArray( _PlotContainer ):
 
 	def __init__( self, nrows, ncols, **kw ):
 		apply( _PlotContainer.__init__, (self,) )
 		self.nrows = nrows
 		self.ncols = ncols
+                self.row_fractions = None
+                self.col_fractions = None
+                self.show_panel = {}
+                self.upper_triangle = False
+                self.lower_triangle = False
+                self.link_yrange = {}
+                self.link_xrange = {}
+                self.unlink_yrange_diag = False
 		self.content = {}
 		for i in range(nrows):
 			for j in range(ncols):
 				self.content[i,j] = Plot()
+                                self.show_panel[i,j] = True
+                                self.link_xrange[i,j] = True
+                                self.link_yrange[i,j] = True
 		apply( self.conf_setattr, ("FramedArray",), kw )
 
 	_attr_distribute = [
@@ -2423,18 +2473,32 @@ class FramedArray( _PlotContainer ):
 
 	def _limits_nonuniform( self, i, j ):
 		lx = None
-		for k in range(self.nrows):
-			l = self.content[k,j].limits()
-			lx = _range_union( l.xrange(), lx )
+                if self.link_xrange[i,j]:
+                        for k in range(self.nrows):
+                                l = self.content[k,j].limits()
+                                lx = _range_union( l.xrange(), lx )
+                else:
+                        l = self.content[i,j].limits()
+                        lx = l.xrange()
+
+                if self.unlink_yrange_diag:
+                        self.link_yrange = _false_eye_dct(self.nrows,self.ncols)
+
 		ly = None
-		for k in range(self.ncols):
-			l = self.content[i,k].limits()
-			ly = _range_union( l.yrange(), ly )
+                if self.link_yrange[i,j]:
+                        for k in range(self.ncols):
+                                l = self.content[i,k].limits()
+                                ly = _range_union( l.yrange(), ly )
+                else:
+                        l = self.content[i,j].limits()
+                        ly = l.yrange()
 		return BoundingBox( (lx[0],ly[0]), (lx[1],ly[1]) )
 
 	def _grid( self, interior ):
 		return _Grid( self.nrows, self.ncols, interior,
-			cellspacing=self.cellspacing )
+			cellspacing=self.cellspacing,
+                        row_fractions=self.row_fractions,
+                        col_fractions=self.col_fractions)
 
 	def _frames_bbox( self, device, interior ):
 		bb = BoundingBox()
@@ -2473,24 +2537,32 @@ class FramedArray( _PlotContainer ):
 	def _frames_draw( self, device, interior ):
 		g = self._grid( interior )
 
+                if self.upper_triangle or self.lower_triangle:
+                        self.show_panel = _set_triangle(self.nrows,self.ncols,self.lower_triangle,self.upper_triangle)
+
 		for key,obj in self.content.items():
-			subregion = apply( g.cell, key )
-			limits = apply( self._limits, key )
-			axislabels = [0,0,0,0]
-			if key[0] == self.nrows-1:
-				axislabels[1] = 1
-			if key[1] == 0:
-				axislabels[2] = 1
-			_frame_draw( obj, device, subregion, \
-				 limits, axislabels )
+                        if self.show_panel[key]:
+                                subregion = apply( g.cell, key )
+                                limits = apply( self._limits, key )
+                                axislabels = [0,0,0,0]
+                                if key[0] == self.nrows-1:
+                                        axislabels[1] = 1
+                                if key[1] == 0:
+                                        axislabels[2] = 1
+                                _frame_draw( obj, device, subregion, \
+                                             limits, axislabels )
 
 	def _data_draw( self, device, interior ):
 		g = self._grid( interior )
 
+                if self.upper_triangle or self.lower_triangle:
+                        self.show_panel = _set_triangle(self.nrows,self.ncols,self.lower_triangle,self.upper_triangle)
+
 		for key,obj in self.content.items():
-			subregion = apply( g.cell, key )
-			limits = apply( self._limits, key )
-			obj.compose_interior( device, subregion, limits )
+                        if self.show_panel[key]:
+                                subregion = apply( g.cell, key )
+                                limits = apply( self._limits, key )
+                                obj.compose_interior( device, subregion, limits )
 
 	def _labels_draw( self, device, interior ):
 		bb = self._frames_bbox( device, interior )
