@@ -2437,6 +2437,9 @@ class FramedArray( _PlotContainer ):
 
 	_attr_distribute = [
 		'gutter',
+	]
+
+	_attr_axis_distribute = [
 		'xlog',
 		'ylog',
 		'xrange',
@@ -2448,10 +2451,19 @@ class FramedArray( _PlotContainer ):
 		'labelsize'	: 'label_size',
 	}
 
+        def _set_conditional_attr(name,value):
+                for key,obj in self.content.items():
+                        if name[0] == 'x' and self.link_xrange[key]:
+                                setattr( obj, name, value )
+                        if name[0] == 'y' and self.link_yrange[key]:
+                                setattr( obj, name, value )
+
 	def __setattr__( self, name, value ):
 		if name in self._attr_distribute:
 			for obj in self.content.values():
 				setattr( obj, name, value )
+                elif name in self._attr_axis_distribute:
+                        self._set_conditional_attr( name, value )
 		else:
 			_name = self._attr_deprecated.get( name, name )
 			self.__dict__[_name] = value
@@ -2592,6 +2604,8 @@ class FramedArray( _PlotContainer ):
 			apply( obj.add, args ) 
 
 	def compose_interior( self, device, interior ):
+                for name in self._attr_axis_distribute:
+                        self._set_conditional_attr( name, getattr(self,name) )
 		_PlotContainer.compose_interior( self, device, interior )
 		self._data_draw( device, interior )
 		self._frames_draw( device, interior )
