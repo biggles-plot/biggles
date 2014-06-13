@@ -226,7 +226,7 @@ class _ConfAttributes:
 				obj = self
 				for y in x[:-1]:
 					obj = getattr( obj, y )
-				setattr( obj, x[-1], copy.copy(val) )
+                                setattr( obj, x[-1], copy.copy(val) )
 		for key,val in kw.items():
 			setattr( self, key, copy.copy(val) )
 
@@ -2451,7 +2451,8 @@ class FramedArray( _PlotContainer ):
 		'labelsize'	: 'label_size',
 	}
 
-        def _set_conditional_attr(name,value):
+        def _set_conditional_attr(self,name,value):
+                self.__dict__[name] = value
                 for key,obj in self.content.items():
                         if name[0] == 'x' and self.link_xrange[key]:
                                 setattr( obj, name, value )
