@@ -226,7 +226,7 @@ class _ConfAttributes:
 				obj = self
 				for y in x[:-1]:
 					obj = getattr( obj, y )
-                                setattr( obj, x[-1], copy.copy(val) )
+				setattr( obj, x[-1], copy.copy(val) )
 		for key,val in kw.items():
 			setattr( self, key, copy.copy(val) )
 
@@ -2289,27 +2289,27 @@ class _Grid:
 		self.nrows = nrows
 		self.ncols = ncols
 
-                if row_fractions is None:
-                        self.row_fractions = numpy.ones(self.nrows)/self.nrows
-                else:
-                        self.row_fractions = numpy.array(row_fractions[::-1])/numpy.sum(row_fractions)
+		if row_fractions is None:
+			self.row_fractions = numpy.ones(self.nrows)/self.nrows
+		else:
+			self.row_fractions = numpy.array(row_fractions[::-1])/numpy.sum(row_fractions)
 
-                if len(self.row_fractions) != self.nrows:
-                        raise BigglesError( "row_fractions must have length nrows!" )
+		if len(self.row_fractions) != self.nrows:
+			raise BigglesError( "row_fractions must have length nrows!" )
 
-                if col_fractions is None:
-                        self.col_fractions = numpy.ones(self.ncols)/self.ncols
-                else:
-                        self.col_fractions = numpy.array(col_fractions[::-1])/numpy.sum(col_fractions)
+		if col_fractions is None:
+			self.col_fractions = numpy.ones(self.ncols)/self.ncols
+		else:
+			self.col_fractions = numpy.array(col_fractions[::-1])/numpy.sum(col_fractions)
 
-                if len(self.col_fractions) != self.ncols:
-                        raise BigglesError( "col_fractions must have length ncols!" )
+		if len(self.col_fractions) != self.ncols:
+			raise BigglesError( "col_fractions must have length ncols!" )
 
 		w, h = bbox.width(), bbox.height()
 		cp = _size_relative( cellpadding, bbox )
-                self.cp = cp
+		self.cp = cp
 		cs = _size_relative( cellspacing, bbox )
-                self.cs = cs
+		self.cs = cs
 
 		self.origin = pt_add( bbox.lowerleft(), (cp,cp) )
 		self.step_x = w*self.col_fractions + cs/ncols 
@@ -2317,10 +2317,10 @@ class _Grid:
 
 	def cell( self, i, j ):
 		ii = self.nrows-1 - i
-                p = pt_add( self.origin, (numpy.sum(self.step_x[:j]),numpy.sum(self.step_y[:ii])) )
+		p = pt_add( self.origin, (numpy.sum(self.step_x[:j]),numpy.sum(self.step_y[:ii])) )
 		cell_dimen = self.step_x[j] - self.cs - 2*self.cp, \
 			self.step_y[ii] - self.cs - 2*self.cp
-                q = pt_add( p, cell_dimen )
+		q = pt_add( p, cell_dimen )
 		return BoundingBox( p, q )
 
 class Table( _PlotContainer ):
@@ -2349,7 +2349,7 @@ class Table( _PlotContainer ):
 
 		if self.align_interiors:
 			g = _Grid( self.rows, self.cols, interior, \
-                                   self.cellpadding, self.cellspacing)
+				   self.cellpadding, self.cellspacing)
 
 			for key,obj in self.content.items():
 				subregion = apply( g.cell, key )
@@ -2397,14 +2397,14 @@ class FramedArray( _PlotContainer ):
 		apply( _PlotContainer.__init__, (self,) )
 		self.nrows = nrows
 		self.ncols = ncols
-                self.row_fractions = None
-                self.col_fractions = None
-                self.show_panel = {}
+		self.row_fractions = None
+		self.col_fractions = None
+		self.show_panel = {}
 		self.content = {}
 		for i in range(nrows):
 			for j in range(ncols):
 				self.content[i,j] = Plot()
-                                self.show_panel[i,j] = True
+				self.show_panel[i,j] = True
 		apply( self.conf_setattr, ("FramedArray",), kw )
 
 	_attr_distribute = [
@@ -2445,24 +2445,24 @@ class FramedArray( _PlotContainer ):
 
 	def _limits_nonuniform( self, i, j ):
 		lx = None
-                for k in range(self.nrows):
-                        if self.show_panel[k,j]:
-                                l = self.content[k,j].limits()
-                                lx = _range_union( l.xrange(), lx )
+		for k in range(self.nrows):
+			if self.show_panel[k,j]:
+				l = self.content[k,j].limits()
+				lx = _range_union( l.xrange(), lx )
 
 		ly = None
-                for k in range(self.ncols):
-                        if self.show_panel[i,k]:
-                                l = self.content[i,k].limits()
-                                ly = _range_union( l.yrange(), ly )
+		for k in range(self.ncols):
+			if self.show_panel[i,k]:
+				l = self.content[i,k].limits()
+				ly = _range_union( l.yrange(), ly )
 
 		return BoundingBox( (lx[0],ly[0]), (lx[1],ly[1]) )
 
 	def _grid( self, interior ):
 		return _Grid( self.nrows, self.ncols, interior,
 			cellspacing=self.cellspacing,
-                        row_fractions=self.row_fractions,
-                        col_fractions=self.col_fractions)
+			row_fractions=self.row_fractions,
+			col_fractions=self.col_fractions)
 
 	def _frames_bbox( self, device, interior ):
 		bb = BoundingBox()
@@ -2502,25 +2502,25 @@ class FramedArray( _PlotContainer ):
 		g = self._grid( interior )
 
 		for key,obj in self.content.items():
-                        if self.show_panel[key]:
-                                subregion = apply( g.cell, key )
-                                limits = apply( self._limits, key )
-                                axislabels = [0,0,0,0]
-                                if key[0] == self.nrows-1:
-                                        axislabels[1] = 1
-                                if key[1] == 0:
-                                        axislabels[2] = 1
-                                _frame_draw( obj, device, subregion, \
-                                             limits, axislabels )
+			if self.show_panel[key]:
+				subregion = apply( g.cell, key )
+				limits = apply( self._limits, key )
+				axislabels = [0,0,0,0]
+				if key[0] == self.nrows-1:
+					axislabels[1] = 1
+				if key[1] == 0:
+					axislabels[2] = 1
+				_frame_draw( obj, device, subregion, \
+					     limits, axislabels )
 
 	def _data_draw( self, device, interior ):
 		g = self._grid( interior )
 
 		for key,obj in self.content.items():
-                        if self.show_panel[key]:
-                                subregion = apply( g.cell, key )
-                                limits = apply( self._limits, key )
-                                obj.compose_interior( device, subregion, limits )
+			if self.show_panel[key]:
+				subregion = apply( g.cell, key )
+				limits = apply( self._limits, key )
+				obj.compose_interior( device, subregion, limits )
 
 	def _labels_draw( self, device, interior ):
 		bb = self._frames_bbox( device, interior )
