@@ -221,8 +221,10 @@ class _ConfAttributes:
 	"""
 	A class for setting configuration.
 
-	If the section is in the global config, global configuration
-	is set!
+	All containers inherit from this.  If the section is in the global config,
+	global configuration is set.  This means sending keywords to containers
+	can set global configuration!
+
 	"""
 	def conf_setattr( self, section, **kw ):
 		"""
