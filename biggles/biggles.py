@@ -1,6 +1,8 @@
 #
 # $Id: biggles.py,v 1.235 2008/11/28 00:38:20 mrnolta Exp $
 #
+# vim: set noexpandtab :
+#
 # Copyright (C) 2000-2008 Mike Nolta <mike@nolta.net>
 #
 # This program is free software; you can redistribute it and/or
@@ -2285,25 +2287,28 @@ class OldCustomFramedPlot( FramedPlot ):
 
 class _Grid:
 
-	def __init__( self, nrows, ncols, bbox, cellpadding=0, cellspacing=0, row_fractions=None, col_fractions=None):
+	def __init__( self, nrows, ncols, bbox,
+				cellpadding=0, cellspacing=0,
+				row_fractions=None,
+				col_fractions=None):
 		self.nrows = nrows
 		self.ncols = ncols
 
-                if row_fractions is None:
-                        self.row_fractions = numpy.ones(self.nrows)/self.nrows
-                else:
-                        self.row_fractions = numpy.array(row_fractions[::-1])/numpy.sum(row_fractions)
+		if row_fractions is None:
+			self.row_fractions = numpy.ones(self.nrows)/self.nrows
+		else:
+			self.row_fractions = numpy.array(row_fractions[::-1])/numpy.sum(row_fractions)
 
-                if len(self.row_fractions) != self.nrows:
-                        raise BigglesError( "row_fractions must have length nrows!" )
+		if len(self.row_fractions) != self.nrows:
+			raise BigglesError( "row_fractions must have length nrows!" )
 
-                if col_fractions is None:
-                        self.col_fractions = numpy.ones(self.ncols)/self.ncols
-                else:
-                        self.col_fractions = numpy.array(col_fractions[::-1])/numpy.sum(col_fractions)
+		if col_fractions is None:
+			self.col_fractions = numpy.ones(self.ncols)/self.ncols
+		else:
+			self.col_fractions = numpy.array(col_fractions[::-1])/numpy.sum(col_fractions)
 
-                if len(self.col_fractions) != self.ncols:
-                        raise BigglesError( "col_fractions must have length ncols!" )
+		if len(self.col_fractions) != self.ncols:
+			raise BigglesError( "col_fractions must have length ncols!" )
 
 		w, h = bbox.width(), bbox.height()
 		cp = _size_relative( cellpadding, bbox )
@@ -2392,19 +2397,36 @@ def _range_union( a, b ):
 	return min(a[0],b[0]), max(a[1],b[1])
 
 class FramedArray( _PlotContainer ):
+	"""
+	A framed array of plots
 
+	parameters
+	----------
+	nrows: int
+		Number of rows of plots
+	ncols: int
+		Number of columns of plots
+	
+	keywords:
+		Currently all keywords are passed on to set the global FramedArray
+		configuration.  Be aware, these keywords will change the behavior of
+		all FramedArray objects.
+		
+		See the configuration options for FramedArray for details (TODO copy
+		into here)
+	"""
 	def __init__( self, nrows, ncols, **kw ):
 		apply( _PlotContainer.__init__, (self,) )
 		self.nrows = nrows
 		self.ncols = ncols
-                self.row_fractions = None
-                self.col_fractions = None
-                self.show_panel = {}
+		self.row_fractions = None
+		self.col_fractions = None
+		self.show_panel = {}
 		self.content = {}
 		for i in range(nrows):
 			for j in range(ncols):
 				self.content[i,j] = Plot()
-                                self.show_panel[i,j] = True
+				self.show_panel[i,j] = True
 		apply( self.conf_setattr, ("FramedArray",), kw )
 
 	_attr_distribute = [
@@ -2461,8 +2483,8 @@ class FramedArray( _PlotContainer ):
 	def _grid( self, interior ):
 		return _Grid( self.nrows, self.ncols, interior,
 			cellspacing=self.cellspacing,
-                        row_fractions=self.row_fractions,
-                        col_fractions=self.col_fractions)
+			row_fractions=self.row_fractions,
+			col_fractions=self.col_fractions)
 
 	def _frames_bbox( self, device, interior ):
 		bb = BoundingBox()
