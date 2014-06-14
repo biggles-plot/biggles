@@ -136,6 +136,30 @@ def _func_linewidth_placeholder( i, n, z0, z_min, z_max ):
 	return 1
 
 class Contours( _PlotComponent ):
+	"""
+	Create a 2-d contour plot object
+
+	parameters
+	----------
+    z: 2d array
+		The image or density grid.
+    x: array, optional
+        x values along the column direction
+    y: array, optional
+        y values along the row direction
+    zrange: optional
+        ?? what is this?
+
+	**keywords
+		Style and other keywords for the Contours.
+
+		Currently all keywords are passed on to set the global Contours
+		configuration.  Be aware, some keywords will change the behavior of
+		all Contours objects.
+		
+		See the configuration options for Contours for details (TODO copy
+		into here)
+	"""
 
 	_named_func_color = {
 		"black"			: _func_color_black,
