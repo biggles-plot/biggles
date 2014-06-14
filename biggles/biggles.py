@@ -1070,6 +1070,28 @@ def Point( x, y, **kw ):
 	return apply( Points, ([x],[y]), kw )
 
 class ColoredPoints( _SymbolDataComponent ):
+	"""
+	A set of colored points
+
+	parameters
+	----------
+	x: array or sequence
+		The "x" values of each point.
+	y: array or sequence
+		The "y" values of each point.
+	c: array or sequence
+		Colors for each point.
+
+	**keywords
+		Style and other keywords for the Points.
+
+		Currently all keywords are passed on to set the global Points
+		configuration.  Be aware, some keywords will change the behavior of
+		all Points objects.
+		
+		See the configuration options for Points for details (TODO copy
+		into here)
+	"""
 
 	kw_defaults = {
 		'symboltype' : config.value('Points','symboltype'),
@@ -1094,6 +1116,13 @@ class ColoredPoints( _SymbolDataComponent ):
 		self.add( _ColoredSymbolsObject(x, y, self.c) )
 
 def ColoredPoint( x, y, **kw ):
+	"""
+	Create a ColoredPoints object for a single point.
+
+	The parameters are the same as for the ColoredPoints class,
+	except x and y are scalars.
+	"""
+
 	return apply( ColoredPoints, ([x],[y]), kw )
 
 # _DensityComponent -----------------------------------------------------------
