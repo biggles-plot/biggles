@@ -1138,7 +1138,7 @@ class Density( _PlotComponent ):
 	bounds_tuple:
 		( (xmin,ymin), (xmax,ymax) )
 
-		Should support a more intuitive object.
+		TODO: Should support a more intuitive object.
 
 	**keywords
 		Style and other keywords for the Density.
@@ -1149,6 +1149,8 @@ class Density( _PlotComponent ):
 		
 		See the configuration options for Density for details (TODO copy
 		into here)
+	
+	TODO: mabye alias this to Image?
 	"""
 	kw_defaults = {
 		'foo' : config.value('Points','symbolsize'),
