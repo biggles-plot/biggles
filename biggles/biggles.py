@@ -2330,6 +2330,8 @@ class Table( _PlotContainer ):
 		apply( self.conf_setattr, ("Table",), kw )
 		self.rows = rows
 		self.cols = cols
+                self.row_fractions = None
+                self.col_fractions = None
 		self.content = {}
 
 	def __getitem__( self, key ):
@@ -2349,7 +2351,9 @@ class Table( _PlotContainer ):
 
 		if self.align_interiors:
 			g = _Grid( self.rows, self.cols, interior, \
-				self.cellpadding, self.cellspacing )
+                                   self.cellpadding, self.cellspacing, \
+                                   row_fractions=self.row_fractions, \
+                                   col_fractions=self.col_fractions)
 
 			for key,obj in self.content.items():
 				subregion = apply( g.cell, key )
@@ -2360,7 +2364,9 @@ class Table( _PlotContainer ):
 		_PlotContainer.compose_interior( self, device, interior )
 
 		g = _Grid( self.rows, self.cols, interior, \
-			self.cellpadding, self.cellspacing )
+			self.cellpadding, self.cellspacing, \
+                           row_fractions=self.row_fractions, \
+                           col_fractions=self.col_fractions)
 
 		for key,obj in self.content.items():
 			subregion = apply( g.cell, key )
