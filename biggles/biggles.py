@@ -2025,7 +2025,7 @@ class _PlotContainer( _ConfAttributes ):
 		device.delete()
 		printer.close()
 
- 	def write_eps( self, filename, **kw ):
+	def write_eps( self, filename, **kw ):
 		opt = copy.copy( config.options("postscript") )
 		opt.update( kw )
 		file = _open_output( filename )
@@ -2200,7 +2200,7 @@ class FramedPlot( _PlotContainer ):
 		else:
 			return self.__dict__[name]
 
- 	def __setattr__( self, name, value ):
+	def __setattr__( self, name, value ):
 		if self._attr_map.has_key( name ):
 			xs = self._attr_map[ name ]
 			obj = self

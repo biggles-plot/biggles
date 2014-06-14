@@ -87,8 +87,8 @@ class HammerAitoffPlot( _PlotContainer ):
 	}
 
 	def __init__( self, l0=0., b0=0, rot=0., **kw ):
- 		apply( _PlotContainer.__init__, (self,) )
- 		apply( self.conf_setattr, ("HammerAitoffPlot",), kw )
+		apply( _PlotContainer.__init__, (self,) )
+		apply( self.conf_setattr, ("HammerAitoffPlot",), kw )
 		self.content = _PlotComposite()
 		self.l0 = l0
 		self.b0 = b0

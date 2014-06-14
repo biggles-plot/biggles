@@ -135,7 +135,7 @@ _matlab = _MatlabEmulation()
 def subplot( nr, nc, r, c=None ):
 	global _matlab
 	if _matlab.NROWS != nr or _matlab.NCOLS != nc:
-        	_matlab.TABLE = None
+		_matlab.TABLE = None
 	_matlab.NROWS = nr
 	_matlab.NCOLS = nc
 	if c is None:
