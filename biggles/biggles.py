@@ -216,10 +216,31 @@ class _StyleKeywords:
 		context.draw.restore_state()
 
 # _ConfAttributes -----------------------------------------------------------
-
+# this can set global configuration!
 class _ConfAttributes:
+	"""
+	A class for setting configuration.
 
+	If the section is in the global config, global configuration
+	is set!
+	"""
 	def conf_setattr( self, section, **kw ):
+		"""
+		Set configuration paramaters
+
+		parameters
+		----------
+		section: string
+			The section in global config.  If not in the
+			global config, this is ignored
+
+		**keywords:
+			The keyword/value pairs to set.
+				self.key=val
+
+			If section is in the global config, then global configuration is
+			affected.
+		"""
 		import copy, string
 		sec = config.options( section )
 		if sec is not None:
@@ -228,7 +249,7 @@ class _ConfAttributes:
 				obj = self
 				for y in x[:-1]:
 					obj = getattr( obj, y )
-                                setattr( obj, x[-1], copy.copy(val) )
+					setattr( obj, x[-1], copy.copy(val) )
 		for key,val in kw.items():
 			setattr( self, key, copy.copy(val) )
 
@@ -1899,7 +1920,15 @@ def win_temp_path():
 	return os.getcwd()
 
 class _PlotContainer( _ConfAttributes ):
+	"""
+	plot container base class
 
+	parameters
+	----------
+	**keywords: optional keywords
+		Careful, these will set the global configuration
+		for _PlotContainer
+	"""
 	def __init__( self, **kw ):
 		apply( self.conf_setattr, ("_PlotContainer",), kw )
 
