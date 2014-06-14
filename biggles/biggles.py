@@ -2391,55 +2391,22 @@ def _range_union( a, b ):
 	if b is None: return a
 	return min(a[0],b[0]), max(a[1],b[1])
 
-def _set_triangle(nrows,ncols,lower,upper):
-        dct = {}
-        for i in xrange(nrows):
-                for j in xrange(ncols):
-                        dct[i,j] = False
-                        if lower and i >= j:
-                                dct[i,j] = True
-                        if upper and i <= j:
-                                dct[i,j] = True
-        return dct
-
-def _false_eye_dct(nrows,ncols):
-        dct = {}
-        for i in xrange(nrows):
-                for j in xrange(ncols):
-                        if i != j:
-                                dct[i,j] = True
-                        else:
-                                dct[i,j] = False
-        return dct
-
 class FramedArray( _PlotContainer ):
 
 	def __init__( self, nrows, ncols, **kw ):
 		apply( _PlotContainer.__init__, (self,) )
 		self.nrows = nrows
 		self.ncols = ncols
-                self.row_fractions = None
-                self.col_fractions = None
                 self.show_panel = {}
-                self.upper_triangle = False
-                self.lower_triangle = False
-                self.link_yrange = {}
-                self.link_xrange = {}
-                self.unlink_yrange_diag = False
 		self.content = {}
 		for i in range(nrows):
 			for j in range(ncols):
 				self.content[i,j] = Plot()
                                 self.show_panel[i,j] = True
-                                self.link_xrange[i,j] = True
-                                self.link_yrange[i,j] = True
 		apply( self.conf_setattr, ("FramedArray",), kw )
 
 	_attr_distribute = [
 		'gutter',
-	]
-
-	_attr_axis_distribute = [
 		'xlog',
 		'ylog',
 		'xrange',
@@ -2451,20 +2418,10 @@ class FramedArray( _PlotContainer ):
 		'labelsize'	: 'label_size',
 	}
 
-        def _set_conditional_attr(self,name,value):
-                self.__dict__[name] = value
-                for key,obj in self.content.items():
-                        if name[0] == 'x' and self.link_xrange[key]:
-                                setattr( obj, name, value )
-                        if name[0] == 'y' and self.link_yrange[key]:
-                                setattr( obj, name, value )
-
 	def __setattr__( self, name, value ):
 		if name in self._attr_distribute:
 			for obj in self.content.values():
 				setattr( obj, name, value )
-                elif name in self._attr_axis_distribute:
-                        self._set_conditional_attr( name, value )
 		else:
 			_name = self._attr_deprecated.get( name, name )
 			self.__dict__[_name] = value
@@ -2486,25 +2443,17 @@ class FramedArray( _PlotContainer ):
 
 	def _limits_nonuniform( self, i, j ):
 		lx = None
-                if self.link_xrange[i,j]:
-                        for k in range(self.nrows):
+                for k in range(self.nrows):
+                        if self.show_panel[k,j]:
                                 l = self.content[k,j].limits()
                                 lx = _range_union( l.xrange(), lx )
-                else:
-                        l = self.content[i,j].limits()
-                        lx = l.xrange()
-
-                if self.unlink_yrange_diag:
-                        self.link_yrange = _false_eye_dct(self.nrows,self.ncols)
 
 		ly = None
-                if self.link_yrange[i,j]:
-                        for k in range(self.ncols):
+                for k in range(self.ncols):
+                        if self.show_panel[i,k]:
                                 l = self.content[i,k].limits()
                                 ly = _range_union( l.yrange(), ly )
-                else:
-                        l = self.content[i,j].limits()
-                        ly = l.yrange()
+
 		return BoundingBox( (lx[0],ly[0]), (lx[1],ly[1]) )
 
 	def _grid( self, interior ):
@@ -2550,9 +2499,6 @@ class FramedArray( _PlotContainer ):
 	def _frames_draw( self, device, interior ):
 		g = self._grid( interior )
 
-                if self.upper_triangle or self.lower_triangle:
-                        self.show_panel = _set_triangle(self.nrows,self.ncols,self.lower_triangle,self.upper_triangle)
-
 		for key,obj in self.content.items():
                         if self.show_panel[key]:
                                 subregion = apply( g.cell, key )
@@ -2567,9 +2513,6 @@ class FramedArray( _PlotContainer ):
 
 	def _data_draw( self, device, interior ):
 		g = self._grid( interior )
-
-                if self.upper_triangle or self.lower_triangle:
-                        self.show_panel = _set_triangle(self.nrows,self.ncols,self.lower_triangle,self.upper_triangle)
 
 		for key,obj in self.content.items():
                         if self.show_panel[key]:
@@ -2605,8 +2548,6 @@ class FramedArray( _PlotContainer ):
 			apply( obj.add, args ) 
 
 	def compose_interior( self, device, interior ):
-                for name in self._attr_axis_distribute:
-                        self._set_conditional_attr( name, getattr(self,name) )
 		_PlotContainer.compose_interior( self, device, interior )
 		self._data_draw( device, interior )
 		self._frames_draw( device, interior )
