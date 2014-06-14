@@ -788,7 +788,19 @@ class Geodesic( _LineComponent ):
 			self.add( _PathObject(x, y) )
 
 class Histogram( _LineComponent ):
+	"""
+	A histogram plot object.
 
+	parameters
+	----------
+	values: array or sequence
+		The "y" values for the histogram.
+	x0: keyword, optional
+		The "x" position of the first value in values.
+	binsize: keyword, optional
+		The binsize for the histogram. the plotted
+		x values will start at x0 with spacing binsize.
+	"""
 	def __init__( self, values, x0=0, binsize=1, **kw ):
 		_LineComponent.__init__( self )
 		self.conf_setattr( "Histogram" )
@@ -2187,7 +2199,19 @@ class Plot( _PlotContainer ):
 # FramedPlot ------------------------------------------------------------------
 
 class FramedPlot( _PlotContainer ):
+	"""
+	A framed plot
 
+	parameters
+	----------
+	**keywords
+		Currently all keywords are passed on to set the global FramedPlot
+		configuration.  Be aware, these keywords will change the behavior of
+		all FramedArray objects.
+		
+		See the configuration options for FramedPlot for details (TODO copy
+		into here)
+	"""
 	def __init__( self, **kw ):
 		apply( _PlotContainer.__init__, (self,) )
 		self.content1 = _PlotComposite()
@@ -2358,6 +2382,24 @@ class _Grid:
 		return BoundingBox( p, q )
 
 class Table( _PlotContainer ):
+	"""
+	A table of plots
+
+	parameters
+	----------
+	nrows: int
+		Number of rows of plots
+	ncols: int
+		Number of columns of plots
+	
+	keywords:
+		Currently all keywords are passed on to set the global Table
+		configuration.  Be aware, these keywords will change the behavior of
+		all FramedArray objects.
+		
+		See the configuration options for Table for details (TODO copy
+		into here)
+	"""
 
 	def __init__( self, rows, cols, **kw ):
 		apply( _PlotContainer.__init__, (self,) )
