@@ -221,10 +221,8 @@ class _ConfAttributes:
 	"""
 	A class for setting configuration.
 
-	All containers inherit from this.  If the section is in the global config,
-	global configuration is set.  This means sending keywords to containers
-	can set global configuration!
-
+	If the section is in the global config, global configuration
+	is set!
 	"""
 	def conf_setattr( self, section, **kw ):
 		"""
@@ -251,7 +249,7 @@ class _ConfAttributes:
 				obj = self
 				for y in x[:-1]:
 					obj = getattr( obj, y )
-					setattr( obj, x[-1], copy.copy(val) )
+				setattr( obj, x[-1], copy.copy(val) )
 		for key,val in kw.items():
 			setattr( self, key, copy.copy(val) )
 
@@ -1928,7 +1926,7 @@ class _PlotContainer( _ConfAttributes ):
 	parameters
 	----------
 	**keywords: optional keywords
-		Careful, these will set the global configuration
+		Careful, these could set the global configuration
 		for _PlotContainer
 	"""
 	def __init__( self, **kw ):
