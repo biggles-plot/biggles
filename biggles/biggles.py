@@ -1128,7 +1128,28 @@ def ColoredPoint( x, y, **kw ):
 # _DensityComponent -----------------------------------------------------------
 
 class Density( _PlotComponent ):
+	"""
+	Create a 2-d image plot object, or density map
 
+	parameters
+	----------
+	densgrid/image:
+		The image or density grid.
+	bounds_tuple:
+		( (xmin,ymin), (xmax,ymax) )
+
+		Should support a more intuitive object.
+
+	**keywords
+		Style and other keywords for the Density.
+
+		Currently all keywords are passed on to set the global Density
+		configuration.  Be aware, some keywords will change the behavior of
+		all Density objects.
+		
+		See the configuration options for Density for details (TODO copy
+		into here)
+	"""
 	kw_defaults = {
 		'foo' : config.value('Points','symbolsize'),
 	}
