@@ -789,7 +789,7 @@ class Geodesic( _LineComponent ):
 
 class Histogram( _LineComponent ):
 	"""
-	A histogram plot object.
+	A histogram plot object.  Can be added to plot containers.
 
 	parameters
 	----------
@@ -800,6 +800,16 @@ class Histogram( _LineComponent ):
 	binsize: keyword, optional
 		The binsize for the histogram. the plotted
 		x values will start at x0 with spacing binsize.
+	
+	**keywords
+		Style and other keywords for the histogram.
+
+		Currently all keywords are passed on to set the global Histogram
+		configuration.  Be aware, some keywords will change the behavior of
+		all Histogram objects.
+		
+		See the configuration options for Histogram for details (TODO copy
+		into here)
 	"""
 	def __init__( self, values, x0=0, binsize=1, **kw ):
 		_LineComponent.__init__( self )
@@ -1005,6 +1015,29 @@ class _SymbolDataComponent( _PlotComponent ):
 		return apply(_SymbolObject, (pos,), self.kw_style)
 
 class Points( _SymbolDataComponent ):
+	"""
+	A set of points.  Can be added to plot containers.
+
+	parameters
+	----------
+	x: array or sequence
+		The "x" values of each point.
+	y: array or sequence
+		The "y" values of each point.
+	binsize: keyword, optional
+		The binsize for the histogram. the plotted
+		x values will start at x0 with spacing binsize.
+	
+	**keywords
+		Style and other keywords for the Points.
+
+		Currently all keywords are passed on to set the global Points
+		configuration.  Be aware, some keywords will change the behavior of
+		all Points objects.
+		
+		See the configuration options for Points for details (TODO copy
+		into here)
+	"""
 
 	kw_defaults = {
 		'symboltype' : config.value('Points','symboltype'),
@@ -1028,6 +1061,12 @@ class Points( _SymbolDataComponent ):
 		self.add( _SymbolsObject(x, y) )
 
 def Point( x, y, **kw ):
+	"""
+	Create a Points object for a single point.
+
+	The parameters are the same as for the Points class,
+	except x and y are scalars.
+	"""
 	return apply( Points, ([x],[y]), kw )
 
 class ColoredPoints( _SymbolDataComponent ):
@@ -2207,7 +2246,7 @@ class FramedPlot( _PlotContainer ):
 	**keywords
 		Currently all keywords are passed on to set the global FramedPlot
 		configuration.  Be aware, these keywords will change the behavior of
-		all FramedArray objects.
+		all FramedPlot objects.
 		
 		See the configuration options for FramedPlot for details (TODO copy
 		into here)
@@ -2394,8 +2433,8 @@ class Table( _PlotContainer ):
 	
 	keywords:
 		Currently all keywords are passed on to set the global Table
-		configuration.  Be aware, these keywords will change the behavior of
-		all FramedArray objects.
+		configuration.  Be aware, some keywords will change the behavior of
+		all Table objects.
 		
 		See the configuration options for Table for details (TODO copy
 		into here)
