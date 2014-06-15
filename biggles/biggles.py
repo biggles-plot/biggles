@@ -1,6 +1,8 @@
 #
 # $Id: biggles.py,v 1.235 2008/11/28 00:38:20 mrnolta Exp $
 #
+# vim: set noexpandtab :
+#
 # Copyright (C) 2000-2008 Mike Nolta <mike@nolta.net>
 #
 # This program is free software; you can redistribute it and/or
@@ -214,10 +216,31 @@ class _StyleKeywords:
 		context.draw.restore_state()
 
 # _ConfAttributes -----------------------------------------------------------
-
+# this can set global configuration!
 class _ConfAttributes:
+	"""
+	A class for setting configuration.
 
+	If the section is in the global config, global configuration
+	is set!
+	"""
 	def conf_setattr( self, section, **kw ):
+		"""
+		Set configuration paramaters
+
+		parameters
+		----------
+		section: string
+			The section in global config.  If not in the
+			global config, this is ignored
+
+		**keywords:
+			The keyword/value pairs to set.
+				self.key=val
+
+			If section is in the global config, then global configuration is
+			affected.
+		"""
 		import copy, string
 		sec = config.options( section )
 		if sec is not None:
@@ -765,7 +788,29 @@ class Geodesic( _LineComponent ):
 			self.add( _PathObject(x, y) )
 
 class Histogram( _LineComponent ):
+	"""
+	A histogram plot object.  Can be added to plot containers.
 
+	parameters
+	----------
+	values: array or sequence
+		The "y" values for the histogram.
+	x0: keyword, optional
+		The "x" position of the first value in values.
+	binsize: keyword, optional
+		The binsize for the histogram. the plotted
+		x values will start at x0 with spacing binsize.
+	
+	**keywords
+		Style and other keywords for the histogram.
+
+		Currently all keywords are passed on to set the global Histogram
+		configuration.  Be aware, some keywords will change the behavior of
+		all Histogram objects.
+		
+		See the configuration options for Histogram for details (TODO copy
+		into here)
+	"""
 	def __init__( self, values, x0=0, binsize=1, **kw ):
 		_LineComponent.__init__( self )
 		self.conf_setattr( "Histogram" )
@@ -970,6 +1015,29 @@ class _SymbolDataComponent( _PlotComponent ):
 		return apply(_SymbolObject, (pos,), self.kw_style)
 
 class Points( _SymbolDataComponent ):
+	"""
+	A set of points.  Can be added to plot containers.
+
+	parameters
+	----------
+	x: array or sequence
+		The "x" values of each point.
+	y: array or sequence
+		The "y" values of each point.
+	binsize: keyword, optional
+		The binsize for the histogram. the plotted
+		x values will start at x0 with spacing binsize.
+	
+	**keywords
+		Style and other keywords for the Points.
+
+		Currently all keywords are passed on to set the global Points
+		configuration.  Be aware, some keywords will change the behavior of
+		all Points objects.
+		
+		See the configuration options for Points for details (TODO copy
+		into here)
+	"""
 
 	kw_defaults = {
 		'symboltype' : config.value('Points','symboltype'),
@@ -993,9 +1061,37 @@ class Points( _SymbolDataComponent ):
 		self.add( _SymbolsObject(x, y) )
 
 def Point( x, y, **kw ):
+	"""
+	Create a Points object for a single point.
+
+	The parameters are the same as for the Points class,
+	except x and y are scalars.
+	"""
 	return apply( Points, ([x],[y]), kw )
 
 class ColoredPoints( _SymbolDataComponent ):
+	"""
+	A set of colored points
+
+	parameters
+	----------
+	x: array or sequence
+		The "x" values of each point.
+	y: array or sequence
+		The "y" values of each point.
+	c: array or sequence
+		Colors for each point.
+
+	**keywords
+		Style and other keywords for the Points.
+
+		Currently all keywords are passed on to set the global Points
+		configuration.  Be aware, some keywords will change the behavior of
+		all Points objects.
+		
+		See the configuration options for Points for details (TODO copy
+		into here)
+	"""
 
 	kw_defaults = {
 		'symboltype' : config.value('Points','symboltype'),
@@ -1020,12 +1116,42 @@ class ColoredPoints( _SymbolDataComponent ):
 		self.add( _ColoredSymbolsObject(x, y, self.c) )
 
 def ColoredPoint( x, y, **kw ):
+	"""
+	Create a ColoredPoints object for a single point.
+
+	The parameters are the same as for the ColoredPoints class,
+	except x and y are scalars.
+	"""
+
 	return apply( ColoredPoints, ([x],[y]), kw )
 
 # _DensityComponent -----------------------------------------------------------
 
 class Density( _PlotComponent ):
+	"""
+	Create a 2-d image plot object, or density map
 
+	parameters
+	----------
+	densgrid/image:
+		The image or density grid.
+	bounds_tuple:
+		( (xmin,ymin), (xmax,ymax) )
+
+		TODO: Should support a more intuitive object.
+
+	**keywords
+		Style and other keywords for the Density.
+
+		Currently all keywords are passed on to set the global Density
+		configuration.  Be aware, some keywords will change the behavior of
+		all Density objects.
+		
+		See the configuration options for Density for details (TODO copy
+		into here)
+	
+	TODO: mabye alias this to Image?
+	"""
 	kw_defaults = {
 		'foo' : config.value('Points','symbolsize'),
 	}
@@ -1901,7 +2027,15 @@ def win_temp_path():
 	return os.getcwd()
 
 class _PlotContainer( _ConfAttributes ):
+	"""
+	plot container base class
 
+	parameters
+	----------
+	**keywords: optional keywords
+		Careful, these could set the global configuration
+		for _PlotContainer
+	"""
 	def __init__( self, **kw ):
 		apply( self.conf_setattr, ("_PlotContainer",), kw )
 
@@ -2160,7 +2294,19 @@ class Plot( _PlotContainer ):
 # FramedPlot ------------------------------------------------------------------
 
 class FramedPlot( _PlotContainer ):
+	"""
+	A framed plot
 
+	parameters
+	----------
+	**keywords
+		Currently all keywords are passed on to set the global FramedPlot
+		configuration.  Be aware, these keywords will change the behavior of
+		all FramedPlot objects.
+		
+		See the configuration options for FramedPlot for details (TODO copy
+		into here)
+	"""
 	def __init__( self, **kw ):
 		apply( _PlotContainer.__init__, (self,) )
 		self.content1 = _PlotComposite()
@@ -2289,7 +2435,10 @@ class OldCustomFramedPlot( FramedPlot ):
 
 class _Grid:
 
-	def __init__( self, nrows, ncols, bbox, cellpadding=0, cellspacing=0, row_fractions=None, col_fractions=None):
+	def __init__( self, nrows, ncols, bbox,
+				cellpadding=0, cellspacing=0,
+				row_fractions=None,
+				col_fractions=None):
 		self.nrows = nrows
 		self.ncols = ncols
 
@@ -2328,6 +2477,24 @@ class _Grid:
 		return BoundingBox( p, q )
 
 class Table( _PlotContainer ):
+	"""
+	A table of plots
+
+	parameters
+	----------
+	nrows: int
+		Number of rows of plots
+	ncols: int
+		Number of columns of plots
+	
+	keywords:
+		Currently all keywords are passed on to set the global Table
+		configuration.  Be aware, some keywords will change the behavior of
+		all Table objects.
+		
+		See the configuration options for Table for details (TODO copy
+		into here)
+	"""
 
 	def __init__( self, rows, cols, **kw ):
 		apply( _PlotContainer.__init__, (self,) )
@@ -2397,7 +2564,24 @@ def _range_union( a, b ):
 	return min(a[0],b[0]), max(a[1],b[1])
 
 class FramedArray( _PlotContainer ):
+	"""
+	A framed array of plots
 
+	parameters
+	----------
+	nrows: int
+		Number of rows of plots
+	ncols: int
+		Number of columns of plots
+	
+	keywords:
+		Currently all keywords are passed on to set the global FramedArray
+		configuration.  Be aware, these keywords will change the behavior of
+		all FramedArray objects.
+		
+		See the configuration options for FramedArray for details (TODO copy
+		into here)
+	"""
 	def __init__( self, nrows, ncols, **kw ):
 		apply( _PlotContainer.__init__, (self,) )
 		self.nrows = nrows
