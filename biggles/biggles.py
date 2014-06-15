@@ -1839,18 +1839,22 @@ class Frame( _PlotComposite ):
 		self.x2 = _HalfAxisX()
 		self.x2.draw_ticklabels = labelticks[0]
 		self.x2.ticklabels_dir = 1
+		self.x2.ticklabels_style.update(**kw)
 
 		self.x1 = _HalfAxisX()
 		self.x1.draw_ticklabels = labelticks[1]
 		self.x1.ticklabels_dir = -1
-		
+		self.x1.ticklabels_style.update(**kw)
+
 		self.y1 = _HalfAxisY()
 		self.y1.draw_ticklabels = labelticks[2]
 		self.y1.ticklabels_dir = -1
+		self.y1.ticklabels_style.update(**kw)
 
 		self.y2 = _HalfAxisY()
 		self.y2.draw_ticklabels = labelticks[3]
 		self.y2.ticklabels_dir = 1
+		self.y2.ticklabels_style.update(**kw)
 
 	def make( self, context ):
 		self.clear()
@@ -2374,8 +2378,9 @@ class Table( _PlotContainer ):
 # Hideous, but it works...
 #
 
-def _frame_draw( obj, device, region, limits, labelticks=(0,1,1,0) ):
-	frame = Frame( labelticks=labelticks )
+def _frame_draw( obj, device, region, limits, labelticks=(0,1,1,0), fontsizefac=1.0 ):
+	fontsize = config.value('default','fontsize')*fontsizefac
+	frame = Frame( labelticks=labelticks, fontsize=fontsize )
 	context = _PlotContext( device, region, limits,
 		xlog=obj.xlog, ylog=obj.ylog )
 	frame.render( context )
@@ -2510,8 +2515,23 @@ class FramedArray( _PlotContainer ):
 					axislabels[1] = 1
 				if key[1] == 0:
 					axislabels[2] = 1
+				fontsizefac = 1.0
+				if self.row_fractions is not None or self.col_fractions is not None:
+					if self.row_fractions is not None:
+						rnorm = self.row_fractions/numpy.sum(self.row_fractions)
+					else:
+						rnorm = numpy.ones(self.nrows)/self.nrows
+					if self.col_fractions is not None:
+						cnorm = self.col_fractions/numpy.sum(self.col_fractions)
+					else:
+						cnorm = numpy.ones(self.ncols)/self.ncols
+					gs =  _Grid( self.nrows, self.ncols, interior,
+						     cellspacing=self.cellspacing)
+					subregions = apply( gs.cell, key )
+					fontsizefac = subregions.width()*subregions.height()/(subregions.width() + subregions.height())
+					fontsizefac /= subregion.width()*subregion.height()/(subregion.width() + subregion.height())
 				_frame_draw( obj, device, subregion, \
-					     limits, axislabels )
+					     limits, axislabels, fontsizefac=fontsizefac )
 
 	def _data_draw( self, device, interior ):
 		g = self._grid( interior )
