@@ -2109,8 +2109,10 @@ class _PlotContainer( _ConfAttributes ):
 		persistent = config.interactive() and \
 			config.bool('screen','persistent')
 		device = renderer.ScreenRenderer( persistent, width, height )
-		self.page_compose( device )
-		device.delete()
+		try:
+			self.page_compose( device )
+		finally:
+			device.delete()
 
 	def show_win( self, width, height ):
 		"""
@@ -2138,8 +2140,10 @@ class _PlotContainer( _ConfAttributes ):
 		_message( 'printing plot with "%s"' % printcmd )
 		printer = os.popen( printcmd, 'w' )
 		device = apply( renderer.PSRenderer, (printer,), opt )
-		self.page_compose( device )
-		device.delete()
+		try:
+			self.page_compose( device )
+		finally:
+			device.delete()
 		printer.close()
 
 	def write_eps( self, filename, **kw ):
@@ -2147,8 +2151,10 @@ class _PlotContainer( _ConfAttributes ):
 		opt.update( kw )
 		file = _open_output( filename )
 		device = apply( renderer.PSRenderer, (file,), opt )
-		self.page_compose( device )
-		device.delete()
+		try:
+			self.page_compose( device )
+		finally:
+			device.delete()
 		_close_output( file )
 
 	def write_img( self, *args ):
@@ -2160,8 +2166,10 @@ class _PlotContainer( _ConfAttributes ):
 			type = string.lower( filename[-3:] )
 		file = _open_output( filename )
 		device = renderer.ImageRenderer( type, width, height, file )
-		self.page_compose( device )
-		device.delete()
+		try:
+			self.page_compose( device )
+		finally:
+			device.delete()
 		_close_output( file )
 
 	save_as_eps = write_eps
@@ -2170,9 +2178,11 @@ class _PlotContainer( _ConfAttributes ):
 	def draw_piddle( self, canvastype=None, size=(500,500) ):
 		from device.piddle import PiddleRenderer
 		device = PiddleRenderer( canvastype, size )
-		self.page_compose( device )
-		canvas = device.canvas
-		device.delete()
+		try:
+			self.page_compose( device )
+			canvas = device.canvas
+		finally:
+			device.delete()
 		return canvas
 
 	def write_back_png( self, *args ):
@@ -2196,9 +2206,11 @@ def multipage( plots, filename, **kw ):
 	opt = copy.copy( config.options("postscript") )
 	opt.update( kw )
 	device = apply( renderer.PSRenderer, (file,), opt )
-	for plot in plots:
-		plot.page_compose( device )
-	device.delete()
+	try:
+		for plot in plots:
+			plot.page_compose( device )
+	finally:
+		device.delete()
 	_close_output( file )
 
 # -----------------------------------------------------------------------------
