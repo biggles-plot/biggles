@@ -2588,12 +2588,11 @@ class FramedArray( _PlotContainer ):
 		self.ncols = ncols
 		self.row_fractions = None
 		self.col_fractions = None
-		self.show_panel = {}
 		self.content = {}
 		for i in range(nrows):
 			for j in range(ncols):
 				self.content[i,j] = Plot()
-				self.show_panel[i,j] = True
+				self[i,j].visible=True
 		apply( self.conf_setattr, ("FramedArray",), kw )
 
 	_attr_distribute = [
@@ -2635,13 +2634,13 @@ class FramedArray( _PlotContainer ):
 	def _limits_nonuniform( self, i, j ):
 		lx = None
 		for k in range(self.nrows):
-			if self.show_panel[k,j]:
+			if self[k,j].visible:
 				l = self.content[k,j].limits()
 				lx = _range_union( l.xrange(), lx )
 
 		ly = None
 		for k in range(self.ncols):
-			if self.show_panel[i,k]:
+			if self[i,k].visible:
 				l = self.content[i,k].limits()
 				ly = _range_union( l.yrange(), ly )
 
@@ -2691,7 +2690,7 @@ class FramedArray( _PlotContainer ):
 		g = self._grid( interior )
 
 		for key,obj in self.content.items():
-			if self.show_panel[key]:
+			if self[key].visible:
 				subregion = apply( g.cell, key )
 				limits = apply( self._limits, key )
 				axislabels = [0,0,0,0]
@@ -2721,7 +2720,7 @@ class FramedArray( _PlotContainer ):
 		g = self._grid( interior )
 
 		for key,obj in self.content.items():
-			if self.show_panel[key]:
+			if self[key].visible:
 				subregion = apply( g.cell, key )
 				limits = apply( self._limits, key )
 				obj.compose_interior( device, subregion, limits )
