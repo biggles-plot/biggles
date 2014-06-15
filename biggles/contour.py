@@ -1,6 +1,8 @@
 #
 # $Id: contour.py,v 1.23 2008/01/29 04:08:31 mrnolta Exp $
 #
+# vim: set noexpandtab :
+#
 # Copyright (C) 2001 Mike Nolta <mike@nolta.net>
 #
 # This program is free software; you can redistribute it and/or
@@ -48,11 +50,10 @@ def _unzip( line ):
 	return x, y
 
 class Contour( _LineComponent ):
-    """
-    Object representing a contour
-
-    TODO document args
-    """
+	"""
+	Object representing a contour
+	TODO document args
+	"""
 	def __init__( self, x, y, z, z0, **kw ):
 		_LineComponent.__init__( self )
 		self.kw_init( kw )
@@ -145,14 +146,14 @@ class Contours( _PlotComponent ):
 
 	parameters
 	----------
-    z: 2d array
+	z: 2d array
 		The image or density grid.
-    x: array, optional
-        x values along the column direction
-    y: array, optional
-        y values along the row direction
-    zrange: optional
-        ?? what is this?
+	x: array, optional
+		x values along the column direction
+	y: array, optional
+		y values along the row direction
+	zrange: optional
+		?? what is this?
 
 	**keywords
 		Style and other keywords for the Contours.
