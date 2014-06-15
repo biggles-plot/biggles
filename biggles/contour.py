@@ -157,10 +157,6 @@ class Contours( _PlotComponent ):
 
 	**keywords
 		Style and other keywords for the Contours.
-
-		Currently all keywords are passed on to set the global Contours
-		configuration.  Be aware, some keywords will change the behavior of
-		all Contours objects.
 		
 		See the configuration options for Contours for details (TODO copy
 		into here)
