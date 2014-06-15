@@ -48,7 +48,11 @@ def _unzip( line ):
 	return x, y
 
 class Contour( _LineComponent ):
+    """
+    Object representing a contour
 
+    TODO document args
+    """
 	def __init__( self, x, y, z, z0, **kw ):
 		_LineComponent.__init__( self )
 		self.kw_init( kw )
