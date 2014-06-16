@@ -237,9 +237,6 @@ class _ConfAttributes:
 		**keywords:
 			The keyword/value pairs to set.
 				self.key=val
-
-			If section is in the global config, then global configuration is
-			affected.
 		"""
 		import copy, string
 		sec = config.options( section )
@@ -803,10 +800,6 @@ class Histogram( _LineComponent ):
 	
 	**keywords
 		Style and other keywords for the histogram.
-
-		Currently all keywords are passed on to set the global Histogram
-		configuration.  Be aware, some keywords will change the behavior of
-		all Histogram objects.
 		
 		See the configuration options for Histogram for details (TODO copy
 		into here)
@@ -1030,10 +1023,6 @@ class Points( _SymbolDataComponent ):
 	
 	**keywords
 		Style and other keywords for the Points.
-
-		Currently all keywords are passed on to set the global Points
-		configuration.  Be aware, some keywords will change the behavior of
-		all Points objects.
 		
 		See the configuration options for Points for details (TODO copy
 		into here)
@@ -1084,10 +1073,6 @@ class ColoredPoints( _SymbolDataComponent ):
 
 	**keywords
 		Style and other keywords for the Points.
-
-		Currently all keywords are passed on to set the global Points
-		configuration.  Be aware, some keywords will change the behavior of
-		all Points objects.
 		
 		See the configuration options for Points for details (TODO copy
 		into here)
@@ -1142,10 +1127,6 @@ class Density( _PlotComponent ):
 
 	**keywords
 		Style and other keywords for the Density.
-
-		Currently all keywords are passed on to set the global Density
-		configuration.  Be aware, some keywords will change the behavior of
-		all Density objects.
 		
 		See the configuration options for Density for details (TODO copy
 		into here)
@@ -2033,8 +2014,6 @@ class _PlotContainer( _ConfAttributes ):
 	parameters
 	----------
 	**keywords: optional keywords
-		Careful, these could set the global configuration
-		for _PlotContainer
 	"""
 	def __init__( self, **kw ):
 		apply( self.conf_setattr, ("_PlotContainer",), kw )
@@ -2130,8 +2109,10 @@ class _PlotContainer( _ConfAttributes ):
 		persistent = config.interactive() and \
 			config.bool('screen','persistent')
 		device = renderer.ScreenRenderer( persistent, width, height )
-		self.page_compose( device )
-		device.delete()
+		try:
+			self.page_compose( device )
+		finally:
+			device.delete()
 
 	def show_win( self, width, height ):
 		"""
@@ -2159,8 +2140,10 @@ class _PlotContainer( _ConfAttributes ):
 		_message( 'printing plot with "%s"' % printcmd )
 		printer = os.popen( printcmd, 'w' )
 		device = apply( renderer.PSRenderer, (printer,), opt )
-		self.page_compose( device )
-		device.delete()
+		try:
+			self.page_compose( device )
+		finally:
+			device.delete()
 		printer.close()
 
 	def write_eps( self, filename, **kw ):
@@ -2168,8 +2151,10 @@ class _PlotContainer( _ConfAttributes ):
 		opt.update( kw )
 		file = _open_output( filename )
 		device = apply( renderer.PSRenderer, (file,), opt )
-		self.page_compose( device )
-		device.delete()
+		try:
+			self.page_compose( device )
+		finally:
+			device.delete()
 		_close_output( file )
 
 	def write_img( self, *args ):
@@ -2181,8 +2166,10 @@ class _PlotContainer( _ConfAttributes ):
 			type = string.lower( filename[-3:] )
 		file = _open_output( filename )
 		device = renderer.ImageRenderer( type, width, height, file )
-		self.page_compose( device )
-		device.delete()
+		try:
+			self.page_compose( device )
+		finally:
+			device.delete()
 		_close_output( file )
 
 	save_as_eps = write_eps
@@ -2191,9 +2178,11 @@ class _PlotContainer( _ConfAttributes ):
 	def draw_piddle( self, canvastype=None, size=(500,500) ):
 		from device.piddle import PiddleRenderer
 		device = PiddleRenderer( canvastype, size )
-		self.page_compose( device )
-		canvas = device.canvas
-		device.delete()
+		try:
+			self.page_compose( device )
+			canvas = device.canvas
+		finally:
+			device.delete()
 		return canvas
 
 	def write_back_png( self, *args ):
@@ -2217,9 +2206,11 @@ def multipage( plots, filename, **kw ):
 	opt = copy.copy( config.options("postscript") )
 	opt.update( kw )
 	device = apply( renderer.PSRenderer, (file,), opt )
-	for plot in plots:
-		plot.page_compose( device )
-	device.delete()
+	try:
+		for plot in plots:
+			plot.page_compose( device )
+	finally:
+		device.delete()
 	_close_output( file )
 
 # -----------------------------------------------------------------------------
@@ -2300,10 +2291,6 @@ class FramedPlot( _PlotContainer ):
 	parameters
 	----------
 	**keywords
-		Currently all keywords are passed on to set the global FramedPlot
-		configuration.  Be aware, these keywords will change the behavior of
-		all FramedPlot objects.
-		
 		See the configuration options for FramedPlot for details (TODO copy
 		into here)
 	"""
@@ -2488,10 +2475,6 @@ class Table( _PlotContainer ):
 		Number of columns of plots
 	
 	keywords:
-		Currently all keywords are passed on to set the global Table
-		configuration.  Be aware, some keywords will change the behavior of
-		all Table objects.
-		
 		See the configuration options for Table for details (TODO copy
 		into here)
 	"""
@@ -2575,10 +2558,6 @@ class FramedArray( _PlotContainer ):
 		Number of columns of plots
 	
 	keywords:
-		Currently all keywords are passed on to set the global FramedArray
-		configuration.  Be aware, these keywords will change the behavior of
-		all FramedArray objects.
-		
 		See the configuration options for FramedArray for details (TODO copy
 		into here)
 	"""
