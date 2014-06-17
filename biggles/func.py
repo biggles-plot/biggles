@@ -27,26 +27,26 @@ import itertools,operator,copy
 def plot(xin, yin, visible=True, plt=None, **kw):
 	"""
 	Name:
-	plot
+	    plot
 	Purpose:
-	A wrapper to perform a quick scatter plot with biggles.  For anything
-	more complex, it is better to use the object oriented interface.
+	    A wrapper to perform a quick scatter plot with biggles.  For anything
+	    more complex, it is better to use the object oriented interface.
 	
 	Calling Sequence:
-	plot(x, y, 
-             xerr=None, 
-             yerr=None,
-             xrange=None,
-             yrange=None,
-             symboltype=None,
-             symbolcolor=None,
-             linecolor=None,
-             linetype='Solid'
-             xlabel=None, 
-             ylabel=None, 
-             title=None,
-             visible=True
-             plt=None)
+	    plot(x, y, 
+                 xerr=None, 
+                 yerr=None,
+                 xrange=None,
+                 yrange=None,
+                 symboltype=None,
+                 symbolcolor=None,
+                 linecolor=None,
+                 linetype='Solid'
+                 xlabel=None, 
+                 ylabel=None, 
+                 title=None,
+                 visible=True
+                 plt=None)
 	
 	Return value is the used biggles plot object.
 	
