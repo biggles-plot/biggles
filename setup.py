@@ -194,4 +194,3 @@ setup(
         data_files      = [ ("biggles", ["biggles/config.ini"]) ]
 )
 
-# vim: sts=8 sw=8 noexpandtab
