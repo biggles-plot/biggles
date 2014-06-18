@@ -8,8 +8,8 @@ import numpy
 from biggles.matlab import *
 
 def press_return():
-	print "[press return]"
-	sys.stdin.readline()
+    print "[press return]"
+    sys.stdin.readline()
 
 x = numpy.arange(-10,10);
 y = x**2;

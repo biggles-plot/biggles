@@ -4,7 +4,7 @@ import sys
 sys.path.insert(1,'..')
 
 import biggles
-import math, numpy 
+import math, numpy
 
 x = numpy.arange( 0, 2*math.pi, math.pi/20 )
 s = numpy.sin(x)
