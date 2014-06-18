@@ -121,7 +121,6 @@ SymbolKey = _deprecated( OldKey, "SymbolKey", "PlotKey" )
 # XXX:deprecated 1.5
 CustomFramedPlot = _deprecated( \
         OldCustomFramedPlot, "CustomFramedPlot", "FramedPlot", 0 )
-readcolumn = _deprecated( read_column, "readcolumn", "read_column", 0 )
 
 try:
     del _biggles
