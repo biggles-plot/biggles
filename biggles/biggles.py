@@ -1,8 +1,6 @@
 #
 # $Id: biggles.py,v 1.235 2008/11/28 00:38:20 mrnolta Exp $
 #
-# vim: set noexpandtab :
-#
 # Copyright (C) 2000-2008 Mike Nolta <mike@nolta.net>
 #
 # This program is free software; you can redistribute it and/or
