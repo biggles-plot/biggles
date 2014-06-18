@@ -29,13 +29,13 @@ _config.deprecated( ('screen','guess_interactive'), ('screen','persistent') )
 
 # XXX:deprecated 1.5
 _config.deprecated( \
-	('HammerAitoffPlot','num_b_ribs'), ('HammerAitoffPlot','ribs_b') )
+        ('HammerAitoffPlot','num_b_ribs'), ('HammerAitoffPlot','ribs_b') )
 _config.deprecated( \
-	('HammerAitoffPlot','num_l_ribs'), ('HammerAitoffPlot','ribs_l') )
+        ('HammerAitoffPlot','num_l_ribs'), ('HammerAitoffPlot','ribs_l') )
 _config.deprecated( \
-	("readcolumn","use_numeric"), ("read_column","return_numpy") )
+        ("readcolumn","use_numeric"), ("read_column","return_numpy") )
 _config.deprecated( \
-	("readcolumn","comment_char"), ("read_column","comment_char") )
+        ("readcolumn","comment_char"), ("read_column","comment_char") )
 
 # XXX:deprecated 1.6.4
 _config.deprecated( ('printer','paper'), ('postscript','paper') )
@@ -45,33 +45,32 @@ SITECONFIGFILE = os.path.join( os.path.dirname(__file__), "config.ini" )
 _config.read( SITECONFIGFILE )
 
 if os.environ.has_key( "HOME" ):
-	USERCONFIGFILE = os.path.join( os.environ["HOME"], ".biggles" )
-	_config.read( USERCONFIGFILE )
+    USERCONFIGFILE = os.path.join( os.environ["HOME"], ".biggles" )
+    _config.read( USERCONFIGFILE )
 
 def interactive():
-	return hasattr( sys, "ps1" )
+    return hasattr( sys, "ps1" )
 
 def bool( section, option ):
-	global _config
-	try:
-		x = _config.get( section, option, "no" )
-		if x[0] == 'y':
-			return 1
-	except:
-		return 0
+    global _config
+    try:
+        x = _config.get( section, option, "no" )
+        if x[0] == 'y':
+            return 1
+    except:
+        return 0
 
 def value( section, option, notfound=None ):
-	global _config
-	return _config.get( section, option, notfound )
+    global _config
+    return _config.get( section, option, notfound )
 
 def options( section ):
-	global _config
-	return _config.get_section( section )
+    global _config
+    return _config.get_section( section )
 
 def configure( *args ):
-	global _config
-	if len(args) == 2:
-		_config.set( "default", args[0], args[1] )
-	elif len(args) == 3:
-		_config.set( args[0], args[1], args[2] )
-
+    global _config
+    if len(args) == 2:
+        _config.set( "default", args[0], args[1] )
+    elif len(args) == 3:
+        _config.set( args[0], args[1], args[2] )
