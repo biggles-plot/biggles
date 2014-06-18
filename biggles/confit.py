@@ -42,7 +42,7 @@ def _atox( x ):
         return style
     return x
 
-class Confit:
+class Confit(object):
 
     default_sect = "default"
 
