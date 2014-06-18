@@ -22,66 +22,63 @@
 __version__ = '1.6.7'
 
 from biggles import              \
-        Circle                  ,\
-        Circles                 ,\
-        ColoredPoint            ,\
-        ColoredPoints           ,\
-        Curve                   ,\
-        DataArc                 ,\
-        DataBox                 ,\
-        DataInset               ,\
-        DataLabel               ,\
-        DataLine                ,\
-        Density                 ,\
-        Ellipse                 ,\
-        Ellipses                ,\
-        ErrorBarsX              ,\
-        ErrorBarsY              ,\
-        FillAbove               ,\
-        FillBelow               ,\
-        FillBetween             ,\
-        FramedArray             ,\
-        FramedPlot              ,\
-        Geodesic                ,\
-        Histogram               ,\
-        Labels                  ,\
-        LineX                   ,\
-        LineY                   ,\
-        LowerLimits             ,\
-        OldCustomFramedPlot     ,\
-        OldKey                  ,\
-        Plot                    ,\
-        PlotArc                 ,\
-        PlotBox                 ,\
-        PlotInset               ,\
-        PlotKey                 ,\
-        PlotLabel               ,\
-        PlotLine                ,\
-        Point                   ,\
-        Points                  ,\
-        Slope                   ,\
-        SymmetricErrorBarsX     ,\
-        SymmetricErrorBarsY     ,\
-        Table                   ,\
-        Text                    ,\
-        UpperLimits             ,\
-        multipage
+    Circle                  ,\
+    Circles                 ,\
+    ColoredPoint            ,\
+    ColoredPoints           ,\
+    Curve                   ,\
+    DataArc                 ,\
+    DataBox                 ,\
+    DataInset               ,\
+    DataLabel               ,\
+    DataLine                ,\
+    Density                 ,\
+    Ellipse                 ,\
+    Ellipses                ,\
+    ErrorBarsX              ,\
+    ErrorBarsY              ,\
+    FillAbove               ,\
+    FillBelow               ,\
+    FillBetween             ,\
+    FramedArray             ,\
+    FramedPlot              ,\
+    Geodesic                ,\
+    Histogram               ,\
+    Labels                  ,\
+    LineX                   ,\
+    LineY                   ,\
+    LowerLimits             ,\
+    OldCustomFramedPlot     ,\
+    OldKey                  ,\
+    Plot                    ,\
+    PlotArc                 ,\
+    PlotBox                 ,\
+    PlotInset               ,\
+    PlotKey                 ,\
+    PlotLabel               ,\
+    PlotLine                ,\
+    Point                   ,\
+    Points                  ,\
+    Slope                   ,\
+    SymmetricErrorBarsX     ,\
+    SymmetricErrorBarsY     ,\
+    Table                   ,\
+    Text                    ,\
+    UpperLimits             ,\
+    multipage
 
 from config import               \
-        configure
+    configure
 
 from contour import              \
-        Contour                 ,\
-        Contours
+    Contour                 ,\
+    Contours
 
 from func import                 \
-        plot                    ,\
-        read_column             ,\
-        read_matrix             ,\
-        read_rows
+    plot
 
 from hammer import               \
-        HammerAitoffPlot
+    HammerAitoffPlot
 
 # aliases
 Arc = DataArc
