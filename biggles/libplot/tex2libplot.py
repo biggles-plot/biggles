@@ -26,7 +26,7 @@
 
 import re, string
 
-class TeXLexer:
+class TeXLexer(object):
 
     re_control_sequence = re.compile( r"^\\[a-zA-Z]+[ ]?|^\\[^a-zA-Z][ ]?" )
 
