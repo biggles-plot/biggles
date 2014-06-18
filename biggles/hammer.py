@@ -35,7 +35,7 @@ from biggles import \
 from geometry import *
 import _biggles
 
-class _HammerAitoffGeometry:
+class _HammerAitoffGeometry(object):
 
     def __init__( self, dest, l0=0., b0=0, rot=0. ):
         self.src_bbox = BoundingBox( (-1.,-.5), (1.,.5) )
@@ -68,7 +68,7 @@ class _HammerAitoffGeometry:
         segs.append( (l[i0:],b[i0:]) )
         return segs
 
-class _HammerAitoffContext:
+class _HammerAitoffContext(object):
 
     def __init__( self, device, dev, l0=0., b0=0., rot=0. ):
         self.draw = device
@@ -87,8 +87,10 @@ class HammerAitoffPlot( _PlotContainer ):
     }
 
     def __init__( self, l0=0., b0=0, rot=0., **kw ):
-        apply( _PlotContainer.__init__, (self,) )
-        apply( self.conf_setattr, ("HammerAitoffPlot",), kw )
+        super(HammerAitoffPlot,self).__init__()
+        #apply( _PlotContainer.__init__, (self,) )
+        self.conf_setattr( "HammerAitoffPlot", **kw )
+        #apply( self.conf_setattr, ("HammerAitoffPlot",), kw )
         self.content = _PlotComposite()
         self.l0 = l0
         self.b0 = b0
@@ -106,7 +108,8 @@ class HammerAitoffPlot( _PlotContainer ):
         self.add( other )
 
     def add( self, *args ):
-        apply( self.content.add, args )
+        self.content.add( *args )
+        #apply( self.content.add, args )
 
     def _draw_background( self, context ):
         pc = _PlotComposite()
@@ -114,13 +117,15 @@ class HammerAitoffPlot( _PlotContainer ):
         nl = self.ribs_l
         b = _series( -90/2, 90/2, 2*math.pi/180. )
         for l0 in _series( -nl, nl, math.pi/nl ):
-            c = apply( Curve, ([l0]*len(b), b), self.ribs_style )
+            c = Curve( [l0]*len(b), b, **self.ribs_style )
+            #c = apply( Curve, ([l0]*len(b), b), self.ribs_style )
             pc.add( c )
 
         nb = self.ribs_b
         l = _series( -180/2, 180/2, 2*math.pi/180. )
         for b0 in _series( -nb, nb, 0.5*math.pi/(nb+1) ):
-            c = apply( Curve, (l, [b0]*len(l)), self.ribs_style )
+            c = Curve( l, [b0]*len(l), **self.ribs_style )
+            #c = apply( Curve, (l, [b0]*len(l)), self.ribs_style )
             pc.add( c )
 
         pc.render( context )
