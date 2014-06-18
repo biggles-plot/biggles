@@ -226,7 +226,8 @@ class AffineTransform(object):
 class RectilinearMap( AffineTransform ):
 
     def __init__( self, src, dest ):
-        AffineTransform.__init__( self )
+        super(RectilinearMap,self).__init__()
+        #AffineTransform.__init__( self )
         sx = dest.width() / src.width()
         sy = dest.height() / src.height()
         p, q = dest.lowerleft(), src.lowerleft()
