@@ -26,32 +26,54 @@ import itertools,operator,copy
 
 def plot(xin, yin, visible=True, plt=None, **kw):
     """
-    Name:
-        plot
-    Purpose:
-        A wrapper to perform a quick scatter plot with biggles.  For anything
-        more complex, it is better to use the object oriented interface.
+    A wrapper to perform a quick scatter plot with biggles.
+    
+    For anything more complex, it is better to use the object oriented
+    interface.
 
-    Calling Sequence:
-        plot(x, y,
-             xerr=None,
-             yerr=None,
-             xrange=None,
-             yrange=None,
-             symboltype=None,
-             symbolcolor=None,
-             linecolor=None,
-             linetype='Solid'
-             xlabel=None,
-             ylabel=None,
-             title=None,
-             visible=True
-             plt=None)
+    parameters
+    ----------
+    x, y: sequences or arrays
+        The x,y data to plot
+    yerr: sequence or array
+        Optional error bars in the y direction
+    xerr: sequence or array
+        Optional error bars in the x direction
+    visible: bool
+        If True, show plot on the screen.  Default True
+    plt: biggles plot object
+        If sent, add symbols or lines to this object.
 
-    Return value is the used biggles plot object.
+    **keywords:
+        Keywords for the FramedPlot instance (or whatever is passed though
+        plt=), the Points, and Curve instances.
 
-    For overplotting, send an existing biggles plot object in the plt= keyword
+    Example keywords...
 
+    xrange: 2-element sequence
+        Optional range for x axis
+    yrange: 2-element sequence
+        Optional range for y axis
+    symboltype: string
+        Type for symbols
+    symbolcolor: string
+        Color for symbols
+    linetype: string
+        Type for lines.   Default 'solid'
+    linecolor: string
+        Color for lines
+    xlabel: string
+        Label for x axis.  Tex sequences are allowed, e.g.
+        r'$\sigma$'
+    ylabel: string
+        Label for y axis.
+    title: string
+        Label for top of plot
+
+
+    returned value
+    ---------------
+    The biggles plot object.
     """
     if plt is None:
         plt = biggles.FramedPlot(**kw)
@@ -61,21 +83,21 @@ def plot(xin, yin, visible=True, plt=None, **kw):
                 setattr(plt,key,value)
 
     #deal with log values
-    xlog = kw.get('xlog',0)
-    ylog = kw.get('ylog',0)
+    xlog = kw.get('xlog',False)
+    ylog = kw.get('ylog',False)
 
     xmin = -numpy.inf
-    if xlog == 1:
+    if xlog:
         xmin = 0.0
 
     ymin = -numpy.inf
-    if ylog == 1:
+    if ylog:
         ymin = 0.0
 
     w,=numpy.where( (xin > xmin) & (yin > ymin) )
     if len(w) == 0:
         raise ValueError("no points in range for plot")
-    if xlog == 0 and ylog == 0:
+    if xlog and ylog:
         assert len(w) == len(xin) or len(w) == len(yin)
 
     # by default plot a line, but use a symbol if it is in the keywords
