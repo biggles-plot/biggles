@@ -1,3 +1,38 @@
+1.7.0 (?? ?? ??)
+-------------------
+
+Features
+=========
+
+    - added option to change panel ratios in FramedArray using
+      rowf_ractions and col_fractions keywords
+    - visibility of panels in FramedArray can be controlled
+      with the visibility attribute.  arr[i,j].visible=False
+    - added \odot to latex conversion, for sun symbol
+    - new func.plot function with more functionality.
+    - Major classes and functions documented. This facilitates
+    checking docs from an interactive session, e.g. help() or
+    ? in ipython
+
+Bug Fixes
+=========
+    - fixed bug in axis properties for framed array
+    - fixed bug in how framed array attrs are set 
+    - fixed a bug with defaults for FramedArrays 
+    - added try: finally: blocks around compose operations.  Fixes segfault
+    when an exception is thrown while composing and more plotting is
+    attempted.
+
+Code Style Changes
+==================
+    - converted to new style classes
+    - converted to extended calling syntax
+    - use spaces instead of tabs
+
+Removed Code
+=============
+
+    - removed matlab compatible interface.
 
 1.6.7 (02 May 2012)
 -------------------
