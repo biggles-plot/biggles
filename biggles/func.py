@@ -75,21 +75,21 @@ def plot(xin, yin, visible=True, plt=None, **kw):
                 setattr(plt,key,value)
 
     #deal with log values
-    xlog = kw.get('xlog',0)
-    ylog = kw.get('ylog',0)
+    xlog = kw.get('xlog',False)
+    ylog = kw.get('ylog',False)
 
     xmin = -numpy.inf
-    if xlog == 1:
+    if xlog:
         xmin = 0.0
 
     ymin = -numpy.inf
-    if ylog == 1:
+    if ylog:
         ymin = 0.0
 
     w,=numpy.where( (xin > xmin) & (yin > ymin) )
     if len(w) == 0:
         raise ValueError("no points in range for plot")
-    if xlog == 0 and ylog == 0:
+    if xlog and ylog:
         assert len(w) == len(xin) or len(w) == len(yin)
 
     # by default plot a line, but use a symbol if it is in the keywords
