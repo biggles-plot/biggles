@@ -39,6 +39,17 @@ def plot(xin, yin, visible=True, plt=None, **kw):
         Optional error bars in the y direction
     xerr: sequence or array
         Optional error bars in the x direction
+    visible: bool
+        If True, show plot on the screen.  Default True
+    plt: biggles plot object
+        If sent, add symbols or lines to this object.
+
+    **keywords:
+        Keywords for the FramedPlot instance (or whatever is passed though
+        plt=), the Points, and Curve instances.
+
+    Example keywords...
+
     xrange: 2-element sequence
         Optional range for x axis
     yrange: 2-element sequence
@@ -58,15 +69,7 @@ def plot(xin, yin, visible=True, plt=None, **kw):
         Label for y axis.
     title: string
         Label for top of plot
-    visible: bool
-        If True, show plot on the screen.  Default True
-    plt: biggles plot object
-        If sent, add symbols or lines to this object.
 
-    **keywords:
-        Other keywords for the FramedPlot instance (or
-        whatever is passed though plt=), the Points, 
-        and Curve instances.
 
     returned value
     ---------------
