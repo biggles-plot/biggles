@@ -64,7 +64,7 @@ def pt_max( a, b ):
 
 # BoundingBox -----------------------------------------------------------------
 
-class BoundingBox:
+class BoundingBox(object):
 
     def __init__( self, *args ):
         if len(args) > 0:
@@ -201,7 +201,7 @@ def _matrix_multipy( A, B ):
     C11 = A[1][0] * B[0][1] + A[1][1] * B[1][1]
     return (C00, C01), (C10, C11)
 
-class AffineTransform:
+class AffineTransform(object):
 
     def __init__( self ):
         self.t = 0., 0.
@@ -226,7 +226,8 @@ class AffineTransform:
 class RectilinearMap( AffineTransform ):
 
     def __init__( self, src, dest ):
-        AffineTransform.__init__( self )
+        super(RectilinearMap,self).__init__()
+        #AffineTransform.__init__( self )
         sx = dest.width() / src.width()
         sy = dest.height() / src.height()
         p, q = dest.lowerleft(), src.lowerleft()

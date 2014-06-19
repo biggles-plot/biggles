@@ -173,7 +173,7 @@ class Contours( _PlotComponent ):
     }
 
     def __init__( self, z, x=None, y=None, zrange=None, **kw ):
-        _PlotComponent.__init__( self )
+        super(Contours,self).__init__()
         #apply( self.conf_setattr, ("Contours",), kw )
         self.conf_setattr( "Contours" )
         self.kw_init( kw )
@@ -231,18 +231,22 @@ class Contours( _PlotComponent ):
             z0 = levels[i]
             args = i, nlevels, z0, zr[0], zr[1]
             if colorfunc is not None:
-                color = apply( colorfunc, args )
+                color = colorfunc( *args )
+                #color = apply( colorfunc, args )
                 if color is not None:
                     kw["color"] = color
             if linefunc is not None:
-                linetype = apply( linefunc, args )
+                linetype = linefunc( *args )
+                #linetype = apply( linefunc, args )
                 if linetype is not None:
                     kw["linetype"] = linetype
             if widthfunc is not None:
-                linewidth = apply( widthfunc, args )
+                linewidth = widthfunc( *args )
+                #linewidth = apply( widthfunc, args )
                 if linewidth is not None:
                     kw["linewidth"] = linewidth
-            c = apply( Contour, (x, y, z, z0), kw )
+            c = Contour(x, y, z, z0, **kw )
+            #c = apply( Contour, (x, y, z, z0), kw )
             self.add( c )
 
     def make_key( self, bbox ):
@@ -250,4 +254,5 @@ class Contours( _PlotComponent ):
         y = bbox.center()[1]
         p = xr[0], y
         q = xr[1], y
-        return apply( _LineObject, (p,q), self.kw_style )
+        return _LineObject(p,q, **self.kw_style )
+        #return apply( _LineObject, (p,q), self.kw_style )

@@ -59,7 +59,7 @@ def sutherland_hodgman( polygon, dim, boundary, side ):
 
     return out
 
-class RendererState:
+class RendererState(object):
 
     def __init__( self ):
         self.current = {}
@@ -122,7 +122,7 @@ def _set_line_type( pl, type ):
     pl_type = _pl_line_type.get( type, type )
     raw.set_line_type( pl, pl_type )
 
-class LibplotRenderer:
+class LibplotRenderer(object):
 
     def __init__( self, ll, ur, type='X', parameters=None, file=None ):
         self.lowerleft = ll
@@ -132,8 +132,10 @@ class LibplotRenderer:
     def open( self ):
         self.state = RendererState()
         raw.begin_page( self.pl )
-        apply( raw.space, \
-                (self.pl,) + self.lowerleft + self.upperright )
+        args = (self.pl,) + self.lowerleft + self.upperright
+        raw.space( *args )
+        #apply( raw.space, \
+        #        (self.pl,) + self.lowerleft + self.upperright )
         raw.clear( self.pl )
 
     def clear( self ):
@@ -172,7 +174,8 @@ class LibplotRenderer:
         self.state.set( key, value )
         if LibplotRenderer.__pl_style_func.has_key(key):
             method = LibplotRenderer.__pl_style_func[key]
-            apply( method, (self.pl, value) )
+            method(self.pl, value)
+            #apply( method, (self.pl, value) )
 
     def get( self, parameter, notfound=None ):
         return self.state.get( parameter, notfound )

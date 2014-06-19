@@ -55,20 +55,22 @@ def _first_not_none( *args ):
             return arg
     return None
 
-class _Alias:
+class _Alias(object):
 
     def __init__( self, *args ):
         self.__dict__["objs"] = args[:]
 
     def __call__( self, *args, **kw ):
         for obj in self.objs:
-            apply( obj, args, kw )
+            obj( *args, **kw )
+            #apply( obj, args, kw )
 
     def __getattr__( self, name ):
         objs = []
         for obj in self.objs:
             objs.append( getattr(obj, name) )
-        return apply( _Alias, objs )
+        return _Alias( *objs )
+        #return apply( _Alias, objs )
 
     def __setattr__( self, name, value ):
         for obj in self.objs:
@@ -99,7 +101,7 @@ def _fontsize_relative( relsize, bbox, device ):
 
 # _PlotContext -----------------------------------------------------------------
 
-class _PlotGeometry:
+class _PlotGeometry(object):
 
     _logfunc = math.log10
     _logfunc_vec = numpy.log10
@@ -136,7 +138,7 @@ class _PlotGeometry:
     def geodesic( self, x, y, div=1 ):
         return [(x, y)]
 
-class _PlotContext:
+class _PlotContext(object):
 
     def __init__( self, device, dev, data, xlog=0, ylog=0 ):
         self.draw = device
@@ -166,7 +168,7 @@ def _kw_func_relative_width( context, key, value ):
     device_width = _size_relative( value/10., context.dev_bbox )
     context.draw.set( key, device_width )
 
-class _StyleKeywords:
+class _StyleKeywords(object):
 
     kw_style = None
     kw_defaults = {}
@@ -206,7 +208,8 @@ class _StyleKeywords:
             for key, value in self.kw_style.items():
                 if self.kw_func.has_key(key):
                     method = self.kw_func[key]
-                    apply( method, (context,key,value) )
+                    method(context,key,value)
+                    #apply( method, (context,key,value) )
                 else:
                     context.draw.set( key, value )
 
@@ -215,7 +218,7 @@ class _StyleKeywords:
 
 # _ConfAttributes -----------------------------------------------------------
 # this can set global configuration!
-class _ConfAttributes:
+class _ConfAttributes(object):
     """
     A class for setting configuration.
 
@@ -444,7 +447,8 @@ class _PolygonObject( _DeviceObject ):
         self.points = points
 
     def bbox( self, context ):
-        return apply( BoundingBox, self.points )
+        return BoundingBox( *self.points )
+        #return apply( BoundingBox, self.points )
 
     def draw( self, context ):
         context.draw.polygon( self.points )
@@ -521,7 +525,8 @@ class _DensityObject( _DeviceObject ):
         self.extent   = ( (xmin,ymin), (xmax,ymax) )
 
     def bbox( self, context ):
-        return apply( BoundingBox, self.extent )
+        return BoundingBox( *self.extent )
+        #return apply( BoundingBox, self.extent )
 
     def draw( self, context ):
         #from numpy import rank
@@ -559,7 +564,8 @@ class _CombObject( _DeviceObject ):
         self.dp = dp
 
     def bbox( self, context ):
-        return apply( BoundingBox, self.points )
+        return BoundingBox( *self.points )
+        #return apply( BoundingBox, self.points )
 
     def draw( self, context ):
         for p in self.points:
@@ -657,15 +663,19 @@ class _LabelComponent( _PlotComponent ):
 class DataLabel( _LabelComponent ):
 
     def make( self, context ):
-        pos = apply( context.geom, self.pos )
-        t = apply( _TextObject, (pos, self.str), self.kw_style )
+        pos = context.geom( *self.pos )
+        #pos = apply( context.geom, self.pos )
+        t = _TextObject(pos, self.str, **self.kw_style )
+        #t = apply( _TextObject, (pos, self.str), self.kw_style )
         self.add( t )
 
 class PlotLabel( _LabelComponent ):
 
     def make( self, context ):
-        pos = apply( context.plot_geom, self.pos )
-        t = apply( _TextObject, (pos, self.str), self.kw_style )
+        pos = context.plot_geom( *self.pos )
+        #pos = apply( context.plot_geom, self.pos )
+        t = _TextObject(pos, self.str, **self.kw_style )
+        #t = apply( _TextObject, (pos, self.str), self.kw_style )
         self.add( t )
 
 # _LabelsComponent ------------------------------------------------------------
@@ -701,7 +711,8 @@ class Labels( _LabelsComponent ):
 
     def make( self, context ):
         x, y = context.geom.call_vec( self.x, self.y )
-        l = apply( _LabelsObject, (zip(x,y), self.labels), self.kw_style )
+        l = _LabelsObject(zip(x,y), self.labels, **self.kw_style )
+        #l = apply( _LabelsObject, (zip(x,y), self.labels), self.kw_style )
         self.add( l )
 
 # _LineComponent --------------------------------------------------------------
@@ -723,7 +734,8 @@ class _LineComponent( _PlotComponent ):
         y = bbox.center()[1]
         p = xr[0], y
         q = xr[1], y
-        return apply( _LineObject, (p,q), self.kw_style )
+        return _LineObject( p,q, **self.kw_style )
+        #return apply( _LineObject, (p,q), self.kw_style )
 
 class Curve( _LineComponent ):
 
@@ -758,8 +770,10 @@ class DataLine( _LineComponent ):
         return BoundingBox( self.p, self.q )
 
     def make( self, context ):
-        a = apply( context.geom, self.p )
-        b = apply( context.geom, self.q )
+        a = context.geom( *self.p )
+        b = context.geom( *self.q )
+        #a = apply( context.geom, self.p )
+        #b = apply( context.geom, self.q )
         self.add( _LineObject(a, b) )
 
 class Geodesic( _LineComponent ):
@@ -852,8 +866,10 @@ class LineX( _LineComponent ):
         yrange = context.data_bbox.yrange()
         p = self.x, yrange[0]
         q = self.x, yrange[1]
-        a = apply( context.geom, p )
-        b = apply( context.geom, q )
+        a = context.geom( *p )
+        b = context.geom( *q )
+        #a = apply( context.geom, p )
+        #b = apply( context.geom, q )
         self.add( _LineObject(a, b) )
 
 class LineY( _LineComponent ):
@@ -871,8 +887,10 @@ class LineY( _LineComponent ):
         xrange = context.data_bbox.xrange()
         p = xrange[0], self.y
         q = xrange[1], self.y
-        a = apply( context.geom, p )
-        b = apply( context.geom, q )
+        a = context.geom( *p )
+        b = context.geom( *q )
+        #a = apply( context.geom, p )
+        #b = apply( context.geom, q )
         self.add( _LineObject(a, b) )
 
 class PlotLine( _LineComponent ):
@@ -885,8 +903,10 @@ class PlotLine( _LineComponent ):
         self.q = q
 
     def make( self, context ):
-        a = apply( context.plot_geom, self.p )
-        b = apply( context.plot_geom, self.q )
+        a = context.plot_geom( *self.p )
+        b = context.plot_geom( *self.q )
+        #a = apply( context.plot_geom, self.p )
+        #b = apply( context.plot_geom, self.q )
         self.add( _LineObject(a, b) )
 
 class Slope( _LineComponent ):
@@ -922,8 +942,10 @@ class Slope( _LineComponent ):
         m = filter( context.data_bbox.contains, l )
         m.sort()
         if len(m) > 1:
-            a = apply( context.geom, m[0] )
-            b = apply( context.geom, m[-1] )
+            a = context.geom( *m[0] )
+            b = context.geom( *m[-1] )
+            #a = apply( context.geom, m[0] )
+            #b = apply( context.geom, m[-1] )
             self.add( _LineObject(a, b) )
 
 class DataBox( _LineComponent ):
@@ -939,8 +961,10 @@ class DataBox( _LineComponent ):
         return BoundingBox( self.p, self.q )
 
     def make( self, context ):
-        a = apply( context.geom, self.p )
-        b = apply( context.geom, self.q )
+        a = context.geom( *self.p )
+        b = context.geom( *self.q )
+        #a = apply( context.geom, self.p )
+        #b = apply( context.geom, self.q )
         self.add( _BoxObject(a, b) )
 
 class PlotBox( _LineComponent ):
@@ -953,8 +977,10 @@ class PlotBox( _LineComponent ):
         self.q = q
 
     def make( self, context ):
-        a = apply( context.plot_geom, self.p )
-        b = apply( context.plot_geom, self.q )
+        a = context.plot_geom( *self.p )
+        b = context.plot_geom( *self.q )
+        #a = apply( context.plot_geom, self.p )
+        #b = apply( context.plot_geom, self.q )
         self.add( _BoxObject(a, b) )
 
 class PlotArc( _LineComponent ):
@@ -968,9 +994,12 @@ class PlotArc( _LineComponent ):
         self.p1 = p[0] + r*math.cos(a1), p[1] + r*math.sin(a1)
 
     def make( self, context ):
-        pc = apply( context.plot_geom, self.pc )
-        p0 = apply( context.plot_geom, self.p0 )
-        p1 = apply( context.plot_geom, self.p1 )
+        pc = context.plot_geom( *self.pc )
+        p0 = context.plot_geom( *self.p0 )
+        p1 = context.plot_geom( *self.p1 )
+        #pc = apply( context.plot_geom, self.pc )
+        #p0 = apply( context.plot_geom, self.p0 )
+        #p1 = apply( context.plot_geom, self.p1 )
         self.add( _ArcObject(pc, p0, p1) )
 
 class DataArc( _LineComponent ):
@@ -987,9 +1016,12 @@ class DataArc( _LineComponent ):
         return BoundingBox( self.pc, self.p0, self.p1 )
 
     def make( self, context ):
-        pc = apply( context.geom, self.pc )
-        p0 = apply( context.geom, self.p0 )
-        p1 = apply( context.geom, self.p1 )
+        pc = context.geom( *self.pc )
+        p0 = context.geom( *self.p0 )
+        p1 = context.geom( *self.p1 )
+        #pc = apply( context.geom, self.pc )
+        #p0 = apply( context.geom, self.p0 )
+        #p1 = apply( context.geom, self.p1 )
         self.add( _ArcObject(pc, p0, p1) )
 
 # _SymbolDataComponent --------------------------------------------------------
@@ -1003,7 +1035,8 @@ class _SymbolDataComponent( _PlotComponent ):
 
     def make_key( self, bbox ):
         pos = bbox.center()
-        return apply(_SymbolObject, (pos,), self.kw_style)
+        return _SymbolObject( pos, **self.kw_style)
+        #return apply(_SymbolObject, (pos,), self.kw_style)
 
 class Points( _SymbolDataComponent ):
     """
@@ -1054,7 +1087,8 @@ def Point( x, y, **kw ):
     The parameters are the same as for the Points class,
     except x and y are scalars.
     """
-    return apply( Points, ([x],[y]), kw )
+    return Points( [x],[y], **kw )
+    #return apply( Points, ([x],[y]), kw )
 
 class ColoredPoints( _SymbolDataComponent ):
     """
@@ -1106,7 +1140,8 @@ def ColoredPoint( x, y, **kw ):
     except x and y are scalars.
     """
 
-    return apply( ColoredPoints, ([x],[y]), kw )
+    return ColoredPoints( [x],[y], **kw )
+    #return apply( ColoredPoints, ([x],[y]), kw )
 
 # _DensityComponent -----------------------------------------------------------
 
@@ -1143,7 +1178,8 @@ class Density( _PlotComponent ):
         self.extent   = ((xmin,ymin), (xmax,ymax))
 
     def limits( self ):
-        return apply( BoundingBox, self.extent )
+        return BoundingBox( *self.extent )
+        #return apply( BoundingBox, self.extent )
 
     def make( self, context ):
         (x0,y0),(x1,y1) = self.extent
@@ -1162,7 +1198,8 @@ class _FillComponent( _PlotComponent ):
     def make_key( self, bbox ):
         p = bbox.lowerleft()
         q = bbox.upperright()
-        return apply( _BoxObject, (p,q), self.kw_style )
+        return _BoxObject( p,q, **self.kw_style )
+        #return apply( _BoxObject, (p,q), self.kw_style )
 
 class FillAbove( _FillComponent ):
 
@@ -1296,13 +1333,15 @@ def SymmetricErrorBarsX( x, y, err, **kw ):
     import operator
     xlo = map( operator.sub, x, err )
     xhi = map( operator.add, x, err )
-    return apply( ErrorBarsX, (y, xlo, xhi), kw )
+    return ErrorBarsX( y, xlo, xhi, **kw )
+    #return apply( ErrorBarsX, (y, xlo, xhi), kw )
 
 def SymmetricErrorBarsY( x, y, err, **kw ):
     import operator
     ylo = map( operator.sub, y, err )
     yhi = map( operator.add, y, err )
-    return apply( ErrorBarsY, (x, ylo, yhi), kw )
+    return ErrorBarsY( x, ylo, yhi, **kw )
+    #return apply( ErrorBarsY, (x, ylo, yhi), kw )
 
 # Limits ----------------------------------------------------------------------
 
@@ -1416,13 +1455,16 @@ def Ellipse( x, y, rx, ry, angle=None, **kw ):
         args = ([x],[y],[rx],[ry])
     else:
         args = ([x],[y],[rx],[ry],[angle])
-    return apply( Ellipses, args, kw )
+    return Ellipses( *args, **kw )
+    #return apply( Ellipses, args, kw )
 
 def Circles( x, y, r, **kw ):
-    return apply( Ellipses, (x,y,r,r), kw )
+    return Ellipses( x,y,r,r, **kw )
+    #return apply( Ellipses, (x,y,r,r), kw )
 
 def Circle( x, y, r, **kw ):
-    return apply( Circles, ([x],[y],[r]), kw )
+    return Circles( [x],[y],[r], **kw )
+    #return apply( Circles, ([x],[y],[r]), kw )
 
 # _PlotKey --------------------------------------------------------------------
 
@@ -1467,7 +1509,8 @@ class PlotKey( _PlotComponent ):
             except:
                 obj = comp
                 str = getattr( comp, "label", "" )
-            t = apply( _TextObject, (text_pos,str), self.kw_style )
+            t = _TextObject( text_pos,str, **self.kw_style )
+            #t = apply( _TextObject, (text_pos,str), self.kw_style )
             self.add( t, obj.make_key(bbox) )
             text_pos = pt_add( text_pos, dp )
             bbox.shift( dp )
@@ -1475,7 +1518,8 @@ class PlotKey( _PlotComponent ):
 # XXX:deprecated
 def OldKey( x, y, labels, align='left', **kw ):
     kw['texthalign'] = align
-    return apply( PlotKey, (x,y,labels), kw )
+    return PlotKey(x,y,labels, **kw )
+    #return apply( PlotKey, (x,y,labels), kw )
 
 # _HalfAxis -------------------------------------------------------------------
 
@@ -1598,7 +1642,7 @@ def _subticks_log( lim, ticks, num=None ):
     else:
         return _subticks_linear( lim, ticks, num )
 
-class _Group:
+class _Group(object):
 
     def __init__( self, objs ):
         self.objs = objs[:]
@@ -1683,14 +1727,16 @@ class _HalfAxis( _PlotComponent ):
         style = { "halign" : halign, "valign" : valign }
         style.update( self.ticklabels_style )
 
-        l = apply( _LabelsObject, (labelpos, labels), style )
+        l = _LabelsObject( labelpos, labels, **style )
+        #l = apply( _LabelsObject, (labelpos, labels), style )
         self.add( l )
 
     def _make_spine( self, context ):
         a, b = self._range( context )
         p = self._pos( context, a )
         q = self._pos( context, b )
-        self.add( apply(_LineObject, (p, q), self.spine_style) )
+        self.add( _LineObject(p, q, **self.spine_style) )
+        #self.add( apply(_LineObject, (p, q), self.spine_style) )
 
     def _make_ticks( self, context, ticks, size, style ):
         if ticks is None or not len(ticks) > 0:
@@ -1703,7 +1749,8 @@ class _HalfAxis( _PlotComponent ):
         for tick in ticks:
             tickpos.append( self._pos(context, tick) )
 
-        self.add( apply(_CombObject, (tickpos, ticklen), style) )
+        self.add( _CombObject(tickpos, ticklen, **style) )
+        #self.add( apply(_CombObject, (tickpos, ticklen), style) )
 
     def make( self, context ):
         if self.draw_nothing:
@@ -1740,10 +1787,18 @@ class _HalfAxis( _PlotComponent ):
 
         ## has to be made last
         if self.label is not None:
-            self.add( apply(_BoxLabel,
-                    (_Group(self.device_objects),
-                    self.label, self._side(), self.label_offset),\
-                    self.label_style) )
+            tgroup = _Group(self.device_objects)
+            tlab = _BoxLabel(tgroup,
+                             self.label,
+                             self._side(),
+                             self.label_offset,
+                             **self.label_style)
+            self.add( tlab )
+            #self.add( apply(_BoxLabel,
+            #        (_Group(self.device_objects),
+            #        self.label, self._side(), self.label_offset),\
+            #        self.label_style) )
+
 
 class _HalfAxisX( _HalfAxis ):
 
@@ -1796,7 +1851,8 @@ class _HalfAxisX( _HalfAxis ):
         if ticks is None:
             return
         for tick in ticks:
-            self.add( apply(LineX, (tick,), self.grid_style) )
+            self.add( LineX(tick, **self.grid_style) )
+            #self.add( apply(LineX, (tick,), self.grid_style) )
 
 class _HalfAxisY( _HalfAxis ):
 
@@ -1849,7 +1905,8 @@ class _HalfAxisY( _HalfAxis ):
         if ticks is None:
             return
         for tick in ticks:
-            self.add( apply(LineY, (tick,), self.grid_style) )
+            self.add( LineY(tick, **self.grid_style) )
+            #self.add( apply(LineY, (tick,), self.grid_style) )
 
 # _BoxLabel -------------------------------------------------------------------
 
@@ -1885,8 +1942,10 @@ class _BoxLabel( _PlotComponent ):
             p = bb.upperright()
             q = bb.lowerright()
 
-        lt = apply( _LineTextObject, (p, q, self.str, offset), \
-                self.kw_style )
+        lt = _LineTextObject(p, q, self.str, offset,
+                             **self.kw_style )
+        #lt = apply( _LineTextObject, (p, q, self.str, offset), \
+        #        self.kw_style )
         self.add( lt )
 
 # _PlotComposite --------------------------------------------------------------
@@ -1938,7 +1997,8 @@ class _PlotComposite( _StyleKeywords ):
 class Frame( _PlotComposite ):
 
     def __init__( self, labelticks=(0,1,1,0), **kw ):
-        apply( _PlotComposite.__init__, (self,), kw )
+        super(Frame,self).__init__(**kw)
+        #apply( _PlotComposite.__init__, (self,), kw )
         self.dont_clip = 1
 
         self.x2 = _HalfAxisX()
@@ -2014,7 +2074,8 @@ class _PlotContainer( _ConfAttributes ):
     **keywords: optional keywords
     """
     def __init__( self, **kw ):
-        apply( self.conf_setattr, ("_PlotContainer",), kw )
+        self.conf_setattr( "_PlotContainer", **kw )
+        #apply( self.conf_setattr, ("_PlotContainer",), kw )
 
     def empty( self ):
         pass
@@ -2065,7 +2126,8 @@ class _PlotContainer( _ConfAttributes ):
                     self.title_style["fontsize"], interior, device )
             style["texthalign"] = "center"
             style["textvalign"] = "bottom"
-            apply( _draw_text, (device, (x,y), self.title), style )
+            _draw_text(device, (x,y), self.title, **style )
+            #apply( _draw_text, (device, (x,y), self.title), style )
 
     def compose( self, device, region ):
         if self.empty():
@@ -2137,7 +2199,8 @@ class _PlotContainer( _ConfAttributes ):
         opt.update( kw )
         _message( 'printing plot with "%s"' % printcmd )
         printer = os.popen( printcmd, 'w' )
-        device = apply( renderer.PSRenderer, (printer,), opt )
+        device = renderer.PSRenderer(printer, **opt )
+        #device = apply( renderer.PSRenderer, (printer,), opt )
         try:
             self.page_compose( device )
         finally:
@@ -2148,7 +2211,8 @@ class _PlotContainer( _ConfAttributes ):
         opt = copy.copy( config.options("postscript") )
         opt.update( kw )
         file = _open_output( filename )
-        device = apply( renderer.PSRenderer, (file,), opt )
+        device = renderer.PSRenderer( file, **opt )
+        #device = apply( renderer.PSRenderer, (file,), opt )
         try:
             self.page_compose( device )
         finally:
@@ -2203,7 +2267,8 @@ def multipage( plots, filename, **kw ):
     file = _open_output( filename )
     opt = copy.copy( config.options("postscript") )
     opt.update( kw )
-    device = apply( renderer.PSRenderer, (file,), opt )
+    device = renderer.PSRenderer( file, **opt )
+    #device = apply( renderer.PSRenderer, (file,), opt )
     try:
         for plot in plots:
             plot.page_compose( device )
@@ -2252,8 +2317,10 @@ def _limits( content_bbox, gutter, xlog, ylog, xrange, yrange ):
 class Plot( _PlotContainer ):
 
     def __init__( self, **kw ):
-        apply( _PlotContainer.__init__, (self,) )
-        apply( self.conf_setattr, ("Plot",), kw )
+        super(Plot,self).__init__()
+        #apply( _PlotContainer.__init__, (self,) )
+        self.conf_setattr( "Plot", **kw )
+        #apply( self.conf_setattr, ("Plot",), kw )
         self.content = _PlotComposite()
 
     def __iadd__( self, other ):
@@ -2263,7 +2330,8 @@ class Plot( _PlotContainer ):
         return self.content.empty()
 
     def add( self, *args ):
-        apply( self.content.add, args )
+        self.content.add( *args )
+        #apply( self.content.add, args )
 
     def limits( self ):
         return _limits( self.content.limits(), self.gutter, \
@@ -2293,7 +2361,8 @@ class FramedPlot( _PlotContainer ):
             into here)
     """
     def __init__( self, **kw ):
-        apply( _PlotContainer.__init__, (self,) )
+        super(FramedPlot,self).__init__()
+        #apply( _PlotContainer.__init__, (self,) )
         self.content1 = _PlotComposite()
         self.content2 = _PlotComposite()
         self.x1 = _HalfAxisX()
@@ -2309,7 +2378,8 @@ class FramedPlot( _PlotContainer ):
         self.frame2 = _Alias( self.x2, self.y2 )
         self.x = _Alias( self.x1, self.x2 )
         self.y = _Alias( self.y1, self.y2 )
-        apply( self.conf_setattr, ("FramedPlot",), kw )
+        self.conf_setattr( "FramedPlot", **kw )
+        #apply( self.conf_setattr, ("FramedPlot",), kw )
 
     _attr_map = {
             "xlabel"        : ("x1", "label"),
@@ -2349,10 +2419,12 @@ class FramedPlot( _PlotContainer ):
         return self.content1.empty() and self.content2.empty()
 
     def add( self, *args ):
-        apply( self.content1.add, args )
+        self.content1.add( *args )
+        #apply( self.content1.add, args )
 
     def add2( self, *args ):
-        apply( self.content2.add, args )
+        self.content2.add( *args )
+        #apply( self.content2.add, args )
 
     def _xy2log( self ):
         return _first_not_none(self.x2.log, self.x1.log), \
@@ -2412,13 +2484,14 @@ class FramedPlot( _PlotContainer ):
 class OldCustomFramedPlot( FramedPlot ):
 
     def __init__( self, **kw ):
-        apply( FramedPlot.__init__, (self,), kw )
+        super(OldCustomFramedPlot,self).__init__(**kw)
+        #apply( FramedPlot.__init__, (self,), kw )
         self.x = self.x1
         self.y = self.y1
 
 # Table -----------------------------------------------------------------------
 
-class _Grid:
+class _Grid(object):
 
     def __init__( self, nrows, ncols, bbox,
                             cellpadding=0, cellspacing=0,
@@ -2478,8 +2551,10 @@ class Table( _PlotContainer ):
     """
 
     def __init__( self, rows, cols, **kw ):
-        apply( _PlotContainer.__init__, (self,) )
-        apply( self.conf_setattr, ("Table",), kw )
+        super(Table,self).__init__()
+        #apply( _PlotContainer.__init__, (self,) )
+        self.conf_setattr( "Table", **kw )
+        #apply( self.conf_setattr, ("Table",), kw )
         self.rows = rows
         self.cols = cols
         self.content = {}
@@ -2504,7 +2579,8 @@ class Table( _PlotContainer ):
                        self.cellpadding, self.cellspacing)
 
             for key,obj in self.content.items():
-                subregion = apply( g.cell, key )
+                subregion = g.cell( *key )
+                #subregion = apply( g.cell, key )
                 ext.union( obj.exterior(device, subregion) )
         return ext
 
@@ -2515,7 +2591,8 @@ class Table( _PlotContainer ):
                 self.cellpadding, self.cellspacing)
 
         for key,obj in self.content.items():
-            subregion = apply( g.cell, key )
+            subregion = g.cell( *key )
+            #subregion = apply( g.cell, key )
             if self.align_interiors:
                 obj.compose_interior( device, subregion )
             else:
@@ -2560,7 +2637,8 @@ class FramedArray( _PlotContainer ):
             into here)
     """
     def __init__( self, nrows, ncols, **kw ):
-        apply( _PlotContainer.__init__, (self,) )
+        super(FramedArray,self).__init__()
+        #apply( _PlotContainer.__init__, (self,) )
         self.nrows = nrows
         self.ncols = ncols
         self.row_fractions = None
@@ -2570,7 +2648,8 @@ class FramedArray( _PlotContainer ):
             for j in range(ncols):
                 self.content[i,j] = Plot()
                 self[i,j].visible=True
-        apply( self.conf_setattr, ("FramedArray",), kw )
+        self.conf_setattr( "FramedArray", **kw )
+        #apply( self.conf_setattr, ("FramedArray",), kw )
 
     _attr_distribute = [
             'gutter',
@@ -2636,8 +2715,10 @@ class FramedArray( _PlotContainer ):
 
         for key in corners:
             obj = self.content[key]
-            subregion = apply( g.cell, key )
-            limits = apply( self._limits, key )
+            subregion = g.cell( *key )
+            #subregion = apply( g.cell, key )
+            limits = self._limits( *key )
+            #limits = apply( self._limits, key )
             axislabels = [0,0,0,0]
             if key[0] == self.nrows-1:
                 axislabels[1] = 1
@@ -2668,8 +2749,10 @@ class FramedArray( _PlotContainer ):
 
         for key,obj in self.content.items():
             if self[key].visible:
-                subregion = apply( g.cell, key )
-                limits = apply( self._limits, key )
+                subregion = g.cell( *key )
+                #subregion = apply( g.cell, key )
+                limits = self._limits( *key )
+                #limits = apply( self._limits, key )
                 axislabels = [0,0,0,0]
                 if key[0] == self.nrows-1:
                     axislabels[1] = 1
@@ -2687,7 +2770,8 @@ class FramedArray( _PlotContainer ):
                         cnorm = numpy.ones(self.ncols)/self.ncols
                     gs =  _Grid( self.nrows, self.ncols, interior,
                                  cellspacing=self.cellspacing)
-                    subregions = apply( gs.cell, key )
+                    subregions = gs.cell( *key )
+                    #subregions = apply( gs.cell, key )
                     fontsizefac = subregions.width()*subregions.height()/(subregions.width() + subregions.height())
                     fontsizefac /= subregion.width()*subregion.height()/(subregion.width() + subregion.height())
                 _frame_draw( obj, device, subregion, \
@@ -2698,8 +2782,10 @@ class FramedArray( _PlotContainer ):
 
         for key,obj in self.content.items():
             if self[key].visible:
-                subregion = apply( g.cell, key )
-                limits = apply( self._limits, key )
+                subregion = g.cell( *key )
+                #subregion = apply( g.cell, key )
+                limits = self._limits( *key )
+                #limits = apply( self._limits, key )
                 obj.compose_interior( device, subregion, limits )
 
     def _labels_draw( self, device, interior ):
@@ -2727,7 +2813,8 @@ class FramedArray( _PlotContainer ):
 
     def add( self, *args ):
         for obj in self.content.values():
-            apply( obj.add, args )
+            obj.add( *args )
+            #apply( obj.add, args )
 
     def compose_interior( self, device, interior ):
         _PlotContainer.compose_interior( self, device, interior )
@@ -2740,8 +2827,10 @@ class FramedArray( _PlotContainer ):
 class Text( _PlotContainer ):
 
     def __init__( self, text, **kw ):
-        apply( _PlotContainer.__init__, (self,) )
-        apply( self.conf_setattr, ("Text",), kw )
+        super(Text,self).__init__()
+        #apply( _PlotContainer.__init__, (self,) )
+        self.conf_setattr( "Text", **kw )
+        #apply( self.conf_setattr, ("Text",), kw )
         import string
         self.lines = string.split( text, "\n" )
         if self.lines[0] == '':
@@ -2796,7 +2885,7 @@ class Text( _PlotContainer ):
 
 # Inset -----------------------------------------------------------------------
 
-class _Inset:
+class _Inset(object):
 
     def __init__( self, p, q, plot ):
         self.plot_limits = BoundingBox( p, q )
@@ -2809,8 +2898,10 @@ class _Inset:
 class DataInset( _Inset ):
 
     def bbox( self, context ):
-        p = apply( context.geom, self.plot_limits.lowerleft() )
-        q = apply( context.geom, self.plot_limits.upperright() )
+        p = context.geom( *self.plot_limits.lowerleft() )
+        #p = apply( context.geom, self.plot_limits.lowerleft() )
+        q = context.geom( *self.plot_limits.upperright() )
+        #q = apply( context.geom, self.plot_limits.upperright() )
         return BoundingBox( p, q )
 
     def limits( self ):
@@ -2819,8 +2910,10 @@ class DataInset( _Inset ):
 class PlotInset( _Inset ):
 
     def bbox( self, context ):
-        p = apply( context.plot_geom, self.plot_limits.lowerleft() )
-        q = apply( context.plot_geom, self.plot_limits.upperright() )
+        p = context.plot_geom( *self.plot_limits.lowerleft() )
+        #p = apply( context.plot_geom, self.plot_limits.lowerleft() )
+        q = context.plot_geom( *self.plot_limits.upperright() )
+        #q = apply( context.plot_geom, self.plot_limits.upperright() )
         return BoundingBox( p, q )
 
     def limits( self ):
