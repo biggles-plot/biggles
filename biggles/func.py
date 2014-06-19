@@ -63,6 +63,11 @@ def plot(xin, yin, visible=True, plt=None, **kw):
     plt: biggles plot object
         If sent, add symbols or lines to this object.
 
+    **keywords:
+        Other keywords for the FramedPlot instance (or
+        whatever is passed though plt=), the Points, 
+        and Curve instances.
+
     returned value
     ---------------
     The biggles plot object.
