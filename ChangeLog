@@ -16,9 +16,6 @@ Features
 
 Bug Fixes
 =========
-    - fixed bug in axis properties for framed array
-    - fixed bug in how framed array attrs are set 
-    - fixed a bug with defaults for FramedArrays 
     - added try: finally: blocks around compose operations.  Fixes segfault
     when an exception is thrown while composing and more plotting is
     attempted.
@@ -33,6 +30,7 @@ Removed Code
 =============
 
     - removed matlab compatible interface.
+    - removed read_* I/O code from func.py
 
 1.6.7 (02 May 2012)
 -------------------
@@ -228,7 +226,7 @@ Removed Code
 1.2.0 (09 Oct 2000)
 -------------------
 
-* Added distutils setup.py file. [contributed by Berthold Höllmann]
+* Added distutils setup.py file. [contributed by Berthold Hï¿½llmann]
 
 * Added FramedArray container for grouping similar plots.
 
