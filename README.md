@@ -29,9 +29,17 @@ source distribution.
 
 Installation
 ------------
+Biggles requires [numpy](http://www.numpy.org/) and GNU [plotutils](http://www.gnu.org/software/plotutils/).
 
 Macports:
 
     $ sudo port install plotutils +x11
     $ sudo port install py27-biggles
 
+Homebrew:
+
+To install with homebrew, you will need to download the package directly from GitHub. Then follow these steps.
+
+    $ brew install plotutils --with-x11
+    $ cd /path/to/biggles/
+    $ python setup.py install
