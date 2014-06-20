@@ -1,22 +1,14 @@
 #!/usr/bin/env python
-
-import sys
-sys.path.insert(1,'..')
-
 import biggles
 import string
 
-err_msg = """
-This example needs the following data file:
-
-        http://biggles.sourceforge.net/data/continents
-"""
-
-try:
-    m = biggles.read_rows( "continents" )
-except IOError:
-    print err_msg
-    sys.exit(-1)
+m = []
+for line in open('continents.dat','r'):
+    if line[0] == '\n':
+        continue
+    line = line.strip()
+    row = map( float, line.split() )
+    m.append(row)
 
 p = biggles.HammerAitoffPlot()
 p.ribs_l = 2
