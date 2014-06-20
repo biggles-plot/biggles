@@ -24,7 +24,7 @@ Here's a simple biggles script:
     p.show()
 
 This produces an X window with a framed plot of the curve y(x).
-You can find more in the 'examples/' directory included with the
+You can find more in the [examples](https://github.com/nolta/biggles/tree/master/examples) directory included with the
 source distribution.
 
 See the full [documentation](https://github.com/nolta/biggles/wiki) for more details.
