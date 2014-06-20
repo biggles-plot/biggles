@@ -27,6 +27,8 @@ This produces an X window with a framed plot of the curve y(x).
 You can find more in the 'examples/' directory included with the
 source distribution.
 
+See the full [documentation](https://github.com/nolta/biggles/wiki) for more details.
+
 Installation
 ------------
 Biggles requires [numpy](http://www.numpy.org/) and GNU [plotutils](http://www.gnu.org/software/plotutils/).
