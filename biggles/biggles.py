@@ -990,8 +990,8 @@ class PlotArc( _LineComponent ):
         self.conf_setattr( "PlotArc" )
         self.kw_init( kw )
         self.pc = pc
-        self.p0 = p[0] + r*math.cos(a0), p[1] + r*math.sin(a0)
-        self.p1 = p[0] + r*math.cos(a1), p[1] + r*math.sin(a1)
+        self.p0 = pc[0] + r*math.cos(a0), pc[1] + r*math.sin(a0)
+        self.p1 = pc[0] + r*math.cos(a1), pc[1] + r*math.sin(a1)
 
     def make( self, context ):
         pc = context.plot_geom( *self.pc )
@@ -1009,8 +1009,8 @@ class DataArc( _LineComponent ):
         self.conf_setattr( "DataArc" )
         self.kw_init( kw )
         self.pc = pc
-        self.p0 = p[0] + r*math.cos(a0), p[1] + r*math.sin(a0)
-        self.p1 = p[0] + r*math.cos(a1), p[1] + r*math.sin(a1)
+        self.p0 = pc[0] + r*math.cos(a0), pc[1] + r*math.sin(a0)
+        self.p1 = pc[0] + r*math.cos(a1), pc[1] + r*math.sin(a1)
 
     def limits( self ):
         return BoundingBox( self.pc, self.p0, self.p1 )
