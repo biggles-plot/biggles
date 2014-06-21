@@ -5,7 +5,7 @@ Features
 =========
 
     - added option to change panel ratios in FramedArray using
-      rowf_ractions and col_fractions keywords
+      row_fractions and col_fractions keywords
     - visibility of panels in FramedArray can be controlled
       with the visibility attribute.  arr[i,j].visible=False
     - added \odot to latex conversion, for sun symbol
@@ -13,12 +13,14 @@ Features
     - Major classes and functions documented. This facilitates
     checking docs from an interactive session, e.g. help() or
     ? in ipython
+    - new documentation on GitHub wiki
 
 Bug Fixes
 =========
     - added try: finally: blocks around compose operations.  Fixes segfault
     when an exception is thrown while composing and more plotting is
     attempted.
+    - fixed bug in DataArc/PlotArc
 
 Code Style Changes
 ==================
