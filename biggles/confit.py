@@ -26,6 +26,10 @@ def _atox( x ):
     x = strip( x )
     if x == "None":
         return None
+    if x == 'False':
+        return False
+    if x == 'True':
+        return True
     try: return atoi( x, 0 )
     except ValueError:
         try: return float(x)
