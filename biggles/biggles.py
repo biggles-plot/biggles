@@ -106,7 +106,7 @@ class _PlotGeometry(object):
     _logfunc = math.log10
     _logfunc_vec = numpy.log10
 
-    def __init__( self, src, dest, xlog=False, ylog=False ):
+    def __init__( self, src, dest, xlog=0, ylog=0 ):
         self.src_bbox = src
         self.dest_bbox = dest
         self.xlog = xlog
@@ -140,7 +140,7 @@ class _PlotGeometry(object):
 
 class _PlotContext(object):
 
-    def __init__( self, device, dev, data, xlog=False, ylog=False ):
+    def __init__( self, device, dev, data, xlog=0, ylog=0 ):
         self.draw = device
         self.dev_bbox = dev
         self.data_bbox = data
