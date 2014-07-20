@@ -50,18 +50,41 @@ def plot(xin, yin, visible=True, plt=None, **kw):
 
     Example keywords...
 
+    # plot range keywords
     xrange: 2-element sequence
         Optional range for x axis
     yrange: 2-element sequence
         Optional range for y axis
+
+    # marker type keywords can be sent explicitly as symboltype=, linetype=
+    # or shorthand as type=.  If type= is sent, the marker type is
+    # determined by the name (e.g. 'filled circle' implies a symbol
+    # while 'longdashed' implies a line.
+    #
+    # If not type is sent, the overall biggles default is used (currently
+    # open diamond symbol)
+    #
+    # Also if both symboltype= and linetype= are sent, then both will be
+    # plotted
+
+    type: string, optional keyword
+        The marker type.  If one of 
+            ["solid","dotted","dotdashed","shortdashed", "longdashed",
+            "dotdotdashed","dotdotdotdashed"]
+        then a Curve is plotted, else symbols.
+
     symboltype: string
-        Type for symbols
-    symbolcolor: string
-        Color for symbols
+        Explicitly specify a Point is to be plotted, with the
+        indicated type.
     linetype: string
-        Type for lines.   Default 'solid'
-    linecolor: string
-        Color for lines
+        Explicitly specify a Curve is to be plotted, with the
+        indicated type.
+
+    [symbol|line]color: string
+        Color to be used for the marker.  Either the short color=
+        can be used or the more explicity symbolcolor= or linecolor=
+        can be used.
+
     xlabel: string
         Label for x axis.  Tex sequences are allowed, e.g.
         r'$\sigma$'
@@ -70,120 +93,235 @@ def plot(xin, yin, visible=True, plt=None, **kw):
     title: string
         Label for top of plot
 
-
     returned value
     ---------------
     The biggles plot object.
+
+    examples
+    --------
+
+    import biggles
+    biggles.plot(x, y, yerr=yerr, type='filled circle')
     """
-    if plt is None:
-        plt = biggles.FramedPlot(**kw)
-    else:
-        for key,value in kw.items():
-            if hasattr(plt,key):
-                setattr(plt,key,value)
 
-    #deal with log values
-    xlog = kw.get('xlog',False)
-    ylog = kw.get('ylog',False)
+    # deal with log plots and get a subset of points if needed
+    xpts, ypts, xrng, yrng = _get_range_and_subpts(xin, yin, kw)
 
-    xmin = -numpy.inf
-    if xlog:
-        xmin = 0.0
+    # so the type= shorthand can be sent
+    _set_markers_from_shorthand(kw)
 
-    ymin = -numpy.inf
-    if ylog:
-        ymin = 0.0
+    plt=_get_plot_object(plt, kw)
 
-    w,=numpy.where( (xin > xmin) & (yin > ymin) )
-    if len(w) == 0:
-        raise ValueError("no points in range for plot")
-    if xlog and ylog:
-        assert len(w) == len(xin) or len(w) == len(yin)
+    linetype=kw.get('linetype',None)
+    symboltype=kw.get('symboltype',None)
 
-    # by default plot a line, but use a symbol if it is in the keywords
-    if 'symboltype' not in kw.keys() or ('symboltype' in kw.keys() and 'linetype' in kw.keys()):
-        for key, grps in itertools.groupby(enumerate(w), lambda (i,x):i-x):
-            wgrp = map(operator.itemgetter(1), grps)
-            plt.add(biggles.Curve(xin[wgrp], yin[wgrp], **kw))
+    # note we default to symbols if no type is set.  Also if both types are
+    # sent, we plot both
+    if symboltype is not None or (symboltype is None and linetype is None):
+        plt.add(biggles.Points(xpts, ypts, **kw))
 
-    if 'symboltype' in kw.keys():
-        kwsym = copy.copy(kw)
-        if 'linecolor' in kwsym.keys():
-            kwsym.pop('linecolor',None)
-        if 'symbolcolor' in kwsym.keys():
-            kwsym['color'] = kwsym['symbolcolor']
-        plt.add(biggles.Points(xin[w], yin[w], **kwsym))
+    if linetype is not None:
+        plt.add(biggles.Curve(xpts, ypts, **kw))
 
-    #do error bars
-    xerr = kw.get('xerr',None)
-    yerr = kw.get('yerr',None)
-    kwerr = copy.copy(kw)
-    if 'errlinetype' in kw.keys():
-        if 'errlinetype' in kw.keys():
-            kwerr['linetype'] = kwerr['errlinetype']
-        else:
-            kwerr['linetype'] = 'solid'
-    if 'errlinewidth' in kw.keys():
-        kwerr['linewidth'] = kwerr['errlinewidth']
-    if 'errlinecolor' in kw.keys():
-        kwerr['linecolor'] = kwerr['errlinecolor']
-
-    if xerr is not None:
-        low = xin-xerr
-        high = xin+xerr
-        q, = numpy.where( (low[w] > xmin) & (high[w] > xmin) )
-        if len(q) > 0:
-            plt.add(biggles.ErrorBarsX(yin[w[q]], low[w[q]], high[w[q]], **kwerr))
-
-    if yerr is not None:
-        low = yin-yerr
-        high = yin+yerr
-        q, = numpy.where( (low[w] > ymin) & (high[w] > ymin) )
-        if len(q) > 0:
-            plt.add(biggles.ErrorBarsY(xin[w[q]], low[w[q]], high[w[q]], **kwerr))
-
-    #get bounding box for the data as is, and then add in extra error
-    # bars where the point falls of the edge
-    bb = plt._limits1()
-    bbxmin,bbxmax = bb.xrange()
-    bbymin,bbymax = bb.yrange()
-
-    if xerr is not None:
-        low = xin-xerr
-        high = xin+xerr
-        ql, = numpy.where( (yin > ymin) & (high > bbxmin) & (low <= bbxmin) )
-        if len(ql) > 0:
-            low[ql[:]] = bbxmin
-            plt.add(biggles.ErrorBarsX(yin[ql], low[ql], high[ql], **kwerr))
-
-        low = xin-xerr
-        high = xin+xerr
-        qh, = numpy.where( (yin > ymin) & (high >= bbxmax) & (low < bbxmax) )
-        if len(qh) > 0:
-            high[qh[:]] = bbxmax
-            plt.add(biggles.ErrorBarsX(yin[qh], low[qh], high[qh], **kwerr))
-
-        if 'xrange' not in kw.keys() and (len(ql) > 0 or len(qh) > 0):
-            plt.xrange = (bbxmin,bbxmax)
-
-    if yerr is not None:
-        low = yin-yerr
-        high = yin+yerr
-        ql, = numpy.where( (xin > xmin) & (high > bbymin) & (low <= bbymin) )
-        if len(ql) > 0:
-            low[ql[:]] = bbymin
-            plt.add(biggles.ErrorBarsY(xin[ql], low[ql], high[ql], **kwerr))
-
-        low = yin-yerr
-        high = yin+yerr
-        qh, = numpy.where( (xin > xmin) & (high >= bbymax) & (low < bbymax) )
-        if len(qh) > 0:
-            high[qh[:]] = bbymax
-            plt.add(biggles.ErrorBarsY(xin[qh], low[qh], high[qh], **kwerr))
-
-        if 'yrange' not in kw.keys() and (len(ql) > 0 or len(qh) > 0):
-            plt.yrange = (bbymin,bbymax)
+    _add_error_bars(plt, xpts, ypts, xrng, yrng, kw)
 
     if visible:
         plt.show()
+    return plt
+
+def _set_markers_from_shorthand(keys):
+    """
+    set long-form marker type in the case where the shorthand type= is sent
+
+    parameters
+    -----------
+    keys:
+        Keywords to determine the marker type.  If type=
+        is sent, try to figure out the implied marker type
+        and set the full name
+    """
+
+    # shorthand for either symbol or line type
+    type = keys.get('type', None)
+
+    # figure out what marker type we have
+    if type is not None:
+        # figure out the marker type from the marker name
+        if type in ["solid","dotted","dotdashed","shortdashed",
+                    "longdashed","dotdotdashed","dotdotdotdashed"]:
+            keys['linetype']=type
+        else:
+            keys['symboltype']=type
+
+def get_log_plot_range(x, err=None, input_range=None, get_good=False):
+    """
+    Get a plot range in the case of log axes
+    """
+    if input_range is not None:
+        if len(input_range) < 2:
+            raise ValueError("expected [xmin,xmax] for input range")
+        if input_range[0] <= 0. or input_range[1] <= 0.:
+            raise ValueError("cannot use plot range < 0 for log plots, got [%s,%s]" % tuple(input_range))
+        if get_good:
+            w,=numpy.where((x >= input_range[0]) & (x <= input_range[1]))
+            return input_range, w
+        else:
+            return input_range
+
+    w,=numpy.where(x > 0.)
+    if w.size == 0:
+        raise ValueError("No values are greater than zero in log plot")
+
+    minval = min(x[w])
+    if err is not None:
+        w2, = numpy.where( (x[w] - err[w]) > 0 )
+        if w2.size > 0:
+            minval2 =  min(x[w[w2]] - err[w[w2]])
+            minval = min(minval,minval2)
+
+        maxval = max(x+err)
+    else:
+        maxval = max(x)
+
+    minval *= 0.5
+    maxval *= 2
+
+    if get_good:
+        return [minval,maxval], w
+    else:
+        return [minval,maxval]
+
+def add_log_error_bars(plt, axis, x, y, err, prange, **keys):
+    from .biggles import ErrorBarsX, ErrorBarsY
+    if axis == 'x':
+        low = x-err
+        high = x+err
+    else:
+        low = y-err
+        high = y+err
+
+    w,=numpy.where(high > 0)
+    if w.size > 0:
+        high = high[w]
+
+        # outside range to avoid seeing hat
+        low = low[w].clip(0.5*prange[0], 2.0*max(max(high),prange[1]) )
+
+        if axis == 'x':
+            p=biggles.ErrorBarsX(y[w], low, high, **keys)
+        else:
+            p=biggles.ErrorBarsY(x[w], low, high, **keys)
+        plt.add(p)
+
+        return p
+
+def _add_error_bars(plt, x, y, xrng, yrng, keys_in):
+    from .biggles import SymmetricErrorBarsY,SymmetricErrorBarsX
+
+    xerr=keys_in.get('xerr',None)
+    yerr=keys_in.get('yerr',None)
+
+    if xerr is not None or yerr is not None:
+
+        xlog = keys_in.get('xlog',False)
+        ylog = keys_in.get('ylog',False)
+
+        keys = copy.copy(keys_in)
+        if 'errlinetype' in keys:
+            if 'errlinetype' in keys:
+                keys['linetype'] = keys['errlinetype']
+            else:
+                keys['linetype'] = 'solid'
+        if 'errlinewidth' in keys:
+            keys['linewidth'] = keys['errlinewidth']
+        if 'errlinecolor' in keys:
+            keys['linecolor'] = keys['errlinecolor']
+
+        if yerr is not None:
+            if ylog:
+                add_log_error_bars(plt, 'y', x, y, yerr, yrng, **keys)
+            else:
+                p_yerr=SymmetricErrorBarsY(x, y, yerr, **keys)
+                plt.add(p_yerr)
+        if xerr is not None:
+            if xlog:
+                add_log_error_bars(plt, 'y', x, y, xerr, xrng, **keys)
+            else:
+                p_xerr=SymmetricErrorBarsX(x, y, xerr, **keys)
+                plt.add(p_xerr)
+
+
+def _get_range_and_subpts(xin, yin, keys):
+    """
+    keys['xerr'] and 'yerr' could be modified to be 1-d arrays in the range,
+    so make sure keys was already a copy of original keys
+    """
+
+    x, y = _get_pts(xin, yin, keys)
+
+    xerr=keys.get('xerr',None)
+    yerr=keys.get('yerr',None)
+
+    xlog = keys.get('xlog',False)
+    ylog = keys.get('ylog',False)
+
+    xrng = keys.get('xrange',None)
+    yrng = keys.get('yrange',None)
+
+    # For log, Don't plot points less than zero
+    w=None
+    if xlog and ylog:
+        xrng = get_log_plot_range(x, err=xerr, input_range=xrng)
+        yrng = get_log_plot_range(y, err=yerr, input_range=yrng)
+        w,=numpy.where( (x > xrng[0]) & (y > yrng[0]) )
+    elif xlog:
+        xrng = get_log_plot_range(x, err=xerr, input_range=xrng)
+        w,=numpy.where( x > xrng[0])
+    elif ylog:
+        yrng = get_log_plot_range(y, err=yerr, input_range=yrng)
+        w,=numpy.where( y > yrng[0])
+
+    if w is not None:
+        if w.size == 0:
+            raise ValueError("no points > 0 for log plot")
+        x = x[w]
+        y = y[w]
+
+        if xerr is not None:
+            xerr=xerr[w]
+        if yerr is not None:
+            yerr=yerr[w]
+
+    keys['xerr']=xerr
+    keys['yerr']=yerr
+
+    return x, y, xrng, yrng
+
+def _get_pts(xin, yin, keys):
+    """
+    xerr and yerr keys may be modified so make sure keys is
+    already a copy of original dict
+    """
+    xpts=numpy.array(xin, ndmin=1, copy=False)
+    ypts=numpy.array(yin, ndmin=1, copy=False)
+    xerr = keys.get('xerr',None)
+    yerr = keys.get('yerr',None)
+    if xerr is not None:
+        xerr=numpy.array(xerr, ndmin=1, copy=False)
+
+        keys['xerr']=xerr
+    if yerr is not None:
+        yerr=numpy.array(yerr, ndmin=1, copy=False)
+        keys['yerr']=yerr
+
+    return xpts, ypts
+
+def _get_plot_object(plt, keys):
+    if plt is None:
+        plt = biggles.FramedPlot(**keys)
+    else:
+        for key,value in keys.iteritems():
+            if hasattr(plt,key):
+                setattr(plt,key,value)
+
     return plt
