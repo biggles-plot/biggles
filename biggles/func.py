@@ -33,7 +33,7 @@ def plot(xin, yin, visible=True, plt=None, **kw):
 
     parameters
     ----------
-    x, y: sequences or arrays
+    x, y: scalars, sequences or arrays
         The x,y data to plot
     yerr: sequence or array
         Optional error bars in the y direction
