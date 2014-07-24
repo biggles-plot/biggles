@@ -75,8 +75,7 @@ from contour import              \
     Contours
 
 from func import                 \
-    plot                        ,\
-    ScatterPlot
+    plot
 
 from hammer import               \
     HammerAitoffPlot
