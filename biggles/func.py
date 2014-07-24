@@ -67,9 +67,6 @@ def plot(xin, yin, visible=True, plt=None, **kw):
     # determined by the name (e.g. 'filled circle' implies a symbol
     # while 'longdashed' implies a line.
     #
-    # If not type is sent, the overall biggles default is used (currently
-    # open diamond symbol)
-    #
     # Also if both symboltype= and linetype= are sent, then both will be
     # plotted
 
@@ -154,9 +151,6 @@ class ScatterPlot(dict):
     # or shorthand as type=.  If type= is sent, the marker type is
     # determined by the name (e.g. 'filled circle' implies a symbol
     # while 'longdashed' implies a line.
-    #
-    # If not type is sent, the overall biggles default is used (currently
-    # open diamond symbol)
     #
     # Also if both symboltype= and linetype= are sent, then both will be
     # plotted
