@@ -1673,6 +1673,26 @@ def Circle( x, y, r, **kw ):
 # _PlotKey --------------------------------------------------------------------
 
 class PlotKey( _PlotComponent ):
+    """
+    An object representing a Plot Key.  Can be added to plot objects.
+
+    parameters
+    ----------
+    x: scalar
+        x location of the key
+    y: scalar
+        y location of the key
+    components: sequence
+        A sequence of the components to be labeled. They should have label
+        attributes.  E.g. Points, Curves, etc.
+
+    **keywords
+            Style and other keywords.
+
+            See the configuration options for curve for details (TODO copy
+            into here)
+    """
+
 
     kw_rename = {
             'face'          : 'fontface',
