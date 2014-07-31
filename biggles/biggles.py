@@ -749,9 +749,9 @@ class Curve( _LineComponent ):
             The "y" values of each point, to be connected by lines..
 
     **keywords
-            Style and other keywords for the Points.
+            Style and other keywords for the Curve.
 
-            See the configuration options for Points for details (TODO copy
+            See the configuration options for Curve for details (TODO copy
             into here)
     """
 
@@ -773,6 +773,37 @@ class Curve( _LineComponent ):
         for seg in segs:
             x, y = context.geom.call_vec( seg[0], seg[1] )
             self.add( _PathObject(x, y) )
+
+def BoxCurve(corner1, corner2, **keys):
+    """
+    Get a Curve representing a box.  Can be added to plot containers.
+
+    parameters
+    ----------
+    corner1: 2-element sequence
+        First corner of the box [x1,y1].
+    corner2: 2-element sequence
+        Second corner of the box [x2,y2].
+
+    **keywords
+            Style and other keywords for the Curve.
+
+            See the configuration options for Curve for details (TODO copy
+            into here)
+    """
+    if len(corner1) != 2 or len(corner2) != 2:
+        raise ValueError("corners must be 2-element sequences")
+
+    x0 = corner1[0]
+    y0 = corner1[1]
+    x1 = corner2[0]
+    y1 = corner2[1]
+    bx = numpy.array( [x0,x0,x1,x1,x0], dtype='f8' )
+    by = numpy.array( [y0,y1,y1,y0,y0], dtype='f8' )
+
+    return Curve(bx, by, **keys)
+
+
 
 class DataLine( _LineComponent ):
 

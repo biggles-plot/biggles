@@ -22,6 +22,7 @@
 __version__ = '1.6.7'
 
 from biggles import              \
+    BoxCurve                ,\
     Circle                  ,\
     Circles                 ,\
     ColoredPoint            ,\
