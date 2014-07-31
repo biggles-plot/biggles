@@ -828,11 +828,15 @@ class Histogram( _LineComponent ):
             The binsize for the histogram. the plotted
             x values will start at x0 with spacing binsize.
 
-    **keywords
-            Style and other keywords for the histogram.
+    Style and other keywords for the histogram.
+    These can also be set as attributes
 
-            See the configuration options for Histogram for details (TODO copy
-            into here)
+    [line]color, [line]type, [line]width:
+        style for line
+
+    drop_to_zero: bool
+        If true, draw down to zero always. Default True.  Useful
+        to set False for log plots.
     """
     def __init__( self, values, x0=0, binsize=1, **kw ):
         _LineComponent.__init__( self )

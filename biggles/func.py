@@ -179,7 +179,6 @@ def plot_hist(a, plt=None, visible=True,
                                   min=min, max=max, weights=weights,
                                   density=density, norm=norm)
 
-    hmax=harray.max()
     hshow=harray
 
     pltsent = (plt is not None)
@@ -193,7 +192,7 @@ def plot_hist(a, plt=None, visible=True,
         hshow=harray.clip(min=keys['yrange'][0], max=None)
     else:
         if yrng is None and not pltsent:
-            keys['yrange']=[0, 1.1*hmax]
+            keys['yrange']=[0, 1.1*hshow.max()]
 
     if plt is None:
         plt = biggles.FramedPlot(**keys)
