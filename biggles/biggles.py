@@ -1310,6 +1310,29 @@ class _ErrorBar( _PlotComponent ):
         self.conf_setattr( "_ErrorBar" )
 
 class ErrorBarsX( _ErrorBar ):
+    """
+    An object representing Error bars in the X direction.
+    
+    Can be added to plot containers.
+
+    parameters
+    ----------
+    x: array or sequence
+        The "x" values of each point.
+    y: array or sequence
+        The "y" values of each point.
+    low: array or sequence
+        The left end of the error bar
+    high: array or sequence
+        The right end of the error bar
+
+    **keywords
+            Style and other keywords for the Curve.
+
+            See the configuration options for Curve for details (TODO copy
+            into here)
+    """
+
 
     def __init__( self, y, lo, hi, **kw ):
         _ErrorBar.__init__( self )
@@ -1335,6 +1358,29 @@ class ErrorBarsX( _ErrorBar ):
             self.add( l0, l1, l2 )
 
 class ErrorBarsY( _ErrorBar ):
+    """
+    An object representing Error bars in the Y direction.
+    
+    Can be added to plot containers.
+
+    parameters
+    ----------
+    x: array or sequence
+        The "x" values of each point.
+    y: array or sequence
+        The "y" values of each point.
+    low: array or sequence
+        The lower end of the error bar
+    high: array or sequence
+        The upper end of the error bar
+
+    **keywords
+            Style and other keywords for the Curve.
+
+            See the configuration options for Curve for details (TODO copy
+            into here)
+    """
+
 
     def __init__( self, x, lo, hi, **kw ):
         _ErrorBar.__init__( self )
@@ -1360,6 +1406,28 @@ class ErrorBarsY( _ErrorBar ):
             self.add( l0, l1, l2 )
 
 def SymmetricErrorBarsX( x, y, err, **kw ):
+    """
+    get an object representing Symmetric Error bars in the X direction.
+    
+    Can be added to plot containers.
+
+    parameters
+    ----------
+    x: array or sequence
+        The "x" values of each point.
+    y: array or sequence
+        The "y" values of each point.
+    err: array or sequence
+        The size of the error bars.
+
+    **keywords
+            Style and other keywords for the Curve.
+
+            See the configuration options for Curve for details (TODO copy
+            into here)
+    """
+
+
     import operator
     xlo = map( operator.sub, x, err )
     xhi = map( operator.add, x, err )
@@ -1367,6 +1435,28 @@ def SymmetricErrorBarsX( x, y, err, **kw ):
     #return apply( ErrorBarsX, (y, xlo, xhi), kw )
 
 def SymmetricErrorBarsY( x, y, err, **kw ):
+    """
+    get an object representing Symmetric Error bars in the Y direction.
+    
+    Can be added to plot containers.
+
+    parameters
+    ----------
+    x: array or sequence
+        The "x" values of each point.
+    y: array or sequence
+        The "y" values of each point.
+    err: array or sequence
+        The size of the error bars.
+
+    **keywords
+            Style and other keywords for the Curve.
+
+            See the configuration options for Curve for details (TODO copy
+            into here)
+    """
+
+
     import operator
     ylo = map( operator.sub, y, err )
     yhi = map( operator.add, y, err )
