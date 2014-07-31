@@ -1438,6 +1438,29 @@ class LowerLimits( _ErrorLimit ):
 # Ellipses --------------------------------------------------------------------
 
 class Ellipses( _PlotComponent ):
+    """
+    Get curves representing a ellipses.  Can be added to plot containers.
+
+    parameters
+    ----------
+    x: sequence
+        x center of ellipses
+    y: sequence
+        y center of ellipses
+    rx: sequence
+        size in the x direction of ellipses
+    ry: sequence
+        size in the y direction of ellipses
+    angle: sequence
+        angle for ellipses
+
+    **keywords
+            Style and other keywords for the curves.
+
+            See the configuration options for curve for details (TODO copy
+            into here)
+    """
+
 
     kw_rename = {
             'color' : 'linecolor',
@@ -1481,6 +1504,30 @@ class Ellipses( _PlotComponent ):
             self.add( e )
 
 def Ellipse( x, y, rx, ry, angle=None, **kw ):
+    """
+    Get a curve representing an ellipse.  Can be added to plot containers.
+
+    parameters
+    ----------
+    x: scalar
+        x center of ellipse
+    y: scalar
+        y center of ellipse
+    rx: scalar
+        size in the x direction
+    ry: scalar
+        size in the y direction
+    angle: scalar
+        angle for ellipse
+
+    **keywords
+            Style and other keywords for the curve.
+
+            See the configuration options for curve for details (TODO copy
+            into here)
+    """
+
+
     if angle is None:
         args = ([x],[y],[rx],[ry])
     else:
@@ -1489,12 +1536,49 @@ def Ellipse( x, y, rx, ry, angle=None, **kw ):
     #return apply( Ellipses, args, kw )
 
 def Circles( x, y, r, **kw ):
+    """
+    Get curves representing circles.  Can be added to plot containers.
+
+    parameters
+    ----------
+    x: sequence
+        x center of circles
+    y: sequence
+        y center of circles
+    r: sequence
+        radii of circles
+
+    **keywords
+            Style and other keywords for the curve.
+
+            See the configuration options for curve for details (TODO copy
+            into here)
+    """
+
     return Ellipses( x,y,r,r, **kw )
     #return apply( Ellipses, (x,y,r,r), kw )
 
 def Circle( x, y, r, **kw ):
+    """
+    Get a curve representing a circle.  Can be added to plot containers.
+
+    parameters
+    ----------
+    x: scalar
+        x center of circle
+    y: scalar
+        y center of circle
+    r: scalar
+        radius of circle 
+
+    **keywords
+            Style and other keywords for the curve.
+
+            See the configuration options for curve for details (TODO copy
+            into here)
+    """
+
     return Circles( [x],[y],[r], **kw )
-    #return apply( Circles, ([x],[y],[r]), kw )
 
 # _PlotKey --------------------------------------------------------------------
 
