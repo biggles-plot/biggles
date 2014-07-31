@@ -324,8 +324,8 @@ class ScatterPlot(dict):
         """
         add the actual markers, including error bars
         """
-        linetype=self['linetype']
-        symboltype=self['symboltype']
+        linetype=self.get('linetype',None)
+        symboltype=self.get('symboltype',None)
 
         # note we default to symbols if no type is set.  Also if both types are
         # sent, we plot both
