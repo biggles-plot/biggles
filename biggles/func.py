@@ -509,9 +509,7 @@ class ScatterPlot(dict):
         self._add_error_bars()
 
     def _add_symbols(self):
-        symboltype=self['symboltype']
-        if symboltype is None:
-            self['symboltype']=DEFAULT_SYMBOL
+        self['symboltype']=self.get('symboltype', DEFAULT_SYMBOL)
 
         indices=self.indices
         if indices is None:
