@@ -116,6 +116,180 @@ def plot(xin, yin, visible=True, plt=None, **kw):
 
     return plt
 
+def plot_hist(a, plt=None, visible=True,
+              nbin=10, binsize=None,
+              min=None, max=None, weights=None,
+              density=False, norm=None,
+              **keys_in):
+    """
+    bin the data and make a plot of the histogram.
+
+    parameters
+    ----------
+    a: array or sequence
+        The data 
+    nbin: scalar
+        Number of bins to use.
+    binsize: scalar
+        Binsize for histogram. This takes precedence over the nbin=
+        keyword if given
+    min: scalar
+        Minimum value to use, default a.min()
+    max: scalar
+        Maximum value to use, default a.max()
+    weights: array or sequence
+        Weights for each point
+
+    density: bool
+        If False, the result will contain the number of samples
+        in each bin.  If True, the result is the value of the
+        probability *density* function at the bin, normalized such that
+        the *integral* over the range is 1. Note that the sum of the
+        histogram values will not be equal to 1 unless bins of unity
+        width are chosen; it is not a probability *mass* function.
+
+    norm: scalar
+        The requested normalization of the data, such that the integral of the
+        data equals norm.  This implies density=True, and the result is simply
+        multiplied by norm
+
+    visible: bool
+        If True, show plot on the screen.  Default True
+    plt: biggles plot object
+        If sent, add the histogram this object.
+    get_hdata: bool
+        if True, returns
+            plot_object, bin_edges, hist_array
+    **keys:
+        keywords for the Histogram object and plot object
+
+    returns
+    -------
+    The plot object.
+
+    If get_hdata=True, returns
+        plot_object, bin_edges, hist_array
+    """
+
+    keys={}
+    keys.update(keys_in)
+
+    bin_edges, harray = make_hist(a,
+                                  nbin=nbin, binsize=binsize,
+                                  min=min, max=max, weights=weights,
+                                  density=density, norm=norm)
+
+    hmax=harray.max()
+    hshow=harray
+
+    pltsent = (plt is not None)
+
+    ylog=keys.get('ylog',False)
+    yrng=keys.get('yrange',None)
+    if ylog:
+        keys['yrange']=get_log_plot_range(harray, input_range=yrng)
+        print 'yrange:',keys['yrange']
+
+        # prevent zeros in log plot
+        hshow=harray.clip(min=keys['yrange'][0], max=None)
+        print 'hshow range:',hshow.min(), hshow.max()
+    else:
+        if yrng is None and not pltsent:
+            keys['yrange']=[0, 1.1*hmax]
+
+    if plt is None:
+        plt = biggles.FramedPlot(**keys)
+    else:
+        for key,value in keys.iteritems():
+            if hasattr(plt,key):
+                setattr(plt,key,value)
+
+    bsize = bin_edges[1]-bin_edges[0]
+    hist_obj = biggles.Histogram(hshow,
+                                 x0=bin_edges[0],
+                                 binsize=bsize,
+                                 **keys)
+    if ylog:
+        hist_obj.drop_to_zero=False
+
+    plt.add(hist_obj)
+    if visible:
+        plt.show()
+
+    get_hdata=keys.get('get_hdata',False)
+    if get_hdata:
+        return plt, bin_edges, harray
+    else:
+        return plt
+
+def make_hist(a, nbin=10, binsize=None,
+              min=None, max=None, weights=None,
+              density=False, norm=None):
+    """
+    bin the data and return the bin edges and histogram
+
+    parameters
+    ----------
+    a: array or sequence
+        The data 
+    nbin: scalar
+        Number of bins to use.
+    binsize: scalar
+        Binsize for histogram. This takes precedence over the nbin=
+        keyword if given
+    min: scalar
+        Minimum value to use, default a.min()
+    max: scalar
+        Maximum value to use, default a.max()
+    weights: array or sequence
+        Weights for each point
+
+    density: bool
+        If False, the result will contain the number of samples
+        in each bin.  If True, the result is the value of the
+        probability *density* function at the bin, normalized such that
+        the *integral* over the range is 1. Note that the sum of the
+        histogram values will not be equal to 1 unless bins of unity
+        width are chosen; it is not a probability *mass* function.
+
+    norm: scalar
+        The requested normalization of the data, such that the integral
+        of the data equals norm.  This implies density, and the result
+        is simply multiplied by norm
+
+    returns
+    -------
+    bin_edges, hist_array
+        where bin_edges are the bin edge definitions and
+        hist_array is the actual histogram object
+    """
+
+    if min is None:
+        min=a.min()
+    if max is None:
+        max=a.max()
+
+    range=[min, max]
+
+    if norm is not None:
+        density=True
+
+    # binsize takes precedence over bins
+    if binsize is not None:
+        nbin = numpy.int64( (max-min)/numpy.float64(binsize) ) + 1
+    else:
+        if nbin < 1:
+            raise ValueError("nbin must be >= 1")
+
+    harray, bin_edges=numpy.histogram(a, bins=nbin, range=range,
+                                      weights=weights, density=density)
+
+    if norm is not None:
+        harray *= float(norm)
+
+    return bin_edges, harray
+
+
 class ScatterPlot(dict):
     """
     Wrapper class to create a scatter plot
@@ -308,7 +482,6 @@ class ScatterPlot(dict):
             for key,value in keys.iteritems():
                 if hasattr(plt,key):
                     setattr(plt,key,value)
-            plt=plt
 
         xrng=self.xrng
         yrng=self.yrng
