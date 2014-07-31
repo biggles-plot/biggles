@@ -738,6 +738,23 @@ class _LineComponent( _PlotComponent ):
         #return apply( _LineObject, (p,q), self.kw_style )
 
 class Curve( _LineComponent ):
+    """
+    An object representing a curve.  Can be added to plot containers.
+
+    parameters
+    ----------
+    x: array or sequence
+            The "x" values of each point, to be connected by lines.
+    y: array or sequence
+            The "y" values of each point, to be connected by lines..
+
+    **keywords
+            Style and other keywords for the Points.
+
+            See the configuration options for Points for details (TODO copy
+            into here)
+    """
+
 
     def __init__( self, x, y, **kw ):
         _LineComponent.__init__( self )
@@ -1048,9 +1065,6 @@ class Points( _SymbolDataComponent ):
             The "x" values of each point.
     y: array or sequence
             The "y" values of each point.
-    binsize: keyword, optional
-            The binsize for the histogram. the plotted
-            x values will start at x0 with spacing binsize.
 
     **keywords
             Style and other keywords for the Points.
