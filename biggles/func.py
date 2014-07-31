@@ -188,11 +188,9 @@ def plot_hist(a, plt=None, visible=True,
     yrng=keys.get('yrange',None)
     if ylog:
         keys['yrange']=get_log_plot_range(harray, input_range=yrng)
-        print 'yrange:',keys['yrange']
 
         # prevent zeros in log plot
         hshow=harray.clip(min=keys['yrange'][0], max=None)
-        print 'hshow range:',hshow.min(), hshow.max()
     else:
         if yrng is None and not pltsent:
             keys['yrange']=[0, 1.1*hmax]
