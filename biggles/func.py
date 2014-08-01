@@ -375,8 +375,8 @@ class ScatterPlot(dict):
         """
         make sure the points are arrays of the same size
         """
-        self.x=numpy.array(xin, ndmin=1, copy=False)
-        self.y=numpy.array(yin, ndmin=1, copy=False)
+        self.x=numpy.array(xin, dtype='f8', ndmin=1, copy=False)
+        self.y=numpy.array(yin, dtype='f8', ndmin=1, copy=False)
 
         if self.x.size != self.y.size:
             raise ValueError("x and y are different "
@@ -385,13 +385,13 @@ class ScatterPlot(dict):
         xerr = self.get('xerr',None)
         yerr = self.get('yerr',None)
         if xerr is not None:
-            xerr=numpy.array(xerr, ndmin=1, copy=False)
+            xerr=numpy.array(xerr, dtype='f8', ndmin=1, copy=False)
             if xerr.size != self.x.size:
                 raise ValueError("xerr and points are different "
                                  "size: %s %s" % (xerr.size, self.y.size))
 
         if yerr is not None:
-            yerr=numpy.array(yerr, ndmin=1, copy=False)
+            yerr=numpy.array(yerr, dtype='f8', ndmin=1, copy=False)
             if yerr.size != self.x.size:
                 raise ValueError("yerr and points are different "
                                  "size: %s %s" % (yerr.size, self.y.size))
