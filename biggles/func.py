@@ -142,7 +142,6 @@ def plot_hist(a, plt=None, visible=True,
 
     norm: scalar
         Normalize the histogram such that the integral equals the input norm.
-        data equals norm.
 
     visible: bool
         If True, show plot on the screen.  Default True
@@ -165,7 +164,7 @@ def plot_hist(a, plt=None, visible=True,
     keys={}
     keys.update(keys_in)
 
-    bin_edges, harray = make_hist(a,
+    harray, bin_edges = make_hist(a,
                                   nbin=nbin, binsize=binsize,
                                   min=min, max=max, weights=weights,
                                   norm=norm)
@@ -234,13 +233,14 @@ def make_hist(a, nbin=10, binsize=None,
 
     norm: scalar
         Normalize the histogram such that the integral equals the input norm.
-        data equals norm.
 
     returns
     -------
-    bin_edges, hist_array
+    hist_array, bin_edges
         where bin_edges are the bin edge definitions and
         hist_array is the actual histogram object
+
+        Same format as the numpy.histogram function
     """
 
     if min is None:
@@ -257,7 +257,7 @@ def make_hist(a, nbin=10, binsize=None,
 
     # binsize takes precedence over bins
     if binsize is not None:
-        nbin = numpy.int64( (max-min)/numpy.float64(binsize) ) + 1
+        nbin = numpy.int64( (max-min)/numpy.float64(binsize) )
     else:
         if nbin < 1:
             raise ValueError("nbin must be >= 1")
@@ -268,7 +268,7 @@ def make_hist(a, nbin=10, binsize=None,
     if norm is not None:
         harray *= float(norm)
 
-    return bin_edges, harray
+    return harray, bin_edges
 
 
 class ScatterPlot(dict):
@@ -375,8 +375,8 @@ class ScatterPlot(dict):
         """
         make sure the points are arrays of the same size
         """
-        self.x=numpy.array(xin, ndmin=1, copy=False)
-        self.y=numpy.array(yin, ndmin=1, copy=False)
+        self.x=numpy.array(xin, dtype='f8', ndmin=1, copy=False)
+        self.y=numpy.array(yin, dtype='f8', ndmin=1, copy=False)
 
         if self.x.size != self.y.size:
             raise ValueError("x and y are different "
@@ -385,13 +385,13 @@ class ScatterPlot(dict):
         xerr = self.get('xerr',None)
         yerr = self.get('yerr',None)
         if xerr is not None:
-            xerr=numpy.array(xerr, ndmin=1, copy=False)
+            xerr=numpy.array(xerr, dtype='f8', ndmin=1, copy=False)
             if xerr.size != self.x.size:
                 raise ValueError("xerr and points are different "
                                  "size: %s %s" % (xerr.size, self.y.size))
 
         if yerr is not None:
-            yerr=numpy.array(yerr, ndmin=1, copy=False)
+            yerr=numpy.array(yerr, dtype='f8', ndmin=1, copy=False)
             if yerr.size != self.x.size:
                 raise ValueError("yerr and points are different "
                                  "size: %s %s" % (yerr.size, self.y.size))
