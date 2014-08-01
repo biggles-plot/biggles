@@ -74,8 +74,10 @@ from contour import              \
     Contour                 ,\
     Contours
 
-from func import                 \
-    plot
+from func import             \
+    plot                    ,\
+    make_hist               ,\
+    plot_hist
 
 from hammer import               \
     HammerAitoffPlot

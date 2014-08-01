@@ -738,6 +738,23 @@ class _LineComponent( _PlotComponent ):
         #return apply( _LineObject, (p,q), self.kw_style )
 
 class Curve( _LineComponent ):
+    """
+    An object representing a curve.  Can be added to plot containers.
+
+    parameters
+    ----------
+    x: array or sequence
+            The "x" values of each point, to be connected by lines.
+    y: array or sequence
+            The "y" values of each point, to be connected by lines..
+
+    **keywords
+            Style and other keywords for the Curve.
+
+            See the configuration options for Curve for details (TODO copy
+            into here)
+    """
+
 
     def __init__( self, x, y, **kw ):
         _LineComponent.__init__( self )
@@ -756,6 +773,7 @@ class Curve( _LineComponent ):
         for seg in segs:
             x, y = context.geom.call_vec( seg[0], seg[1] )
             self.add( _PathObject(x, y) )
+
 
 class DataLine( _LineComponent ):
 
@@ -810,11 +828,15 @@ class Histogram( _LineComponent ):
             The binsize for the histogram. the plotted
             x values will start at x0 with spacing binsize.
 
-    **keywords
-            Style and other keywords for the histogram.
+    Style and other keywords for the histogram.
+    These can also be set as attributes
 
-            See the configuration options for Histogram for details (TODO copy
-            into here)
+    [line]color, [line]type, [line]width:
+        style for line
+
+    drop_to_zero: bool
+        If true, draw down to zero always. Default True.  Useful
+        to set False for log plots.
     """
     def __init__( self, values, x0=0, binsize=1, **kw ):
         _LineComponent.__init__( self )
@@ -949,7 +971,22 @@ class Slope( _LineComponent ):
             self.add( _LineObject(a, b) )
 
 class DataBox( _LineComponent ):
+    """
+    Get a curve representing a box.  Can be added to plot containers.
 
+    parameters
+    ----------
+    corner1: 2-element sequence
+        First corner of the box [x1,y1].
+    corner2: 2-element sequence
+        Second corner of the box [x2,y2].
+
+    **keywords
+            Style and other keywords for the Curve.
+
+            See the configuration options for Curve for details (TODO copy
+            into here)
+    """
     def __init__( self, p, q, **kw ):
         _LineComponent.__init__( self )
         self.conf_setattr( "DataBox" )
@@ -1048,9 +1085,6 @@ class Points( _SymbolDataComponent ):
             The "x" values of each point.
     y: array or sequence
             The "y" values of each point.
-    binsize: keyword, optional
-            The binsize for the histogram. the plotted
-            x values will start at x0 with spacing binsize.
 
     **keywords
             Style and other keywords for the Points.
@@ -1280,6 +1314,29 @@ class _ErrorBar( _PlotComponent ):
         self.conf_setattr( "_ErrorBar" )
 
 class ErrorBarsX( _ErrorBar ):
+    """
+    An object representing Error bars in the X direction.
+    
+    Can be added to plot containers.
+
+    parameters
+    ----------
+    x: array or sequence
+        The "x" values of each point.
+    y: array or sequence
+        The "y" values of each point.
+    low: array or sequence
+        The left end of the error bar
+    high: array or sequence
+        The right end of the error bar
+
+    **keywords
+            Style and other keywords for the Curve.
+
+            See the configuration options for Curve for details (TODO copy
+            into here)
+    """
+
 
     def __init__( self, y, lo, hi, **kw ):
         _ErrorBar.__init__( self )
@@ -1305,6 +1362,29 @@ class ErrorBarsX( _ErrorBar ):
             self.add( l0, l1, l2 )
 
 class ErrorBarsY( _ErrorBar ):
+    """
+    An object representing Error bars in the Y direction.
+    
+    Can be added to plot containers.
+
+    parameters
+    ----------
+    x: array or sequence
+        The "x" values of each point.
+    y: array or sequence
+        The "y" values of each point.
+    low: array or sequence
+        The lower end of the error bar
+    high: array or sequence
+        The upper end of the error bar
+
+    **keywords
+            Style and other keywords for the Curve.
+
+            See the configuration options for Curve for details (TODO copy
+            into here)
+    """
+
 
     def __init__( self, x, lo, hi, **kw ):
         _ErrorBar.__init__( self )
@@ -1330,6 +1410,28 @@ class ErrorBarsY( _ErrorBar ):
             self.add( l0, l1, l2 )
 
 def SymmetricErrorBarsX( x, y, err, **kw ):
+    """
+    get an object representing Symmetric Error bars in the X direction.
+    
+    Can be added to plot containers.
+
+    parameters
+    ----------
+    x: array or sequence
+        The "x" values of each point.
+    y: array or sequence
+        The "y" values of each point.
+    err: array or sequence
+        The size of the error bars.
+
+    **keywords
+            Style and other keywords for the Curve.
+
+            See the configuration options for Curve for details (TODO copy
+            into here)
+    """
+
+
     import operator
     xlo = map( operator.sub, x, err )
     xhi = map( operator.add, x, err )
@@ -1337,6 +1439,28 @@ def SymmetricErrorBarsX( x, y, err, **kw ):
     #return apply( ErrorBarsX, (y, xlo, xhi), kw )
 
 def SymmetricErrorBarsY( x, y, err, **kw ):
+    """
+    get an object representing Symmetric Error bars in the Y direction.
+    
+    Can be added to plot containers.
+
+    parameters
+    ----------
+    x: array or sequence
+        The "x" values of each point.
+    y: array or sequence
+        The "y" values of each point.
+    err: array or sequence
+        The size of the error bars.
+
+    **keywords
+            Style and other keywords for the Curve.
+
+            See the configuration options for Curve for details (TODO copy
+            into here)
+    """
+
+
     import operator
     ylo = map( operator.sub, y, err )
     yhi = map( operator.add, y, err )
@@ -1408,6 +1532,29 @@ class LowerLimits( _ErrorLimit ):
 # Ellipses --------------------------------------------------------------------
 
 class Ellipses( _PlotComponent ):
+    """
+    Get curves representing a ellipses.  Can be added to plot containers.
+
+    parameters
+    ----------
+    x: sequence
+        x center of ellipses
+    y: sequence
+        y center of ellipses
+    rx: sequence
+        size in the x direction of ellipses
+    ry: sequence
+        size in the y direction of ellipses
+    angle: sequence
+        angle for ellipses
+
+    **keywords
+            Style and other keywords for the curves.
+
+            See the configuration options for curve for details (TODO copy
+            into here)
+    """
+
 
     kw_rename = {
             'color' : 'linecolor',
@@ -1451,6 +1598,30 @@ class Ellipses( _PlotComponent ):
             self.add( e )
 
 def Ellipse( x, y, rx, ry, angle=None, **kw ):
+    """
+    Get a curve representing an ellipse.  Can be added to plot containers.
+
+    parameters
+    ----------
+    x: scalar
+        x center of ellipse
+    y: scalar
+        y center of ellipse
+    rx: scalar
+        size in the x direction
+    ry: scalar
+        size in the y direction
+    angle: scalar
+        angle for ellipse
+
+    **keywords
+            Style and other keywords for the curve.
+
+            See the configuration options for curve for details (TODO copy
+            into here)
+    """
+
+
     if angle is None:
         args = ([x],[y],[rx],[ry])
     else:
@@ -1459,16 +1630,73 @@ def Ellipse( x, y, rx, ry, angle=None, **kw ):
     #return apply( Ellipses, args, kw )
 
 def Circles( x, y, r, **kw ):
+    """
+    Get curves representing circles.  Can be added to plot containers.
+
+    parameters
+    ----------
+    x: sequence
+        x center of circles
+    y: sequence
+        y center of circles
+    r: sequence
+        radii of circles
+
+    **keywords
+            Style and other keywords for the curve.
+
+            See the configuration options for curve for details (TODO copy
+            into here)
+    """
+
     return Ellipses( x,y,r,r, **kw )
     #return apply( Ellipses, (x,y,r,r), kw )
 
 def Circle( x, y, r, **kw ):
+    """
+    Get a curve representing a circle.  Can be added to plot containers.
+
+    parameters
+    ----------
+    x: scalar
+        x center of circle
+    y: scalar
+        y center of circle
+    r: scalar
+        radius of circle 
+
+    **keywords
+            Style and other keywords for the curve.
+
+            See the configuration options for curve for details (TODO copy
+            into here)
+    """
+
     return Circles( [x],[y],[r], **kw )
-    #return apply( Circles, ([x],[y],[r]), kw )
 
 # _PlotKey --------------------------------------------------------------------
 
 class PlotKey( _PlotComponent ):
+    """
+    An object representing a Plot Key.  Can be added to plot objects.
+
+    parameters
+    ----------
+    x: scalar
+        x location of the key
+    y: scalar
+        y location of the key
+    components: sequence
+        A sequence of the components to be labeled. They should have label
+        attributes.  E.g. Points, Curves, etc.
+
+    **keywords
+            Style and other keywords.
+
+            See the configuration options for curve for details (TODO copy
+            into here)
+    """
+
 
     kw_rename = {
             'face'          : 'fontface',

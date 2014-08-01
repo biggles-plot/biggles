@@ -116,6 +116,161 @@ def plot(xin, yin, visible=True, plt=None, **kw):
 
     return plt
 
+def plot_hist(a, plt=None, visible=True,
+              nbin=10, binsize=None,
+              min=None, max=None, weights=None,
+              norm=None,
+              **keys_in):
+    """
+    bin the data and make a plot of the histogram.
+
+    parameters
+    ----------
+    a: array or sequence
+        The data 
+    nbin: scalar
+        Number of bins to use.
+    binsize: scalar
+        Binsize for histogram. This takes precedence over the nbin=
+        keyword if given
+    min: scalar
+        Minimum value to use, default a.min()
+    max: scalar
+        Maximum value to use, default a.max()
+    weights: array or sequence
+        Weights for each point
+
+    norm: scalar
+        Normalize the histogram such that the integral equals the input norm.
+        data equals norm.
+
+    visible: bool
+        If True, show plot on the screen.  Default True
+    plt: biggles plot object
+        If sent, add the histogram this object.
+    get_hdata: bool
+        if True, returns
+            plot_object, bin_edges, hist_array
+    **keys:
+        keywords for the Histogram object and plot object
+
+    returns
+    -------
+    The plot object.
+
+    If get_hdata=True, returns
+        plot_object, bin_edges, hist_array
+    """
+
+    keys={}
+    keys.update(keys_in)
+
+    bin_edges, harray = make_hist(a,
+                                  nbin=nbin, binsize=binsize,
+                                  min=min, max=max, weights=weights,
+                                  norm=norm)
+
+    hshow=harray
+
+    pltsent = (plt is not None)
+
+    ylog=keys.get('ylog',False)
+    yrng=keys.get('yrange',None)
+    if ylog:
+        keys['yrange']=get_log_plot_range(harray, input_range=yrng)
+
+        # prevent zeros in log plot
+        hshow=harray.clip(min=keys['yrange'][0], max=None)
+    else:
+        if yrng is None and not pltsent:
+            keys['yrange']=[0, 1.1*hshow.max()]
+
+    if plt is None:
+        plt = biggles.FramedPlot(**keys)
+    else:
+        for key,value in keys.iteritems():
+            if hasattr(plt,key):
+                setattr(plt,key,value)
+
+    bsize = bin_edges[1]-bin_edges[0]
+    hist_obj = biggles.Histogram(hshow,
+                                 x0=bin_edges[0],
+                                 binsize=bsize,
+                                 **keys)
+    if ylog:
+        hist_obj.drop_to_zero=False
+
+    plt.add(hist_obj)
+    if visible:
+        plt.show()
+
+    get_hdata=keys.get('get_hdata',False)
+    if get_hdata:
+        return plt, bin_edges, harray
+    else:
+        return plt
+
+def make_hist(a, nbin=10, binsize=None,
+              min=None, max=None, weights=None,
+              norm=None):
+    """
+    bin the data and return the bin edges and histogram
+
+    parameters
+    ----------
+    a: array or sequence
+        The data 
+    nbin: scalar
+        Number of bins to use.
+    binsize: scalar
+        Binsize for histogram. This takes precedence over the nbin=
+        keyword if given
+    min: scalar
+        Minimum value to use, default a.min()
+    max: scalar
+        Maximum value to use, default a.max()
+    weights: array or sequence
+        Weights for each point
+
+    norm: scalar
+        Normalize the histogram such that the integral equals the input norm.
+        data equals norm.
+
+    returns
+    -------
+    bin_edges, hist_array
+        where bin_edges are the bin edge definitions and
+        hist_array is the actual histogram object
+    """
+
+    if min is None:
+        min=a.min()
+    if max is None:
+        max=a.max()
+
+    range=[min, max]
+
+    if norm is not None:
+        density=True
+    else:
+        density=False
+
+    # binsize takes precedence over bins
+    if binsize is not None:
+        nbin = numpy.int64( (max-min)/numpy.float64(binsize) ) + 1
+    else:
+        if nbin < 1:
+            raise ValueError("nbin must be >= 1")
+
+    harray, bin_edges=numpy.histogram(a, bins=nbin, range=range,
+                                      weights=weights, density=density)
+
+    if norm is not None:
+        harray *= float(norm)
+
+    return bin_edges, harray
+
+
 class ScatterPlot(dict):
     """
     Wrapper class to create a scatter plot
@@ -308,7 +463,6 @@ class ScatterPlot(dict):
             for key,value in keys.iteritems():
                 if hasattr(plt,key):
                     setattr(plt,key,value)
-            plt=plt
 
         xrng=self.xrng
         yrng=self.yrng
@@ -324,8 +478,8 @@ class ScatterPlot(dict):
         """
         add the actual markers, including error bars
         """
-        linetype=self['linetype']
-        symboltype=self['symboltype']
+        linetype=self.get('linetype',None)
+        symboltype=self.get('symboltype',None)
 
         # note we default to symbols if no type is set.  Also if both types are
         # sent, we plot both
@@ -339,9 +493,7 @@ class ScatterPlot(dict):
         self._add_error_bars()
 
     def _add_symbols(self):
-        symboltype=self['symboltype']
-        if symboltype is None:
-            self['symboltype']=DEFAULT_SYMBOL
+        self['symboltype']=self.get('symboltype', DEFAULT_SYMBOL)
 
         indices=self.indices
         if indices is None:
