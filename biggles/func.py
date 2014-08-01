@@ -119,7 +119,7 @@ def plot(xin, yin, visible=True, plt=None, **kw):
 def plot_hist(a, plt=None, visible=True,
               nbin=10, binsize=None,
               min=None, max=None, weights=None,
-              density=False, norm=None,
+              norm=None,
               **keys_in):
     """
     bin the data and make a plot of the histogram.
@@ -140,18 +140,9 @@ def plot_hist(a, plt=None, visible=True,
     weights: array or sequence
         Weights for each point
 
-    density: bool
-        If False, the result will contain the number of samples
-        in each bin.  If True, the result is the value of the
-        probability *density* function at the bin, normalized such that
-        the *integral* over the range is 1. Note that the sum of the
-        histogram values will not be equal to 1 unless bins of unity
-        width are chosen; it is not a probability *mass* function.
-
     norm: scalar
-        The requested normalization of the data, such that the integral of the
-        data equals norm.  This implies density=True, and the result is simply
-        multiplied by norm
+        Normalize the histogram such that the integral equals the input norm.
+        data equals norm.
 
     visible: bool
         If True, show plot on the screen.  Default True
@@ -177,7 +168,7 @@ def plot_hist(a, plt=None, visible=True,
     bin_edges, harray = make_hist(a,
                                   nbin=nbin, binsize=binsize,
                                   min=min, max=max, weights=weights,
-                                  density=density, norm=norm)
+                                  norm=norm)
 
     hshow=harray
 
@@ -221,7 +212,7 @@ def plot_hist(a, plt=None, visible=True,
 
 def make_hist(a, nbin=10, binsize=None,
               min=None, max=None, weights=None,
-              density=False, norm=None):
+              norm=None):
     """
     bin the data and return the bin edges and histogram
 
@@ -241,18 +232,9 @@ def make_hist(a, nbin=10, binsize=None,
     weights: array or sequence
         Weights for each point
 
-    density: bool
-        If False, the result will contain the number of samples
-        in each bin.  If True, the result is the value of the
-        probability *density* function at the bin, normalized such that
-        the *integral* over the range is 1. Note that the sum of the
-        histogram values will not be equal to 1 unless bins of unity
-        width are chosen; it is not a probability *mass* function.
-
     norm: scalar
-        The requested normalization of the data, such that the integral
-        of the data equals norm.  This implies density, and the result
-        is simply multiplied by norm
+        Normalize the histogram such that the integral equals the input norm.
+        data equals norm.
 
     returns
     -------
@@ -270,6 +252,8 @@ def make_hist(a, nbin=10, binsize=None,
 
     if norm is not None:
         density=True
+    else:
+        density=False
 
     # binsize takes precedence over bins
     if binsize is not None:
