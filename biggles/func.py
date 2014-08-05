@@ -258,9 +258,11 @@ def make_hist(a, nbin=10, binsize=None,
     # binsize takes precedence over bins
     if binsize is not None:
         nbin = numpy.int64( (max-min)/numpy.float64(binsize) )
+        if nbin < 1:
+            nbin=1
     else:
         if nbin < 1:
-            raise ValueError("nbin must be >= 1")
+            raise ValueError("nbin must be >= 1, calculated %s" % nbin)
 
     harray, bin_edges=numpy.histogram(a, bins=nbin, range=range,
                                       weights=weights, density=density)
@@ -510,7 +512,7 @@ class ScatterPlot(dict):
         else:
             x=self.x
             y=self.y
-            for key, grps in itertools.groupby(enumerate(indices), lambda (i,x):i-x):
+            for key, grps in itertools.groupby(enumerate(indices), lambda i,x:i-x):
                 wgrp = map(operator.itemgetter(1), grps)
                 plt.add(biggles.Curve(x[wgrp], y[wgrp], **self))
 
