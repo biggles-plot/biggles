@@ -28,6 +28,7 @@
 # by Berthold Hollmann.
 #
 
+from __future__ import print_function
 from distutils.core import setup, Extension
 from distutils.command.install_data import install_data
 from distutils.sysconfig import get_python_inc
@@ -141,7 +142,7 @@ else:
 
     libplot_module_libs = ["plot","Xaw","Xmu","Xt","SM","ICE","Xext","X11"]
 
-        # use 2to3 to build for python 3.x
+    # use 2to3 to build for python 3.x
     try:
         from distutils.command.build_py import build_py_2to3 as build_py
     except ImportError:
