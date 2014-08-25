@@ -19,6 +19,7 @@
 # Boston, MA  02111-1307, USA.
 #
 
+from __future__ import print_function
 import copy, math, os
 import numpy
 
@@ -43,7 +44,7 @@ def _tsil(x):
     return l
 
 def _message( s ):
-    print "biggles:", s
+    print( "biggles: %s" % s )
 
 def _series( m, n, a=1, b=0 ):
     return map( lambda x,y=a,z=b: x*y+z, range(m, n+1) )
