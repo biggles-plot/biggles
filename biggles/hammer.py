@@ -33,7 +33,7 @@ import math
 from biggles import \
         _series, _PlotComposite, _PlotGeometry, _PlotContainer, Geodesic, Curve
 from geometry import *
-import _biggles
+from . import _biggles
 
 class _HammerAitoffGeometry(object):
 

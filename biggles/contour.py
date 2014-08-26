@@ -23,7 +23,7 @@ from biggles import \
         _series, _message, \
         _LineComponent,  _PathObject, _PlotComponent, BigglesError
 from geometry import *
-import _biggles
+from . import _biggles
 
 import numpy
 
