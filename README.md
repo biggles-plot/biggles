@@ -12,16 +12,18 @@ Simple Example
 
 Here's a simple biggles script:
 
-    #!/usr/bin/env python
+```python
+#!/usr/bin/env python
 
-    import biggles
+import biggles
 
-    x = [1, 2, 3, 4, 5]
-    y = [5, 4, 3, 2, 1]
+x = [1, 2, 3, 4, 5]
+y = [5, 4, 3, 2, 1]
 
-    p = biggles.FramedPlot()
-    p.add( biggles.Curve(x, y) )
-    p.show()
+p = biggles.FramedPlot()
+p.add( biggles.Curve(x, y) )
+p.show()
+```
 
 This produces an X window with a framed plot of the curve y(x).
 You can find more in the [examples](https://github.com/nolta/biggles/tree/master/examples) directory included with the
@@ -33,15 +35,25 @@ Installation
 ------------
 Biggles requires [numpy](http://www.numpy.org/) and GNU [plotutils](http://www.gnu.org/software/plotutils/).
 
-Macports:
+### Macports:
 
-    $ sudo port install plotutils +x11
-    $ sudo port install py27-biggles
+```shell
+$ sudo port install plotutils +x11
+$ sudo port install py27-biggles
+```
 
-Homebrew:
+### Homebrew:
 
 To install with homebrew, you will need to download the package directly from GitHub. Then follow these steps.
 
-    $ brew install plotutils --with-x11
-    $ cd /path/to/biggles/
-    $ python setup.py install
+```shell
+$ brew install plotutils --with-x11
+$ cd /path/to/biggles/
+$ python setup.py install
+```
+
+### Debian/Ubuntu:
+
+```shell
+$ sudo aptitude install python2.7-pybiggles
+```
