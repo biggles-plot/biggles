@@ -19,8 +19,11 @@
 # Boston, MA  02111-1307, USA.
 #
 
-import libplot, math
-raw = libplot
+import math
+from . import _libplot_pywrap as libplot
+from ._libplot_pywrap import Plotter
+#import libplot, math
+#raw = libplot
 
 from tex2libplot import tex2libplot
 
@@ -93,24 +96,30 @@ def _hexcolor( hextriplet, scale=1 ):
 
 def _set_color( pl, color ):
     if type(color) == type(''):
-        raw.set_colorname_fg( pl, color )
+        #raw.set_colorname_fg( pl, color )
+        pl.set_colorname_fg(color)
     else:
         r,g,b = _hexcolor( color )
-        raw.set_color_fg( pl, r, g, b )
+        #raw.set_color_fg( pl, r, g, b )
+        pl.set_color_fg(r, g, b)
 
 def _set_pen_color( pl, color ):
     if type(color) == type(''):
-        raw.set_colorname_pen( pl, color )
+        #raw.set_colorname_pen( pl, color )
+        pl.set_colorname_pen(color)
     else:
         r,g,b = _hexcolor( color )
-        raw.set_color_pen( pl, r, g, b )
+        #raw.set_color_pen( pl, r, g, b )
+        pl.set_color_pen(r, g, b)
 
 def _set_fill_color( pl, color ):
     if type(color) == type(''):
-        raw.set_colorname_fill( pl, color )
+        #raw.set_colorname_fill( pl, color )
+        pl.set_colorname_fill(color)
     else:
         r,g,b = _hexcolor( color )
-        raw.set_color_fill( pl, r, g, b )
+        #raw.set_color_fill( pl, r, g, b )
+        pl.set_color_fill(r, g, b)
 
 _pl_line_type = {
         "dot"           : "dotted",
@@ -120,40 +129,58 @@ _pl_line_type = {
 
 def _set_line_type( pl, type ):
     pl_type = _pl_line_type.get( type, type )
-    raw.set_line_type( pl, pl_type )
+    #raw.set_line_type( pl, pl_type )
+    pl.set_line_type(pl_type )
 
-class LibplotRenderer(object):
+class LibplotRenderer(libplot.Plotter):
 
     def __init__( self, ll, ur, type='X', parameters=None, file=None ):
         self.lowerleft = ll
         self.upperright = ur
-        self.pl = raw.new( type, parameters, file )
+        super(LibplotRenderer,self).__init__(type,parameters,file)
+        #self.pl = raw.new( type, parameters, file )
+        #self.pl = Plotter(type, parameters, file)
 
     def open( self ):
         self.state = RendererState()
-        raw.begin_page( self.pl )
-        args = (self.pl,) + self.lowerleft + self.upperright
-        raw.space( *args )
-        #apply( raw.space, \
-        #        (self.pl,) + self.lowerleft + self.upperright )
-        raw.clear( self.pl )
+        #raw.begin_page( self.pl )
+        self.begin_page()
+        #args = (self.pl,) + self.lowerleft + self.upperright
+        args = self.lowerleft + self.upperright
+        #raw.space( *args )
+        self.space( *args )
+        #raw.clear( self.pl )
+        self.clear()
 
-    def clear( self ):
-        raw.clear( self.pl )
-
+    #def close( self ):
+    #    if self.pl is not None:
+    #        #raw.end_page( self.pl )
+    #        self.pl.end_page()
     def close( self ):
-        if self.pl is not None:
-            raw.end_page( self.pl )
+        self.end_page()
 
+    def __enter__(self):
+        return self
+    def __exit__(self, exception_type, exception_value, traceback):
+        self.close()
+
+
+    '''
     def delete( self ):
+        """ 
         if not hasattr(self, 'pl'):
             return
         if self.pl is not None:
-            raw.delete( self.pl )
+            #raw.delete( self.pl )
+            del self.pl
             self.pl = None
-
+        """
+        pass
+    '''
+    """
     def __del__( self ):
         self.delete()
+    """
 
     ## state commands
 
@@ -162,19 +189,26 @@ class LibplotRenderer(object):
             "linecolor"     : _set_pen_color,
             "fillcolor"     : _set_fill_color,
             "linetype"      : _set_line_type,
-            "linewidth"     : raw.set_line_size,
-            "filltype"      : raw.set_fill_level,
-            "fillmode"      : raw.set_fill_type,
-            "fontface"      : raw.set_font_type,
-            "fontsize"      : raw.set_font_size,
-            "textangle"     : raw.set_string_angle,
+            "linewidth"     : Plotter.set_line_size,
+            "filltype"      : Plotter.set_fill_level,
+            "fillmode"      : Plotter.set_fill_type,
+            "fontface"      : Plotter.set_font_type,
+            "fontsize"      : Plotter.set_font_size,
+            "textangle"     : Plotter.set_string_angle,
+            #"linewidth"     : raw.set_line_size,
+            #"filltype"      : raw.set_fill_level,
+            #"fillmode"      : raw.set_fill_type,
+            #"fontface"      : raw.set_font_type,
+            #"fontsize"      : raw.set_font_size,
+            #"textangle"     : raw.set_string_angle,
+
     }
 
     def set( self, key, value ):
         self.state.set( key, value )
         if LibplotRenderer.__pl_style_func.has_key(key):
             method = LibplotRenderer.__pl_style_func[key]
-            method(self.pl, value)
+            method(self, value)
             #apply( method, (self.pl, value) )
 
     def get( self, parameter, notfound=None ):
@@ -182,43 +216,56 @@ class LibplotRenderer(object):
 
     def save_state( self ):
         self.state.save()
-        raw.gsave( self.pl )
+        #raw.gsave( self.pl )
+        self.gsave()
 
     def restore_state( self ):
         self.state.restore()
-        raw.grestore( self.pl )
+        #raw.grestore( self.pl )
+        self.grestore()
 
     ## drawing commands
 
     def move( self, p ):
-        raw.move( self.pl, p[0], p[1] )
+        #raw.move( self.pl, p[0], p[1] )
+        super(LibplotRenderer,self).move(p[0], p[1])
 
     def lineto( self, p ):
-        raw.lineto( self.pl, p[0], p[1] )
+        #raw.lineto( self.pl, p[0], p[1] )
+        super(LibplotRenderer,self).lineto(p[0], p[1])
 
     def linetorel( self, p ):
-        raw.linetorel( self.pl, p[0], p[1] )
+        #raw.linetorel( self.pl, p[0], p[1] )
+        super(LibplotRenderer,self).linetorel(p[0], p[1])
 
     def line( self, p, q ):
         cr = self.get( "cliprect" )
         if cr is None:
-            raw.line( self.pl, p[0], p[1], q[0], q[1] )
+            #raw.line( self.pl, p[0], p[1], q[0], q[1] )
+            super(LibplotRenderer,self).line(p[0], p[1], q[0], q[1])
         else:
-            raw.clipped_line( self.pl, \
-                    cr[0], cr[1], cr[2], cr[3], \
-                    p[0], p[1], q[0], q[1] )
+            #raw.clipped_line( self.pl, \
+            #        cr[0], cr[1], cr[2], cr[3], \
+            #        p[0], p[1], q[0], q[1] )
+            self.clipped_line(cr[0], cr[1], cr[2], cr[3],
+                              p[0], p[1], q[0], q[1])
+
 
     def rect( self, p, q ):
-        raw.rect( self.pl, p[0], p[1], q[0], q[1] )
+        #raw.rect( self.pl, p[0], p[1], q[0], q[1] )
+        super(LibplotRenderer,self).rect(p[0], p[1], q[0], q[1])
 
     def circle( self, p, r ):
-        raw.circle( self.pl, p[0], p[1], r )
+        #raw.circle( self.pl, p[0], p[1], r )
+        super(LibplotRenderer,self).circle(p[0], p[1], r)
 
     def ellipse( self, p, rx, ry, angle=0. ):
-        raw.ellipse( self.pl, p[0], p[1], rx, ry, angle )
+        #raw.ellipse( self.pl, p[0], p[1], rx, ry, angle )
+        super(LibplotRenderer,self).ellipse(p[0], p[1], rx, ry, angle)
 
     def arc( self, c, p, q ):
-        raw.arc( self.pl, c[0], c[1], p[0], p[1], q[0], q[1] )
+        #raw.arc( self.pl, c[0], c[1], p[0], p[1], q[0], q[1] )
+        super(LibplotRenderer,self).arc(c[0], c[1], p[0], p[1], q[0], q[1])
 
     __pl_symbol_type = {
             "none"                          : 0,
@@ -270,10 +317,14 @@ class LibplotRenderer(object):
 
         cr = self.get( "cliprect" )
         if cr is None:
-            raw.symbols( self.pl, x, y, type, size )
+            #raw.symbols( self.pl, x, y, type, size )
+            super(LibplotRenderer,self).symbols(x, y, type, size)
         else:
-            raw.clipped_symbols( self.pl, x, y, type, size,
-                    cr[0], cr[1], cr[2], cr[3] )
+            #raw.clipped_symbols( self.pl, x, y, type, size,
+            #        cr[0], cr[1], cr[2], cr[3] )
+            self.clipped_symbols(x, y, type, size,
+                                 cr[0], cr[1], cr[2], cr[3])
+
 
     def colored_symbols( self, x, y, c ):
         DEFAULT_SYMBOL_TYPE = "square"
@@ -288,27 +339,37 @@ class LibplotRenderer(object):
         cr = self.get( "cliprect" )
         if cr is None:
             # This will cause an error: not written yet
-            raw.colored_symbols( self.pl, x, y, type, size )
+            #raw.colored_symbols( self.pl, x, y, type, size )
+            super(LibplotRenderer,self).colored_symbols(x, y, type, size)
         else:
-            raw.clipped_colored_symbols( self.pl, x, y, c, type, size,
-                    cr[0], cr[1], cr[2], cr[3] )
+            self.clipped_colored_symbols(x, y, c,
+                                         type, size,
+                                         cr[0], cr[1],
+                                         cr[2], cr[3])
 
     def density_plot( self, densgrid, ((xmin,ymin), (xmax,ymax)) ):
-        raw.density_plot( self.pl, densgrid,
-                          xmin, xmax, ymin, ymax )
+        #raw.density_plot( self.pl, densgrid,
+        #                  xmin, xmax, ymin, ymax )
+        super(LibplotRenderer,self).density_plot(densgrid, xmin, xmax, ymin, ymax)
+
 
     def color_density_plot( self, densgrid, ((xmin,ymin), (xmax,ymax)) ):
-        raw.color_density_plot( self.pl, densgrid,
-                                xmin, xmax, ymin, ymax )
+        #raw.color_density_plot( self.pl, densgrid,
+        #                        xmin, xmax, ymin, ymax )
+        super(LibplotRenderer,self).color_density_plot(densgrid,
+                                                       xmin, xmax, ymin, ymax)
 
 
     def curve( self, x, y ):
         cr = self.get( "cliprect" )
         if cr is None:
-            raw.curve( self.pl, x, y )
+            #raw.curve( self.pl, x, y )
+            super(LibplotRenderer,self).curve(x, y)
         else:
-            raw.clipped_curve( self.pl, x, y,
-                    cr[0], cr[1], cr[2], cr[3] )
+            #raw.clipped_curve( self.pl, x, y,
+            #        cr[0], cr[1], cr[2], cr[3] )
+            self.clipped_curve(x, y,
+                               cr[0], cr[1], cr[2], cr[3])
 
     def polygon( self, points ):
         pts = points
@@ -338,12 +399,15 @@ class LibplotRenderer(object):
         vstr = self.state.get( "textvalign", "center" )
         hnum = LibplotRenderer.__pl_text_align.get( hstr )
         vnum = LibplotRenderer.__pl_text_align.get( vstr )
-        raw.move( self.pl, p[0], p[1] )
-        raw.string( self.pl, hnum, vnum, plstr )
+        #raw.move( self.pl, p[0], p[1] )
+        #raw.string( self.pl, hnum, vnum, plstr )
+        super(LibplotRenderer,self).move(p[0], p[1] )
+        self.string(hnum, vnum, plstr )
 
     def textwidth( self, str ):
         plstr = tex2libplot( str )
-        return raw.get_string_width( self.pl, plstr )
+        #return raw.get_string_width( self.pl, plstr )
+        return self.get_string_width(plstr )
 
     def textheight( self, str ):
         return self.state.get( "fontsize" )     ## XXX: kludge?
@@ -357,7 +421,10 @@ class NonInteractiveScreenRenderer( LibplotRenderer ):
                 "BITMAPSIZE": "%dx%d" % (width, height),
                 "VANISH_ON_DELETE": "no",
         }
-        LibplotRenderer.__init__( self, ll, ur, "X", parameters )
+        super(NonInteractiveScreenRenderer,self).__init__(ll,
+                                                          ur,
+                                                          "X",
+                                                          parameters )
 
 class InteractiveScreenRenderer( LibplotRenderer ):
 
@@ -368,13 +435,20 @@ class InteractiveScreenRenderer( LibplotRenderer ):
                 "BITMAPSIZE": "%dx%d" % (width, height),
                 "VANISH_ON_DELETE": "yes",
         }
-        LibplotRenderer.__init__( self, ll, ur, "X", parameters )
+        super(InteractiveScreenRenderer,self).__init__(ll,
+                                                       ur,
+                                                       "X",
+                                                       parameters )
 
     def close( self ):
-        raw.flush( self.pl )
+        #raw.flush( self.pl )
+        self.flush()
 
+    '''
     def delete( self ):
-        raw.flush( self.pl )
+        #raw.flush( self.pl )
+        self.flush()
+    '''
 
 _saved_screen_renderer = None
 
@@ -409,7 +483,7 @@ class PSRenderer( LibplotRenderer ):
         for key,val in kw.items():
             pagesize = pagesize +","+ key +"="+ val
         parameters = { "PAGESIZE": pagesize }
-        LibplotRenderer.__init__( self, ll, ur, "ps", parameters, file )
+        super(PSRenderer,self).__init__(ll, ur, "ps", parameters, file )
 
 class ImageRenderer( LibplotRenderer ):
 
@@ -417,4 +491,4 @@ class ImageRenderer( LibplotRenderer ):
         ll = 0, 0
         ur = width, height
         parameters = { "BITMAPSIZE": "%dx%d" % (width, height) }
-        LibplotRenderer.__init__( self, ll, ur, type, parameters, file )
+        super(ImageRenderer,self).__init__(ll, ur, type, parameters, file)

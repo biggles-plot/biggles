@@ -22,11 +22,10 @@
 import copy, math, os, string
 import numpy
 
-import config, _biggles
-from geometry import *
+from . import config, _biggles, libplot
+from .geometry import *
 
-import libplot.renderer
-renderer = libplot.renderer
+from .libplot import renderer
 
 # miscellaneous ---------------------------------------------------------------
 
@@ -2394,13 +2393,18 @@ class _PlotContainer( _ConfAttributes ):
                     % os.name )
 
     def show_x11( self, width, height ):
+        from .libplot.renderer import ScreenRenderer
         persistent = config.interactive() and \
                 config.bool('screen','persistent')
-        device = renderer.ScreenRenderer( persistent, width, height )
+        #device = renderer.ScreenRenderer( persistent, width, height )
+        with ScreenRenderer( persistent, width, height ) as device:
+            self.page_compose( device )
+        '''
         try:
             self.page_compose( device )
         finally:
             device.delete()
+        '''
 
     def show_win( self, width, height ):
         """
@@ -2418,6 +2422,8 @@ class _PlotContainer( _ConfAttributes ):
 
     def psprint( self, printcmd=None, **kw ):
         import os, copy
+        from .libplot.renderer import PSRenderer
+
         if os.name != 'posix':
             _message( "psprint: system type '%s' not supported" \
                     % os.name )
@@ -2426,28 +2432,40 @@ class _PlotContainer( _ConfAttributes ):
         opt = copy.copy( config.options("postscript") )
         opt.update( kw )
         _message( 'printing plot with "%s"' % printcmd )
+
         printer = os.popen( printcmd, 'w' )
-        device = renderer.PSRenderer(printer, **opt )
-        #device = apply( renderer.PSRenderer, (printer,), opt )
+
+        with PSRenderer(printer, **opt ) as device:
+            self.page_compose( device )
+
+        '''
         try:
             self.page_compose( device )
         finally:
             device.delete()
+        '''
         printer.close()
 
     def write_eps( self, filename, **kw ):
+        from .libplot.renderer import PSRenderer
+
         opt = copy.copy( config.options("postscript") )
         opt.update( kw )
         file = _open_output( filename )
-        device = renderer.PSRenderer( file, **opt )
-        #device = apply( renderer.PSRenderer, (file,), opt )
+
+        with PSRenderer(file, **opt ) as device:
+            self.page_compose( device )
+
+        '''
         try:
             self.page_compose( device )
         finally:
             device.delete()
+        '''
         _close_output( file )
 
     def write_img( self, *args ):
+        from .libplot.renderer import ImageRenderer
         if len(args) == 4:
             type,width,height,filename = args
         elif len(args) == 3:
@@ -2455,24 +2473,35 @@ class _PlotContainer( _ConfAttributes ):
             width,height,filename = args
             type = string.lower( filename[-3:] )
         file = _open_output( filename )
-        device = renderer.ImageRenderer( type, width, height, file )
+
+        with ImageRenderer( type, width, height, file ) as device:
+            self.page_compose( device )
+        '''
         try:
             self.page_compose( device )
         finally:
             device.delete()
+        '''
         _close_output( file )
 
     save_as_eps = write_eps
     save_as_img = write_img
 
     def draw_piddle( self, canvastype=None, size=(500,500) ):
+        """
+        what is this?
+        """
         from device.piddle import PiddleRenderer
         device = PiddleRenderer( canvastype, size )
+        self.page_compose( device )
+        canvas = device.canvas
+        '''
         try:
             self.page_compose( device )
             canvas = device.canvas
         finally:
             device.delete()
+        '''
         return canvas
 
     def write_back_png( self, *args ):
@@ -2497,11 +2526,15 @@ def multipage( plots, filename, **kw ):
     opt.update( kw )
     device = renderer.PSRenderer( file, **opt )
     #device = apply( renderer.PSRenderer, (file,), opt )
+    for plot in plots:
+        plot.page_compose( device )
+    '''
     try:
         for plot in plots:
             plot.page_compose( device )
     finally:
         device.delete()
+    '''
     _close_output( file )
 
 # -----------------------------------------------------------------------------
