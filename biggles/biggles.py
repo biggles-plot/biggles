@@ -2446,6 +2446,8 @@ class _PlotContainer( _ConfAttributes ):
 
     def write_eps( self, filename, **kw ):
         """
+        write the plot to postscript. Extra keywords can be
+        sent 
         """
         from .libplot.renderer import PSRenderer
 
