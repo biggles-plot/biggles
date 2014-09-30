@@ -2254,6 +2254,7 @@ class Frame( _PlotComposite ):
 
 # _PlotContainer --------------------------------------------------------------
 
+'''
 def _open_output( filename ):
     if filename == '-':
         import sys
@@ -2267,6 +2268,7 @@ def _close_output( file ):
         file.close()
     else:
         file.flush()
+'''
 
 def _draw_text( device, p, str, **kw ):
     device.save_state()
@@ -2420,6 +2422,7 @@ class _PlotContainer( _ConfAttributes ):
         self.write_img( width, height, tf )
         os.startfile( tf )
 
+    '''
     def psprint( self, printcmd=None, **kw ):
         import os, copy
         from .libplot.renderer import PSRenderer
@@ -2438,34 +2441,15 @@ class _PlotContainer( _ConfAttributes ):
         with PSRenderer(printer, **opt ) as device:
             self.page_compose( device )
 
-        '''
-        try:
-            self.page_compose( device )
-        finally:
-            device.delete()
-        '''
         printer.close()
-
-    def write_eps_test( self, filename, **kw ):
-        from .libplot.renderer import PSRenderer
-
-        opt = copy.copy( config.options("postscript") )
-        opt.update( kw )
-        print 'opening output'
-        with open(filename,'w') as fobj:
-
-            print 'entering renderer context'
-            with PSRenderer(fobj, **opt ) as device:
-                print 'composing'
-                self.page_compose( device )
-                device.flush()
-            print 'done composing'
+    '''
 
     def write_eps( self, filename, **kw ):
         """
-        we don't use a context here because I think the compose actually keeps
-        referenes to the device. So despite the context the plotter is not
-        closed until the function exits.
+
+        we don't use a context for the renderer here because I think the
+        compose actually keeps referenes to the device. So despite the context
+        the plotter is not closed until the function exits.
 
         This causes problems because it is still using the file when it
         is closed.
@@ -2475,16 +2459,16 @@ class _PlotContainer( _ConfAttributes ):
         opt = copy.copy( config.options("postscript") )
         opt.update( kw )
 
-        file = _open_output( filename )
+        #file = _open_output( filename )
 
-        device=PSRenderer(file, **opt )
+        #device=PSRenderer(file, **opt )
+        device=PSRenderer(filename, **opt )
         self.page_compose( device )
 
-        # so the plotter closes and stops accessing the file.
+        # so the internal plPlotter closes and stops accessing the file.
         del device
 
-        _close_output( file )
-
+        #_close_output( file )
 
     def write_img( self, *args ):
         from .libplot.renderer import ImageRenderer
@@ -2494,9 +2478,9 @@ class _PlotContainer( _ConfAttributes ):
             import string
             width,height,filename = args
             type = string.lower( filename[-3:] )
-        file = _open_output( filename )
+        #file = _open_output( filename )
 
-        with ImageRenderer( type, width, height, file ) as device:
+        with ImageRenderer( type, width, height, filename ) as device:
             self.page_compose( device )
         '''
         try:
@@ -2504,7 +2488,7 @@ class _PlotContainer( _ConfAttributes ):
         finally:
             device.delete()
         '''
-        _close_output( file )
+        #_close_output( file )
 
     save_as_eps = write_eps
     save_as_img = write_img
@@ -2543,10 +2527,10 @@ class _PlotContainer( _ConfAttributes ):
         return output
 
 def multipage( plots, filename, **kw ):
-    file = _open_output( filename )
+    #file = _open_output( filename )
     opt = copy.copy( config.options("postscript") )
     opt.update( kw )
-    device = renderer.PSRenderer( file, **opt )
+    device = renderer.PSRenderer(filename, **opt )
     #device = apply( renderer.PSRenderer, (file,), opt )
     for plot in plots:
         plot.page_compose( device )
@@ -2557,7 +2541,7 @@ def multipage( plots, filename, **kw ):
     finally:
         device.delete()
     '''
-    _close_output( file )
+    #_close_output( file )
 
 # -----------------------------------------------------------------------------
 

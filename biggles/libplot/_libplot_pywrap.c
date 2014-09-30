@@ -68,6 +68,7 @@ struct PyLibPlot {
     PyObject_HEAD
 
     char type[25];
+    FILE* fptr; // for writing to files
     plPlotter *pl;
 };
 
@@ -96,15 +97,20 @@ static int
 PyLibPlot_init(struct PyLibPlot* self, PyObject *args, PyObject *kwds)
 {
     int status=0;
-	PyObject *params_dict=NULL, *ofile=NULL;
+	PyObject *params_dict=NULL;
+	//PyObject *ofile=NULL;
+	//FILE *outfile=NULL;
 	char *type=NULL;
-	FILE *outfile=NULL;
+    char *filename=NULL;
 	plPlotterParams *params;
 
-	if ( !PyArg_ParseTuple( args, "sOO", &type, &params_dict, &ofile ) ) {
+    self->fptr=NULL;
+
+	if ( !PyArg_ParseTuple( args, "sOs", &type, &params_dict, &filename) ) {
 		return -1;
     }
 
+    // for the repr
     snprintf(self->type, sizeof(self->type), "%s", type);
 
 	params = pl_newplparams();
@@ -114,14 +120,27 @@ PyLibPlot_init(struct PyLibPlot* self, PyObject *args, PyObject *kwds)
         goto bail;
     }
 
+    if (0 != strcmp(filename, "")) {
+        // a filename was passed
+        fprintf(stderr,"opening %s\n", filename);
+        self->fptr = fopen(filename,"w");
+        if (self->fptr==NULL) {
+            fprintf(stderr,"error opening %s\n", filename);
+            PyErr_Format( PyExc_TypeError, "could not open file: %s", filename);
+            goto bail;
+        }
+    }
+
+    /*
 	if ( PyFile_Check(ofile) ) {
 		outfile = PyFile_AsFile( ofile );
 	} else if ( ofile != Py_None ) {
 		PyErr_SetString( PyExc_TypeError, "input file neither a file or None" );
         goto bail;
 	}
+    */
 
-	self->pl = pl_newpl_r( type, NULL, outfile, NULL, params );
+	self->pl = pl_newpl_r( type, NULL, self->fptr, NULL, params );
 	if (!self->pl) {
 		PyErr_SetString(PyExc_RuntimeError, "could not create plotter");
         goto bail;
@@ -145,6 +164,12 @@ static void
 PyLibPlot_dealloc(struct PyLibPlot* self)
 {
     pl_deletepl_r(self->pl);
+
+    // must be closed *after* deleting the plPlotter
+    if (self->fptr != NULL) {
+        fprintf(stderr,"closing the file pointer\n");
+        fclose(self->fptr);
+    }
 
 #if ((PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION >= 6) || (PY_MAJOR_VERSION == 3))
     Py_TYPE(self)->tp_free((PyObject*)self);

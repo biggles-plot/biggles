@@ -134,9 +134,14 @@ def _set_line_type( pl, type ):
 class LibplotRenderer(libplot.Plotter):
 
     def __init__( self, ll, ur, type='X', parameters=None, file=None ):
+        if file is None:
+            filename=""
+        else:
+            filename=file
+
         self.lowerleft = ll
         self.upperright = ur
-        super(LibplotRenderer,self).__init__(type,parameters,file)
+        super(LibplotRenderer,self).__init__(type,parameters,filename)
         #self.pl = raw.new( type, parameters, file )
         #self.pl = Plotter(type, parameters, file)
 
@@ -487,14 +492,14 @@ def _str_size_to_pts( str ):
 
 class PSRenderer( LibplotRenderer ):
 
-    def __init__( self, file, paper="", width="", height="", **kw ):
+    def __init__( self, filename, paper="", width="", height="", **kw ):
         ll = 0, 0
         ur = _str_size_to_pts(width), _str_size_to_pts(height)
         pagesize = "%s,xsize=%s,ysize=%s" % (paper,width,height)
         for key,val in kw.items():
             pagesize = pagesize +","+ key +"="+ val
         parameters = { "PAGESIZE": pagesize }
-        super(PSRenderer,self).__init__(ll, ur, "ps", parameters, file )
+        super(PSRenderer,self).__init__(ll, ur, "ps", parameters, filename)
 
 class ImageRenderer( LibplotRenderer ):
 
