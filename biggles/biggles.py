@@ -2446,6 +2446,18 @@ class _PlotContainer( _ConfAttributes ):
 
     def write_eps( self, filename, **kw ):
         """
+        """
+        from .libplot.renderer import PSRenderer
+
+        opt = copy.copy( config.options("postscript") )
+        opt.update( kw )
+
+        with PSRenderer(filename, **opt ) as device:
+            self.page_compose( device )
+
+
+    def write_eps_old( self, filename, **kw ):
+        """
 
         we don't use a context for the renderer here because I think the
         compose actually keeps referenes to the device. So despite the context
@@ -2469,6 +2481,7 @@ class _PlotContainer( _ConfAttributes ):
         del device
 
         #_close_output( file )
+
 
     def write_img( self, *args ):
         from .libplot.renderer import ImageRenderer
