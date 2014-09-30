@@ -183,11 +183,12 @@ setup(
                         ["biggles/_biggles.c"],
                         include_dirs = _biggles_module_inc_dirs ),
 
-                Extension( "libplot.libplot",
-                        ["biggles/libplot/libplot.c"],
-                        include_dirs = libplot_module_inc_dirs,
-                        library_dirs = libplot_module_lib_dirs,
-                        libraries = libplot_module_libs ),
+                # the old plotter
+                #Extension( "libplot.libplot",
+                #        ["biggles/libplot/libplot.c"],
+                #        include_dirs = libplot_module_inc_dirs,
+                #        library_dirs = libplot_module_lib_dirs,
+                #        libraries = libplot_module_libs ),
 
                 Extension( "libplot._libplot_pywrap",
                         ["biggles/libplot/_libplot_pywrap.c"],

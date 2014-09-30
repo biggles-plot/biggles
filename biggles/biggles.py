@@ -2526,22 +2526,26 @@ class _PlotContainer( _ConfAttributes ):
         return output
 
 def multipage( plots, filename, **kw ):
+    """
+    Write the plot objects to the file as postscript, one per page
+
+    parameters
+    ----------
+    plots: list
+        A list of plot objects, e.g. FramedPlot etc.
+    filename: string
+        The file for the postscript file.
+    **kw:
+        Extra keywords
+    """
     from .libplot.renderer import PSRenderer
-    #file = _open_output( filename )
+
     opt = copy.copy( config.options("postscript") )
     opt.update( kw )
 
     with PSRenderer(filename, **opt ) as device:
         for plot in plots:
             plot.page_compose( device )
-    '''
-    try:
-        for plot in plots:
-            plot.page_compose( device )
-    finally:
-        device.delete()
-    '''
-    #_close_output( file )
 
 # -----------------------------------------------------------------------------
 

@@ -20,9 +20,7 @@
 #
 
 import math
-from . import _libplot_pywrap as libplot
 from ._libplot_pywrap import Plotter
-#raw = libplot
 
 from .tex2libplot import tex2libplot
 
@@ -131,7 +129,7 @@ def _set_line_type( pl, type ):
     #raw.set_line_type( pl, pl_type )
     pl.set_line_type(pl_type )
 
-class LibplotRenderer(libplot.Plotter):
+class LibplotRenderer(Plotter):
 
     def __init__( self, ll, ur, type='X', parameters=None, file=None ):
         if file is None:
