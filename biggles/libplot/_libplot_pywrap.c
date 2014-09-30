@@ -500,22 +500,19 @@ BGL_PL_FUNC_DDDDDDDD( clipped_line, clipped_pl_fline_r )
 /******************************************************************************
  */
 
-#define BGL_PL_FUNC_S(NAME,FUNCTION)\
-static PyObject *\
-NAME ( PyObject *self, PyObject *args )\
-{\
-	PyObject *o;\
-	char *s0;\
-	void *vptr;\
-\
-	if ( !PyArg_ParseTuple( args, "Os", &o, &s0 ) )\
-		return NULL;\
-	vptr = (void *) PyCObject_AsVoidPtr( o );\
-\
-	FUNCTION ( (plPlotter *) vptr, s0 );\
-	Py_INCREF( Py_None );\
-	return Py_None;\
+#define BGL_PL_FUNC_S(NAME,FUNCTION)                 \
+static PyObject *                                    \
+NAME (struct PyLibPlot *self, PyObject *args)        \
+{                                                    \
+	char* s0;                                        \
+                                                     \
+	if ( !PyArg_ParseTuple( args, "s", &s0 ) )       \
+		return NULL;                                 \
+                                                     \
+	FUNCTION(self->pl, (const char*) s0);            \
+    Py_RETURN_NONE;                                  \
 }
+
 
 BGL_PL_FUNC_S( set_colorname_bg, pl_bgcolorname_r );
 BGL_PL_FUNC_S( set_colorname_fg, pl_colorname_r );
@@ -531,26 +528,22 @@ BGL_PL_FUNC_S( set_line_type, pl_linemod_r );
  *  color functions
  */
 
-#define BGL_PL_FUNC_COLOR(NAME,FUNCTION)\
-static PyObject *\
-NAME ( PyObject *self, PyObject *args )\
-{\
-	PyObject *o;\
-	double d0, d1, d2;\
-	int r, g, b;\
-	void *vptr;\
-\
-	if ( !PyArg_ParseTuple( args, "Oddd", &o, &d0, &d1, &d2 ) )\
-		return NULL;\
-	vptr = (void *) PyCObject_AsVoidPtr( o );\
-\
-	r = (int) floor( d0*65535 );\
-	g = (int) floor( d1*65535 );\
-	b = (int) floor( d2*65535 );\
-\
-	FUNCTION ( (plPlotter *) vptr, r, g, b );\
-	Py_INCREF( Py_None );\
-	return Py_None;\
+#define BGL_PL_FUNC_COLOR(NAME,FUNCTION)                       \
+static PyObject *                                              \
+NAME(struct PyLibPlot *self, PyObject *args)                   \
+{                                                              \
+	double d0, d1, d2;                                         \
+	int r, g, b;                                               \
+                                                               \
+	if ( !PyArg_ParseTuple( args, "ddd", &d0, &d1, &d2 ) )     \
+		return NULL;                                           \
+                                                               \
+	r = (int) floor( d0*65535 );                               \
+	g = (int) floor( d1*65535 );                               \
+	b = (int) floor( d2*65535 );                               \
+                                                               \
+	FUNCTION(self->pl, r, g, b );                              \
+    Py_RETURN_NONE;                                            \
 }
 
 BGL_PL_FUNC_COLOR( set_color_bg, pl_bgcolor_r )
@@ -562,35 +555,28 @@ BGL_PL_FUNC_COLOR( set_color_pen, pl_pencolor_r )
  */
 
 static PyObject *
-string( PyObject *self, PyObject *args )
+string(struct PyLibPlot *self, PyObject *args)
 {
-	PyObject *o;
 	int i0, i1;
 	char *s0;
-	void *vptr;
 
-	if ( !PyArg_ParseTuple( args, "Oiis", &o, &i0, &i1, &s0 ) )
+	if ( !PyArg_ParseTuple( args, "iis", &i0, &i1, &s0 ) )
 		return NULL;
-	vptr = (void *) PyCObject_AsVoidPtr( o );
 
-	pl_alabel_r( (plPlotter *) vptr, i0, i1, s0 );
-	Py_INCREF( Py_None );
-	return Py_None;
+	pl_alabel_r(self->pl, i0, i1, s0 );
+    Py_RETURN_NONE;
 }
 
 static PyObject *
-get_string_width( PyObject *self, PyObject *args )
+get_string_width(struct PyLibPlot *self, PyObject *args)
 {
-	PyObject *o;
 	char *s0;
-	void *vptr;
 	double width;
 
-	if ( !PyArg_ParseTuple( args, "Os", &o, &s0 ) )
+	if ( !PyArg_ParseTuple( args, "s", &s0 ) )
 		return NULL;
-	vptr = (void *) PyCObject_AsVoidPtr( o );
 
-	width = pl_flabelwidth_r( (plPlotter *) vptr, s0 );
+	width = pl_flabelwidth_r(self->pl, s0 );
 	return Py_BuildValue( "d", width );
 }
 
@@ -633,19 +619,15 @@ _symbol_end( plPlotter *pl, int type, double size )
 }
 
 static PyObject *
-symbols( PyObject *self, PyObject *args )
+symbols(struct PyLibPlot *self, PyObject *args)
 {
-	PyObject *o, *ox, *oy;
+	PyObject *ox, *oy;
 	PyArrayObject *x, *y;
 	double d0;
 	int i0, i, n;
-	void *vptr;
-	plPlotter *pl;
 
-	if ( !PyArg_ParseTuple( args, "OOOid", &o, &ox, &oy, &i0, &d0 ) )
+	if ( !PyArg_ParseTuple( args, "OOid", &ox, &oy, &i0, &d0 ) )
 		return NULL;
-	vptr = (void *) PyCObject_AsVoidPtr( o );
-	pl = (plPlotter *) vptr;
 
 	x = (PyArrayObject *)
 		PyArray_ContiguousFromObject( ox, PyArray_DOUBLE, 1, 1 );
@@ -657,37 +639,32 @@ symbols( PyObject *self, PyObject *args )
 
 	n = MIN( x->dimensions[0], y->dimensions[0] );
 
-	_symbol_begin( pl, i0, d0 );
+	_symbol_begin( self->pl, i0, d0 );
 
 	for ( i = 0; i < n; i++ )
-		_symbol_draw( pl, PyArray_1D(x,i), PyArray_1D(y,i), i0, d0 );
+		_symbol_draw( self->pl, PyArray_1D(x,i), PyArray_1D(y,i), i0, d0 );
 
-	_symbol_end( pl, i0, d0 );
+	_symbol_end( self->pl, i0, d0 );
 
 quit:
 	Py_XDECREF(x);
 	Py_XDECREF(y);
-	Py_INCREF( Py_None );
-	return Py_None;
+    Py_RETURN_NONE;
 }
 
 static PyObject *
-clipped_symbols( PyObject *self, PyObject *args )
+clipped_symbols(struct PyLibPlot *self, PyObject *args)
 {
-	PyObject *o, *ox, *oy;
+	PyObject *ox, *oy;
 	PyArrayObject *x, *y;
 	double xmin, xmax, ymin, ymax;
 	double d0;
 	int i0, i, n;
-	void *vptr;
-	plPlotter *pl;
 	double px, py;
 
-	if ( !PyArg_ParseTuple( args, "OOOiddddd", &o, &ox, &oy,
+	if ( !PyArg_ParseTuple( args, "OOiddddd", &ox, &oy,
 			&i0, &d0, &xmin, &xmax, &ymin, &ymax ) )
 		return NULL;
-	vptr = (void *) PyCObject_AsVoidPtr( o );
-	pl = (plPlotter *) vptr;
 
 	x = (PyArrayObject *)
 		PyArray_ContiguousFromObject( ox, PyArray_DOUBLE, 1, 1 );
@@ -699,7 +676,7 @@ clipped_symbols( PyObject *self, PyObject *args )
 
 	n = MIN( x->dimensions[0], y->dimensions[0] );
 
-	_symbol_begin( pl, i0, d0 );
+	_symbol_begin( self->pl, i0, d0 );
 
 	for ( i = 0; i < n; i++ )
 	{
@@ -708,36 +685,31 @@ clipped_symbols( PyObject *self, PyObject *args )
 
 		if ( px >= xmin && px <= xmax &&
 		     py >= ymin && py <= ymax )
-			_symbol_draw( pl, px, py, i0, d0 );
+			_symbol_draw( self->pl, px, py, i0, d0 );
 	}
 
-	_symbol_end( pl, i0, d0 );
+	_symbol_end( self->pl, i0, d0 );
 
 quit:
 	Py_XDECREF(x);
 	Py_XDECREF(y);
-	Py_INCREF( Py_None );
-	return Py_None;
+    Py_RETURN_NONE;
 }
 
 static PyObject *
-clipped_colored_symbols( PyObject *self, PyObject *args )
+clipped_colored_symbols(struct PyLibPlot *self, PyObject *args)
 {
-	PyObject *o, *ox, *oy, *oc;
+	PyObject *ox, *oy, *oc;
 	PyArrayObject *x, *y, *c;
 	double xmin, xmax, ymin, ymax;
 	double d0;
 	int i0, i, n;
-	void *vptr;
-	plPlotter *pl;
 	double px, py;
 	int r, g, b;
 
-	if ( !PyArg_ParseTuple( args, "OOOOiddddd", &o, &ox, &oy, &oc,
+	if ( !PyArg_ParseTuple( args, "OOOiddddd", &ox, &oy, &oc,
 			&i0, &d0, &xmin, &xmax, &ymin, &ymax ) )
 		return NULL;
-	vptr = (void *) PyCObject_AsVoidPtr( o );
-	pl = (plPlotter *) vptr;
 
 	x = (PyArrayObject *)
 		PyArray_ContiguousFromObject( ox, PyArray_DOUBLE, 1, 1 );
@@ -757,7 +729,7 @@ clipped_colored_symbols( PyObject *self, PyObject *args )
 	 *      PyArray_2D(c,0,0),PyArray_2D(c,0,1),PyArray_2D(c,0,2) );
 	 */
 	
-	_symbol_begin( pl, i0, d0 );
+	_symbol_begin( self->pl, i0, d0 );
 
 	for ( i = 0; i < n; i++ )
 	{
@@ -769,21 +741,94 @@ clipped_colored_symbols( PyObject *self, PyObject *args )
 			r = (int) floor( PyArray_2D(c,i,0)*65535 );
 			g = (int) floor( PyArray_2D(c,i,1)*65535 );
 			b = (int) floor( PyArray_2D(c,i,2)*65535 );
-			pl_fillcolor_r( (plPlotter *) vptr, r, g, b );
-			pl_pencolor_r(  (plPlotter *) vptr, r, g, b );
+			pl_fillcolor_r( self->pl, r, g, b );
+			pl_pencolor_r(  self->pl, r, g, b );
 		  
-			_symbol_draw( pl, px, py, i0, d0 );
+			_symbol_draw( self->pl, px, py, i0, d0 );
 		}
 	}
 
-	_symbol_end( pl, i0, d0 );
+	_symbol_end( self->pl, i0, d0 );
 
 quit:
 	Py_XDECREF(x);
 	Py_XDECREF(y);
 	Py_XDECREF(c);
-	Py_INCREF( Py_None );
-	return Py_None;
+    Py_RETURN_NONE;
+}
+
+
+
+static PyObject *
+curve(struct PyLibPlot *self, PyObject *args)
+{
+	PyObject *ox, *oy;
+	PyArrayObject *x, *y;
+	int i, n;
+
+	if ( !PyArg_ParseTuple( args, "OO", &ox, &oy ) )
+		return NULL;
+
+	x = (PyArrayObject *)
+		PyArray_ContiguousFromObject( ox, PyArray_DOUBLE, 1, 1 );
+	y = (PyArrayObject *)
+		PyArray_ContiguousFromObject( oy, PyArray_DOUBLE, 1, 1 );
+
+	if ( x == NULL || y == NULL )
+		goto quit;
+
+	n = MIN( x->dimensions[0], y->dimensions[0] );
+	if ( n <= 0 )
+		goto quit;
+
+	pl_fmove_r( self->pl, PyArray_1D(x,0), PyArray_1D(y,0) );
+	for ( i = 1; i < n; i++ )
+		pl_fcont_r( self->pl, PyArray_1D(x,i), PyArray_1D(y,i) );
+	pl_endpath_r( self->pl );
+
+quit:
+	Py_XDECREF(x);
+	Py_XDECREF(y);
+    Py_RETURN_NONE;
+}
+
+static PyObject *
+clipped_curve(struct PyLibPlot *self, PyObject *args)
+{
+	PyObject *ox, *oy;
+	PyArrayObject *x, *y;
+	double xmin, xmax, ymin, ymax;
+	int i, n;
+
+	if ( !PyArg_ParseTuple( args, "OOdddd", &ox, &oy,
+			&xmin, &xmax, &ymin, &ymax ) )
+		return NULL;
+
+	x = (PyArrayObject *)
+		PyArray_ContiguousFromObject( ox, PyArray_DOUBLE, 1, 1 );
+	y = (PyArrayObject *)
+		PyArray_ContiguousFromObject( oy, PyArray_DOUBLE, 1, 1 );
+
+	if ( x == NULL || y == NULL )
+		goto quit;
+
+	n = MIN( x->dimensions[0], y->dimensions[0] );
+	if ( n <= 0 )
+		goto quit;
+
+	for ( i = 0; i < n-1; i++ )
+	{
+		clipped_pl_fline_r( self->pl,
+			xmin, xmax, ymin, ymax,
+			PyArray_1D(x,i), PyArray_1D(y,i),
+			PyArray_1D(x,i+1), PyArray_1D(y,i+1) );
+	}
+	pl_endpath_r( self->pl );
+
+quit:
+	Py_XDECREF(x);
+	Py_XDECREF(y);
+    Py_RETURN_NONE;
 }
 
 
@@ -795,23 +840,20 @@ quit:
  */
 
 static PyObject *
-density_plot( PyObject *self, PyObject *args )
+density_plot(struct PyLibPlot *self, PyObject *args)
 {
-	PyObject *o, *ogrid;
+	PyObject *ogrid;
 	PyArrayObject *grid;
 	double xmin, xmax, ymin, ymax;
-	void *vptr;
-	plPlotter *pl;
 	
 	double px, py, dx, dy;
 	int    xi, yi, xn, yn;
 	int    r, g, b;
 
-	if ( !PyArg_ParseTuple( args, "OOdddd", &o, &ogrid,
+	if ( !PyArg_ParseTuple( args, "Odddd", &ogrid,
 				&xmin, &xmax, &ymin, &ymax ) )
 		return NULL;
-	vptr = (void *) PyCObject_AsVoidPtr( o );
-	pl = (plPlotter *) vptr;
+
 	grid = (PyArrayObject *)
 		PyArray_ContiguousFromObject( ogrid, PyArray_DOUBLE, 2, 2 );
 	if ( grid == NULL )
@@ -831,38 +873,34 @@ density_plot( PyObject *self, PyObject *args )
 	for   ( xi=0, px=xmin; xi < xn; xi++, px+=dx ) {
 	  for ( yi=0, py=ymin; yi < yn; yi++, py+=dy ) {
 	    r=g=b = (int) floor( PyArray_2D(grid,xi,yi)*65535 );
-	    pl_filltype_r ( (plPlotter *) vptr, 1.0 );
-	    pl_fillcolor_r( (plPlotter *) vptr, r, g, b );
-	    pl_pencolor_r ( (plPlotter *) vptr, r, g, b );
+	    pl_filltype_r ( self->pl, 1.0 );
+	    pl_fillcolor_r( self->pl, r, g, b );
+	    pl_pencolor_r ( self->pl, r, g, b );
 
-	    pl_fbox_r( pl, px, py, px+dx, py+dy );
+	    pl_fbox_r( self->pl, px, py, px+dx, py+dy );
 	  }
 	}
 
 quit:
 	Py_XDECREF(grid);
-	Py_INCREF( Py_None );
-	return Py_None;
+    Py_RETURN_NONE;
 }
 
 static PyObject *
-color_density_plot( PyObject *self, PyObject *args )
+color_density_plot(struct PyLibPlot *self, PyObject *args)
 {
-	PyObject *o, *ogrid;
+	PyObject *ogrid;
 	PyArrayObject *grid;
 	double xmin, xmax, ymin, ymax;
-	void *vptr;
-	plPlotter *pl;
 	
 	double px, py, dx, dy;
 	int    xi, yi, xn, yn;
 	int    r, g, b;
 
-	if ( !PyArg_ParseTuple( args, "OOdddd", &o, &ogrid,
+	if ( !PyArg_ParseTuple( args, "Odddd", &ogrid,
 				&xmin, &xmax, &ymin, &ymax ) )
 		return NULL;
-	vptr = (void *) PyCObject_AsVoidPtr( o );
-	pl = (plPlotter *) vptr;
+
 	grid = (PyArrayObject *)
 		PyArray_ContiguousFromObject( ogrid, PyArray_DOUBLE, 3, 3 );
 	if ( grid == NULL )
@@ -888,100 +926,17 @@ color_density_plot( PyObject *self, PyObject *args )
 	    r = (int) floor( PyArray_3D(grid,xi,yi,0)*65535 );
 	    g = (int) floor( PyArray_3D(grid,xi,yi,1)*65535 );
 	    b = (int) floor( PyArray_3D(grid,xi,yi,2)*65535 );
-	    pl_filltype_r ( (plPlotter *) vptr, 1.0 );
-	    pl_fillcolor_r( (plPlotter *) vptr, r, g, b );
-	    pl_pencolor_r ( (plPlotter *) vptr, r, g, b );
+	    pl_filltype_r ( self->pl, 1.0 );
+	    pl_fillcolor_r( self->pl, r, g, b );
+	    pl_pencolor_r ( self->pl, r, g, b );
 
-	    pl_fbox_r( pl, px, py, px+dx, py+dy );
+	    pl_fbox_r( self->pl, px, py, px+dx, py+dy );
 	  }
 	}
 
 quit:
 	Py_XDECREF(grid);
-	Py_INCREF( Py_None );
-	return Py_None;
-}
-
-static PyObject *
-curve( PyObject *self, PyObject *args )
-{
-	PyObject *o, *ox, *oy;
-	PyArrayObject *x, *y;
-	int i, n;
-	void *vptr;
-	plPlotter *pl;
-
-	if ( !PyArg_ParseTuple( args, "OOO", &o, &ox, &oy ) )
-		return NULL;
-	vptr = (void *) PyCObject_AsVoidPtr( o );
-	pl = (plPlotter *) vptr;
-
-	x = (PyArrayObject *)
-		PyArray_ContiguousFromObject( ox, PyArray_DOUBLE, 1, 1 );
-	y = (PyArrayObject *)
-		PyArray_ContiguousFromObject( oy, PyArray_DOUBLE, 1, 1 );
-
-	if ( x == NULL || y == NULL )
-		goto quit;
-
-	n = MIN( x->dimensions[0], y->dimensions[0] );
-	if ( n <= 0 )
-		goto quit;
-
-	pl_fmove_r( pl, PyArray_1D(x,0), PyArray_1D(y,0) );
-	for ( i = 1; i < n; i++ )
-		pl_fcont_r( pl, PyArray_1D(x,i), PyArray_1D(y,i) );
-	pl_endpath_r( pl );
-
-quit:
-	Py_XDECREF(x);
-	Py_XDECREF(y);
-	Py_INCREF( Py_None );
-	return Py_None;
-}
-
-static PyObject *
-clipped_curve( PyObject *self, PyObject *args )
-{
-	PyObject *o, *ox, *oy;
-	PyArrayObject *x, *y;
-	double xmin, xmax, ymin, ymax;
-	int i, n;
-	void *vptr;
-	plPlotter *pl;
-
-	if ( !PyArg_ParseTuple( args, "OOOdddd", &o, &ox, &oy,
-			&xmin, &xmax, &ymin, &ymax ) )
-		return NULL;
-	vptr = (void *) PyCObject_AsVoidPtr( o );
-	pl = (plPlotter *) vptr;
-
-	x = (PyArrayObject *)
-		PyArray_ContiguousFromObject( ox, PyArray_DOUBLE, 1, 1 );
-	y = (PyArrayObject *)
-		PyArray_ContiguousFromObject( oy, PyArray_DOUBLE, 1, 1 );
-
-	if ( x == NULL || y == NULL )
-		goto quit;
-
-	n = MIN( x->dimensions[0], y->dimensions[0] );
-	if ( n <= 0 )
-		goto quit;
-
-	for ( i = 0; i < n-1; i++ )
-	{
-		clipped_pl_fline_r( pl,
-			xmin, xmax, ymin, ymax,
-			PyArray_1D(x,i), PyArray_1D(y,i),
-			PyArray_1D(x,i+1), PyArray_1D(y,i+1) );
-	}
-	pl_endpath_r( pl );
-
-quit:
-	Py_XDECREF(x);
-	Py_XDECREF(y);
-	Py_INCREF( Py_None );
-	return Py_None;
+    Py_RETURN_NONE;
 }
 
 /*****************************************************************************
@@ -991,12 +946,12 @@ quit:
 static PyMethodDef PyLibPlot_methods[] = {
 
 	// ()
-	{ "clear", (PyCFunction)clear, METH_VARARGS },
-	{ "end_page", (PyCFunction)end_page, METH_VARARGS },
-	{ "flush", (PyCFunction)flush, METH_VARARGS },
-	{ "gsave", (PyCFunction)gsave, METH_VARARGS },
-	{ "grestore", (PyCFunction)grestore, METH_VARARGS },
-	{ "begin_page", (PyCFunction)begin_page, METH_VARARGS },
+	{ "clear", (PyCFunction)clear, METH_NOARGS },
+	{ "end_page", (PyCFunction)end_page, METH_NOARGS },
+	{ "flush", (PyCFunction)flush, METH_NOARGS },
+	{ "gsave", (PyCFunction)gsave, METH_NOARGS },
+	{ "grestore", (PyCFunction)grestore, METH_NOARGS },
+	{ "begin_page", (PyCFunction)begin_page, METH_NOARGS },
 
 	// (i)
 	{ "set_fill_level", (PyCFunction)set_fill_level, METH_VARARGS },
@@ -1029,33 +984,33 @@ static PyMethodDef PyLibPlot_methods[] = {
 	{ "clipped_line", (PyCFunction)clipped_line, METH_VARARGS },
 
 	// (s)
-	{ "set_colorname_bg", set_colorname_bg, METH_VARARGS },
-	{ "set_colorname_fg", set_colorname_fg, METH_VARARGS },
-	{ "set_colorname_fill", set_colorname_fill, METH_VARARGS },
-	{ "set_colorname_pen", set_colorname_pen, METH_VARARGS },
-	{ "set_fill_type", set_fill_type, METH_VARARGS },
-	{ "set_font_type", set_font_type, METH_VARARGS },
-	{ "set_join_type", set_join_type, METH_VARARGS },
-	{ "set_line_type", set_line_type, METH_VARARGS },
+	{ "set_colorname_bg", (PyCFunction)set_colorname_bg, METH_VARARGS },
+	{ "set_colorname_fg", (PyCFunction)set_colorname_fg, METH_VARARGS },
+	{ "set_colorname_fill", (PyCFunction)set_colorname_fill, METH_VARARGS },
+	{ "set_colorname_pen", (PyCFunction)set_colorname_pen, METH_VARARGS },
+	{ "set_fill_type", (PyCFunction)set_fill_type, METH_VARARGS },
+	{ "set_font_type", (PyCFunction)set_font_type, METH_VARARGS },
+	{ "set_join_type", (PyCFunction)set_join_type, METH_VARARGS },
+	{ "set_line_type", (PyCFunction)set_line_type, METH_VARARGS },
 
 	// color
-	{ "set_color_bg", set_color_bg, METH_VARARGS },
-	{ "set_color_fg", set_color_fg, METH_VARARGS },
-	{ "set_color_fill", set_color_fill, METH_VARARGS },
-	{ "set_color_pen", set_color_pen, METH_VARARGS },
+	{ "set_color_bg", (PyCFunction)set_color_bg, METH_VARARGS },
+	{ "set_color_fg", (PyCFunction)set_color_fg, METH_VARARGS },
+	{ "set_color_fill", (PyCFunction)set_color_fill, METH_VARARGS },
+	{ "set_color_pen", (PyCFunction)set_color_pen, METH_VARARGS },
 
-	{ "string", string, METH_VARARGS },
-	{ "get_string_width", get_string_width, METH_VARARGS },
+	{ "string", (PyCFunction)string, METH_VARARGS },
+	{ "get_string_width", (PyCFunction)get_string_width, METH_VARARGS },
 
-	{ "symbols", symbols, METH_VARARGS },
-	{ "curve", curve, METH_VARARGS },
+	{ "symbols", (PyCFunction)symbols, METH_VARARGS },
+	{ "clipped_symbols", (PyCFunction)clipped_symbols, METH_VARARGS },
+	{ "clipped_colored_symbols", (PyCFunction)clipped_colored_symbols, METH_VARARGS },
 
-	{ "clipped_symbols", clipped_symbols, METH_VARARGS },
-	{ "clipped_curve", clipped_curve, METH_VARARGS },
+	{ "curve", (PyCFunction)curve, METH_VARARGS },
+	{ "clipped_curve", (PyCFunction)clipped_curve, METH_VARARGS },
 
-	{ "clipped_colored_symbols", clipped_colored_symbols, METH_VARARGS },
-	{ "density_plot",	density_plot,		METH_VARARGS },
-	{ "color_density_plot", color_density_plot,	METH_VARARGS },
+	{ "density_plot",	(PyCFunction)density_plot,		METH_VARARGS },
+	{ "color_density_plot", (PyCFunction)color_density_plot,	METH_VARARGS },
 
     {NULL}  /* Sentinel */
 };
