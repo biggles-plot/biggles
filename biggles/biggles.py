@@ -2398,15 +2398,9 @@ class _PlotContainer( _ConfAttributes ):
         from .libplot.renderer import ScreenRenderer
         persistent = config.interactive() and \
                 config.bool('screen','persistent')
-        #device = renderer.ScreenRenderer( persistent, width, height )
+
         with ScreenRenderer( persistent, width, height ) as device:
             self.page_compose( device )
-        '''
-        try:
-            self.page_compose( device )
-        finally:
-            device.delete()
-        '''
 
     def show_win( self, width, height ):
         """
@@ -2493,37 +2487,27 @@ class _PlotContainer( _ConfAttributes ):
             import string
             width,height,filename = args
             type = string.lower( filename[-3:] )
-        #file = _open_output( filename )
 
         with ImageRenderer( type, width, height, filename ) as device:
             self.page_compose( device )
-        '''
-        try:
-            self.page_compose( device )
-        finally:
-            device.delete()
-        '''
-        #_close_output( file )
 
     save_as_eps = write_eps
     save_as_img = write_img
 
+    '''
     def draw_piddle( self, canvastype=None, size=(500,500) ):
         """
         what is this?
+
+        There is file device from which to import, so I'm going
+        to comment this
         """
         from device.piddle import PiddleRenderer
         device = PiddleRenderer( canvastype, size )
         self.page_compose( device )
         canvas = device.canvas
-        '''
-        try:
-            self.page_compose( device )
-            canvas = device.canvas
-        finally:
-            device.delete()
-        '''
         return canvas
+    '''
 
     def write_back_png( self, *args ):
         """
@@ -2542,13 +2526,14 @@ class _PlotContainer( _ConfAttributes ):
         return output
 
 def multipage( plots, filename, **kw ):
+    from .libplot.renderer import PSRenderer
     #file = _open_output( filename )
     opt = copy.copy( config.options("postscript") )
     opt.update( kw )
-    device = renderer.PSRenderer(filename, **opt )
-    #device = apply( renderer.PSRenderer, (file,), opt )
-    for plot in plots:
-        plot.page_compose( device )
+
+    with PSRenderer(filename, **opt ) as device:
+        for plot in plots:
+            plot.page_compose( device )
     '''
     try:
         for plot in plots:
