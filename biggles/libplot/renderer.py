@@ -22,10 +22,9 @@
 import math
 from . import _libplot_pywrap as libplot
 from ._libplot_pywrap import Plotter
-#import libplot, math
 #raw = libplot
 
-from tex2libplot import tex2libplot
+from .tex2libplot import tex2libplot
 
 ## polygon clipping
 
@@ -162,7 +161,8 @@ class LibplotRenderer(libplot.Plotter):
     def __enter__(self):
         return self
     def __exit__(self, exception_type, exception_value, traceback):
-        self.close()
+        pass
+        #self.flush()
 
 
     '''
@@ -425,6 +425,11 @@ class NonInteractiveScreenRenderer( LibplotRenderer ):
                                                           ur,
                                                           "X",
                                                           parameters )
+    def __exit__(self, exception_type, exception_value, traceback):
+        """
+        we don't close screen
+        """
+        self.flush()
 
 class InteractiveScreenRenderer( LibplotRenderer ):
 
@@ -442,6 +447,12 @@ class InteractiveScreenRenderer( LibplotRenderer ):
 
     def close( self ):
         #raw.flush( self.pl )
+        self.flush()
+
+    def __exit__(self, exception_type, exception_value, traceback):
+        """
+        we don't close screen
+        """
         self.flush()
 
     '''

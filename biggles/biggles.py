@@ -2446,23 +2446,45 @@ class _PlotContainer( _ConfAttributes ):
         '''
         printer.close()
 
-    def write_eps( self, filename, **kw ):
+    def write_eps_test( self, filename, **kw ):
         from .libplot.renderer import PSRenderer
 
         opt = copy.copy( config.options("postscript") )
         opt.update( kw )
+        print 'opening output'
+        with open(filename,'w') as fobj:
+
+            print 'entering renderer context'
+            with PSRenderer(fobj, **opt ) as device:
+                print 'composing'
+                self.page_compose( device )
+                device.flush()
+            print 'done composing'
+
+    def write_eps( self, filename, **kw ):
+        """
+        we don't use a context here because I think the compose actually keeps
+        referenes to the device. So despite the context the plotter is not
+        closed until the function exits.
+
+        This causes problems because it is still using the file when it
+        is closed.
+        """
+        from .libplot.renderer import PSRenderer
+
+        opt = copy.copy( config.options("postscript") )
+        opt.update( kw )
+
         file = _open_output( filename )
 
-        with PSRenderer(file, **opt ) as device:
-            self.page_compose( device )
+        device=PSRenderer(file, **opt )
+        self.page_compose( device )
 
-        '''
-        try:
-            self.page_compose( device )
-        finally:
-            device.delete()
-        '''
+        # so the plotter closes and stops accessing the file.
+        del device
+
         _close_output( file )
+
 
     def write_img( self, *args ):
         from .libplot.renderer import ImageRenderer
