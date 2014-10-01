@@ -22,11 +22,10 @@
 import copy, math, os, string
 import numpy
 
-import config, _biggles
-from geometry import *
+from . import config, _biggles, libplot
+from .geometry import *
 
-import libplot.renderer
-renderer = libplot.renderer
+from .libplot import renderer
 
 # miscellaneous ---------------------------------------------------------------
 
@@ -2255,6 +2254,7 @@ class Frame( _PlotComposite ):
 
 # _PlotContainer --------------------------------------------------------------
 
+'''
 def _open_output( filename ):
     if filename == '-':
         import sys
@@ -2268,6 +2268,7 @@ def _close_output( file ):
         file.close()
     else:
         file.flush()
+'''
 
 def _draw_text( device, p, str, **kw ):
     device.save_state()
@@ -2394,13 +2395,12 @@ class _PlotContainer( _ConfAttributes ):
                     % os.name )
 
     def show_x11( self, width, height ):
+        from .libplot.renderer import ScreenRenderer
         persistent = config.interactive() and \
                 config.bool('screen','persistent')
-        device = renderer.ScreenRenderer( persistent, width, height )
-        try:
+
+        with ScreenRenderer( persistent, width, height ) as device:
             self.page_compose( device )
-        finally:
-            device.delete()
 
     def show_win( self, width, height ):
         """
@@ -2416,8 +2416,11 @@ class _PlotContainer( _ConfAttributes ):
         self.write_img( width, height, tf )
         os.startfile( tf )
 
+    '''
     def psprint( self, printcmd=None, **kw ):
         import os, copy
+        from .libplot.renderer import PSRenderer
+
         if os.name != 'posix':
             _message( "psprint: system type '%s' not supported" \
                     % os.name )
@@ -2426,54 +2429,85 @@ class _PlotContainer( _ConfAttributes ):
         opt = copy.copy( config.options("postscript") )
         opt.update( kw )
         _message( 'printing plot with "%s"' % printcmd )
+
         printer = os.popen( printcmd, 'w' )
-        device = renderer.PSRenderer(printer, **opt )
-        #device = apply( renderer.PSRenderer, (printer,), opt )
-        try:
+
+        with PSRenderer(printer, **opt ) as device:
             self.page_compose( device )
-        finally:
-            device.delete()
+
         printer.close()
+    '''
 
     def write_eps( self, filename, **kw ):
+        """
+        write the plot to postscript. Extra keywords can be
+        sent 
+        """
+        from .libplot.renderer import PSRenderer
+
         opt = copy.copy( config.options("postscript") )
         opt.update( kw )
-        file = _open_output( filename )
-        device = renderer.PSRenderer( file, **opt )
-        #device = apply( renderer.PSRenderer, (file,), opt )
-        try:
+
+        with PSRenderer(filename, **opt ) as device:
             self.page_compose( device )
-        finally:
-            device.delete()
-        _close_output( file )
+
+
+    def write_eps_old( self, filename, **kw ):
+        """
+
+        we don't use a context for the renderer here because I think the
+        compose actually keeps referenes to the device. So despite the context
+        the plotter is not closed until the function exits.
+
+        This causes problems because it is still using the file when it
+        is closed.
+        """
+        from .libplot.renderer import PSRenderer
+
+        opt = copy.copy( config.options("postscript") )
+        opt.update( kw )
+
+        #file = _open_output( filename )
+
+        #device=PSRenderer(file, **opt )
+        device=PSRenderer(filename, **opt )
+        self.page_compose( device )
+
+        # so the internal plPlotter closes and stops accessing the file.
+        del device
+
+        #_close_output( file )
+
 
     def write_img( self, *args ):
+        from .libplot.renderer import ImageRenderer
         if len(args) == 4:
             type,width,height,filename = args
         elif len(args) == 3:
             import string
             width,height,filename = args
             type = string.lower( filename[-3:] )
-        file = _open_output( filename )
-        device = renderer.ImageRenderer( type, width, height, file )
-        try:
+
+        with ImageRenderer( type, width, height, filename ) as device:
             self.page_compose( device )
-        finally:
-            device.delete()
-        _close_output( file )
 
     save_as_eps = write_eps
     save_as_img = write_img
 
+    '''
     def draw_piddle( self, canvastype=None, size=(500,500) ):
+        """
+        what is this?
+
+        There is file device from which to import, so I'm going
+        to comment this
+        """
         from device.piddle import PiddleRenderer
         device = PiddleRenderer( canvastype, size )
-        try:
-            self.page_compose( device )
-            canvas = device.canvas
-        finally:
-            device.delete()
+        self.page_compose( device )
+        canvas = device.canvas
         return canvas
+    '''
 
     def write_back_png( self, *args ):
         """
@@ -2492,17 +2526,26 @@ class _PlotContainer( _ConfAttributes ):
         return output
 
 def multipage( plots, filename, **kw ):
-    file = _open_output( filename )
+    """
+    Write the plot objects to the file as postscript, one per page
+
+    parameters
+    ----------
+    plots: list
+        A list of plot objects, e.g. FramedPlot etc.
+    filename: string
+        The file for the postscript file.
+    **kw:
+        Extra keywords
+    """
+    from .libplot.renderer import PSRenderer
+
     opt = copy.copy( config.options("postscript") )
     opt.update( kw )
-    device = renderer.PSRenderer( file, **opt )
-    #device = apply( renderer.PSRenderer, (file,), opt )
-    try:
+
+    with PSRenderer(filename, **opt ) as device:
         for plot in plots:
             plot.page_compose( device )
-    finally:
-        device.delete()
-    _close_output( file )
 
 # -----------------------------------------------------------------------------
 
