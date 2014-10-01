@@ -81,9 +81,18 @@ static int extract_params(PyObject* params_dict, plPlotterParams *params)
 
 	if ( PyDict_Check(params_dict) ) {
 		while ( PyDict_Next( params_dict, &pos, &key, &value ) ) {
-			skey = PyString_AsString( key );
-			svalue = PyString_AsString( value );
+			PyObject *tmp1, *tmp2;
+
+			tmp1 = PyObject_CallMethod(key,"encode",NULL);
+			skey = PyBytes_AsString(tmp1);
+
+			tmp2 = PyObject_CallMethod(value,"encode",NULL);
+			svalue = PyBytes_AsString(tmp2);
+
 			pl_setplparam( params, skey, svalue );
+
+			Py_XDECREF(tmp1);
+			Py_XDECREF(tmp2);
 		}
         status=1;
 	} else if ( params_dict != Py_None ) {
