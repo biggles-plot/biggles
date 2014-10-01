@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
-import sys
-sys.path.insert(1,'..')
-
 import biggles
 import numpy, math
 
