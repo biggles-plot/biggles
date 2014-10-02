@@ -101,6 +101,7 @@ else:
                 candidate_dirs.append( head )
 
     candidate_dirs.append( '/usr/local' )
+    candidate_dirs.append( '/opt/local' )
 
     candidate_lib_dirs = []
     for dir in candidate_dirs:
