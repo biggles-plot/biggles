@@ -72,33 +72,76 @@ struct PyLibPlot {
     plPlotter *pl;
 };
 
+/*
+   Deal with all the python3 vs python2 string issues
+*/
+static int set_param_from_key_value(plPlotterParams *params,
+                                     PyObject *key,
+                                     PyObject *value)
+{
+    int status=0;
+	char *skey=NULL, *svalue=NULL;
+
+#if PY_MAJOR_VERSION >= 3
+
+    PyObject *tmp1, *tmp2;
+
+    tmp1 = PyObject_CallMethod(key,"encode",NULL);
+    if (!tmp1) {
+        goto bail;
+    }
+    skey = PyBytes_AsString(tmp1);
+
+    tmp2 = PyObject_CallMethod(value,"encode",NULL);
+    if (!tmp2) {
+        goto bail;
+    }
+    svalue = PyBytes_AsString(tmp2);
+
+#else
+
+    skey = PyString_AsString( key );
+    if (!skey) {
+        goto bail;
+    }
+    svalue = PyString_AsString( value );
+    if (!svalue) {
+        goto bail;
+    }
+
+#endif
+
+    pl_setplparam( params, skey, svalue );
+
+#if PY_MAJOR_VERSION >= 3
+    Py_XDECREF(tmp1);
+    Py_XDECREF(tmp2);
+#endif
+
+    status=1;
+
+bail:
+    return status;
+}
+
 static int extract_params(PyObject* params_dict, plPlotterParams *params)
 {
     int status=0;
 	PyObject *key=NULL, *value=NULL;
-	char *skey=NULL, *svalue=NULL;
     Py_ssize_t pos=0;
 
 	if ( PyDict_Check(params_dict) ) {
 		while ( PyDict_Next( params_dict, &pos, &key, &value ) ) {
-			PyObject *tmp1, *tmp2;
-
-			tmp1 = PyObject_CallMethod(key,"encode",NULL);
-			skey = PyBytes_AsString(tmp1);
-
-			tmp2 = PyObject_CallMethod(value,"encode",NULL);
-			svalue = PyBytes_AsString(tmp2);
-
-			pl_setplparam( params, skey, svalue );
-
-			Py_XDECREF(tmp1);
-			Py_XDECREF(tmp2);
+            if (!set_param_from_key_value(params, key, value)) {
+                goto bail;
+            }
 		}
         status=1;
 	} else if ( params_dict != Py_None ) {
 		PyErr_SetString( PyExc_TypeError, "params are not a dict" );
 	}
 
+bail:
     return status;
 }
 
