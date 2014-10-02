@@ -74,6 +74,10 @@ struct PyLibPlot {
 
 /*
    Deal with all the python3 vs python2 string issues
+
+   PyBytes has been backported to newer python2 as a fake alias, but doesn't
+   exist for older versions.
+
 */
 static int set_param_from_key_value(plPlotterParams *params,
                                      PyObject *key,
