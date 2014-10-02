@@ -340,23 +340,15 @@ biggles_hammer_call_vec( PyObject *self, PyObject *args )
 	if ( !PyArg_ParseTuple(args, "OOddd", &ol, &ob, &l0, &b0, &rot) )
 		return NULL;
 
-    /*
-	l = 
-		PyArray_ContiguousFromObject( ol, PyArray_DOUBLE, 1, 1 );
-	b = (PyArrayObject *)
-		PyArray_ContiguousFromObject( ob, PyArray_DOUBLE, 1, 1 );
-    */
+    // 1-d C contiguous
 	l = PyArray_ContiguousFromAny( ol, PyArray_DOUBLE, 1, 1 );
 	b = PyArray_ContiguousFromAny( ob, PyArray_DOUBLE, 1, 1 );
 
 	if ( l == NULL || b == NULL )
 		goto quit0;
 
-	//n = BGL_MIN( l->dimensions[0], b->dimensions[0] );
-	n = BGL_MIN( PyArray_DIM(l,0), PyArray_DIM(b,0) );
+	n = BGL_MIN( PyArray_SIZE(l), PyArray_SIZE(b) );
 
-	//u = (PyArrayObject *) PyArray_FromDims( 1, &n, PyArray_DOUBLE );
-	//v = (PyArrayObject *) PyArray_FromDims( 1, &n, PyArray_DOUBLE );
     u = PyArray_ZEROS(1, &n, NPY_DOUBLE, 0);
     v = PyArray_ZEROS(1, &n, NPY_DOUBLE, 0);
 
