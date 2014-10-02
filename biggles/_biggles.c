@@ -49,7 +49,7 @@ biggles_range( PyObject *self, PyObject *args )
 {
 	PyObject *input;
 	PyArrayObject *x;
-	int i, n;
+	npy_intp i, n;
 	double *dp, min, max;
 
 	if ( !PyArg_ParseTuple(args, "O", &input) )
