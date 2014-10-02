@@ -28,14 +28,19 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#define PyArray_1D(v,i)\
-	(*((double *)((v)->data+(i)*(v)->strides[0])))
+// #define PyArray_1D(v,i) (*((double *)((v)->data+(i)*(v)->strides[0])))
+#define BGL_ArrayDouble1(v,i)\
+	(*(double *)PyArray_GETPTR1((PyObject*)(v),i))
 
-#define PyArray_1D_ptr(v,i)\
-	((double *)((v)->data+(i)*(v)->strides[0]))
+//#define PyArray_1D_ptr(v,i) ((double *)((v)->data+(i)*(v)->strides[0]))
+#define BGL_ArrayDouble1_ptr(v,i)\
+	((double *)PyArray_GETPTR1((PyObject*)(v),i))
 
-#define PyArray_2D(m,i,j)\
-	(*((double *)((m)->data+(i)*(m)->strides[0]+(j)*(m)->strides[1])))
+
+//#define PyArray_2D(m,i,j) (*((double *)((m)->data+(i)*(m)->strides[0]+(j)*(m)->strides[1])))
+#define BGL_ArrayDouble2(v,i,j)\
+	(*(double *)PyArray_GETPTR2((PyObject*)(v),i,j))
+
 
 /*
  *  I wish min/max(z) worked.
@@ -150,9 +155,9 @@ _pixel_interpolate( PyArrayObject *x, PyArrayObject *y, PyArrayObject *z,
 		ii = i + (k/2 % 2);
 		jj = j + ((k+1)/2 % 2);
 
-		p[k][0] = PyArray_1D(x,ii);
-		p[k][1] = PyArray_1D(y,jj);
-		p[k][2] = PyArray_2D(z,ii,jj) - z0;
+		p[k][0] = BGL_ArrayDouble1(x,ii);
+		p[k][1] = BGL_ArrayDouble1(y,jj);
+		p[k][2] = BGL_ArrayDouble2(z,ii,jj) - z0;
 
 		for ( l = 0; l < 3; l++ )
 			p[4][l] += 0.25 * p[k][l];
@@ -356,9 +361,9 @@ biggles_hammer_call_vec( PyObject *self, PyObject *args )
 
 	for ( i = 0; i < n; i++ )
 	{
-		_lb_input( PyArray_1D(l,i), PyArray_1D(b,i),
+		_lb_input( BGL_ArrayDouble1(l,i), BGL_ArrayDouble1(b,i),
 			l0, b0, rot, &ll, &bb );
-		_lb2uv( ll, bb, PyArray_1D_ptr(u,i), PyArray_1D_ptr(v,i) );
+		_lb2uv( ll, bb, BGL_ArrayDouble1_ptr(u,i), BGL_ArrayDouble1_ptr(v,i) );
 	}
 
 	ret = Py_BuildValue( "OO", u, v );
@@ -435,8 +440,8 @@ biggles_hammer_geodesic_fill( PyObject *self, PyObject *args )
 
 	for ( i = 0; i < n-1; i++ )
 		_lb_geodesic( div,
-			PyArray_1D(l,i), PyArray_1D(b,i),
-			PyArray_1D(l,i+1), PyArray_1D(b,i+1),
+			BGL_ArrayDouble1(l,i), BGL_ArrayDouble1(b,i),
+			BGL_ArrayDouble1(l,i+1), BGL_ArrayDouble1(b,i+1),
 			((double *)l2->data) + i*div,
 			((double *)b2->data) + i*div );
 
