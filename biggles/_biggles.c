@@ -111,7 +111,7 @@ biggles_range( PyObject *self, PyObject *args )
  *
  */
  
-#define MAX_SEGS 4
+#define BGL_MAX_SEGS 4
 
 static int
 _find_zero( double p[3], double q[3], double zero[2] )
@@ -137,7 +137,7 @@ _find_zero( double p[3], double q[3], double zero[2] )
 
 static int
 _pixel_interpolate( PyArrayObject *x, PyArrayObject *y, PyArrayObject *z,
-	double z0, int i, int j, double segs[MAX_SEGS][4] )
+	double z0, int i, int j, double segs[BGL_MAX_SEGS][4] )
 {
 	int k, l, ii, jj, kk;
 	double p[5][3], zeros[3][2];
@@ -189,7 +189,7 @@ biggles_contour_segments( PyObject *self, PyObject *args )
 	PyObject *ox, *oy, *oz, *list, *ref;
 	PyArrayObject *x, *y, *z;
 	double z0;
-	double segs[MAX_SEGS][4];
+	double segs[BGL_MAX_SEGS][4];
 	int i, j, k, ns;
 
 	list = NULL;
