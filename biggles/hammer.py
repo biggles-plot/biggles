@@ -115,14 +115,14 @@ class HammerAitoffPlot( _PlotContainer ):
         pc = _PlotComposite()
 
         nl = self.ribs_l
-        b = _series( -90/2, 90/2, 2*math.pi/180. )
+        b = _series( -90//2, 90//2, 2*math.pi/180. )
         for l0 in _series( -nl, nl, math.pi/nl ):
             c = Curve( [l0]*len(b), b, **self.ribs_style )
             #c = apply( Curve, ([l0]*len(b), b), self.ribs_style )
             pc.add( c )
 
         nb = self.ribs_b
-        l = _series( -180/2, 180/2, 2*math.pi/180. )
+        l = _series( -180//2, 180//2, 2*math.pi/180. )
         for b0 in _series( -nb, nb, 0.5*math.pi/(nb+1) ):
             c = Curve( l, [b0]*len(l), **self.ribs_style )
             #c = apply( Curve, (l, [b0]*len(l)), self.ribs_style )
