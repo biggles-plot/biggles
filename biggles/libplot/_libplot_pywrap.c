@@ -34,20 +34,6 @@ typedef int bool_t;
 #define M_PI 3.14159265358979323846
 #endif
 
-/*
-#define PyArray_1D(v,i)\
-	(*((double *)((v)->data+(i)*(v)->strides[0])))
-
-#define PyArray_2D(m,i,j)\
-	(*((double *)((m)->data+(i)*(m)->strides[0]+(j)*(m)->strides[1])))
-
-#define PyArray_3D(m,i,j,k)\
-	(*((double *) ( (m)->data + \
-			(i)*(m)->strides[0] + \
-			(j)*(m)->strides[1] + \
-			(k)*(m)->strides[2])) )
-*/
-
 #define BGL_ArrayDouble1(v,i)\
 	(*(double *)PyArray_GETPTR1((PyObject*)(v),i))
 

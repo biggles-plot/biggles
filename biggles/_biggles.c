@@ -28,16 +28,12 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-// #define PyArray_1D(v,i) (*((double *)((v)->data+(i)*(v)->strides[0])))
 #define BGL_ArrayDouble1(v,i)\
 	(*(double *)PyArray_GETPTR1((PyObject*)(v),i))
 
-//#define PyArray_1D_ptr(v,i) ((double *)((v)->data+(i)*(v)->strides[0]))
 #define BGL_ArrayDouble1_ptr(v,i)\
 	((double *)PyArray_GETPTR1((PyObject*)(v),i))
 
-
-//#define PyArray_2D(m,i,j) (*((double *)((m)->data+(i)*(m)->strides[0]+(j)*(m)->strides[1])))
 #define BGL_ArrayDouble2(v,i,j)\
 	(*(double *)PyArray_GETPTR2((PyObject*)(v),i,j))
 
