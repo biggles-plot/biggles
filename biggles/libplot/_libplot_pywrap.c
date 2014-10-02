@@ -59,8 +59,8 @@ typedef int bool_t;
 
 
 
-#define MIN(a,b) (((a) < (b)) ? (a) : (b))
-#define MAX(a,b) (((a) > (b)) ? (a) : (b))
+#define BGL_MIN(a,b) (((a) < (b)) ? (a) : (b))
+#define BGL_MAX(a,b) (((a) > (b)) ? (a) : (b))
 
 /*****************************************************************************
  *  clipping code
@@ -657,7 +657,7 @@ symbols(struct PyLibPlot *self, PyObject *args)
 	if ( x == NULL || y == NULL )
 		goto quit;
 
-	n = MIN( x->dimensions[0], y->dimensions[0] );
+	n = BGL_MIN( x->dimensions[0], y->dimensions[0] );
 
 	_symbol_begin( self->pl, i0, d0 );
 
@@ -694,7 +694,7 @@ clipped_symbols(struct PyLibPlot *self, PyObject *args)
 	if ( x == NULL || y == NULL )
 		goto quit;
 
-	n = MIN( x->dimensions[0], y->dimensions[0] );
+	n = BGL_MIN( x->dimensions[0], y->dimensions[0] );
 
 	_symbol_begin( self->pl, i0, d0 );
 
@@ -741,8 +741,8 @@ clipped_colored_symbols(struct PyLibPlot *self, PyObject *args)
 	if ( x == NULL || y == NULL || c == NULL )
 		goto quit;
 
-	n = MIN( x->dimensions[0], y->dimensions[0] );
-	n = MIN( n, c->dimensions[0] );
+	n = BGL_MIN( x->dimensions[0], y->dimensions[0] );
+	n = BGL_MIN( n, c->dimensions[0] );
 
 	/* printf("c dims %dx%d first rgb %g,%g,%g\n",
 	 *      c->dimensions[0], c->dimensions[1],
@@ -797,7 +797,7 @@ curve(struct PyLibPlot *self, PyObject *args)
 	if ( x == NULL || y == NULL )
 		goto quit;
 
-	n = MIN( x->dimensions[0], y->dimensions[0] );
+	n = BGL_MIN( x->dimensions[0], y->dimensions[0] );
 	if ( n <= 0 )
 		goto quit;
 
@@ -832,7 +832,7 @@ clipped_curve(struct PyLibPlot *self, PyObject *args)
 	if ( x == NULL || y == NULL )
 		goto quit;
 
-	n = MIN( x->dimensions[0], y->dimensions[0] );
+	n = BGL_MIN( x->dimensions[0], y->dimensions[0] );
 	if ( n <= 0 )
 		goto quit;
 
