@@ -66,10 +66,10 @@ typedef int bool_t;
  *  clipping code
  */
 
-#define TOP	0x1
-#define BOTTOM	0x2
-#define RIGHT	0x4
-#define LEFT	0x8
+#define BGL_TOP	0x1
+#define BGL_BOTTOM	0x2
+#define BGL_RIGHT	0x4
+#define BGL_LEFT	0x8
 
 
 /*
@@ -256,10 +256,10 @@ outcode( double x, double y,
 {
 	unsigned char code = 0x0;
 
-	if ( x < xmin ) code |= LEFT;
-	if ( x > xmax ) code |= RIGHT;
-	if ( y < ymin ) code |= BOTTOM;
-	if ( y > ymax ) code |= TOP;
+	if ( x < xmin ) code |= BGL_LEFT;
+	if ( x > xmax ) code |= BGL_RIGHT;
+	if ( y < ymin ) code |= BGL_BOTTOM;
+	if ( y > ymax ) code |= BGL_TOP;
 
 	return code;
 }
@@ -296,22 +296,22 @@ cohen_sutherland( double xmin, double xmax, double ymin, double ymax,
 		{
 			out = ( out0 != 0 ) ? out0 : out1 ;
 
-			if ( (out & TOP) != 0 )
+			if ( (out & BGL_TOP) != 0 )
 			{
 				x = x0 + (x1 - x0)*(ymax - y0)/(y1 - y0);
 				y = ymax;
 			}
-			else if ( (out & BOTTOM) != 0 )
+			else if ( (out & BGL_BOTTOM) != 0 )
 			{
 				x = x0 + (x1 - x0)*(ymin - y0)/(y1 - y0);
 				y = ymin;
 			}
-			else if ( (out & RIGHT) != 0 )
+			else if ( (out & BGL_RIGHT) != 0 )
 			{
 				y = y0 + (y1 - y0)*(xmax - x0)/(x1 - x0);
 				x = xmax;
 			}
-			else if ( (out & LEFT) != 0 )
+			else if ( (out & BGL_LEFT) != 0 )
 			{
 				y = y0 + (y1 - y0)*(xmin - x0)/(x1 - x0);
 				x = xmin;
