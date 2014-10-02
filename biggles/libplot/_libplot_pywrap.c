@@ -176,7 +176,6 @@ PyLibPlot_init(struct PyLibPlot* self, PyObject *args, PyObject *kwds)
 
     if (0 != strcmp(filename, "")) {
         // a filename was passed
-        fprintf(stderr,"opening %s\n", filename);
         self->fptr = fopen(filename,"w");
         if (self->fptr==NULL) {
             fprintf(stderr,"error opening %s\n", filename);
@@ -212,7 +211,6 @@ PyLibPlot_dealloc(struct PyLibPlot* self)
 
     // must be closed *after* deleting the plPlotter
     if (self->fptr != NULL) {
-        fprintf(stderr,"closing the file pointer\n");
         fclose(self->fptr);
     }
 
