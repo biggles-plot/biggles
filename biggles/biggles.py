@@ -19,11 +19,12 @@
 # Boston, MA  02111-1307, USA.
 #
 
-import copy, math, os, string
+from __future__ import print_function
+import copy, math, os
 import numpy
 
-from . import config, _biggles, libplot
-from .geometry import *
+from . import config, _biggles
+from geometry import *
 
 from .libplot import renderer
 
@@ -43,7 +44,7 @@ def _tsil(x):
     return l
 
 def _message( s ):
-    print "biggles:", s
+    print( "biggles: %s" % s )
 
 def _series( m, n, a=1, b=0 ):
     return map( lambda x,y=a,z=b: x*y+z, range(m, n+1) )
@@ -238,11 +239,11 @@ class _ConfAttributes(object):
                 The keyword/value pairs to set.
                         self.key=val
         """
-        import copy, string
+        import copy
         sec = config.options( section )
         if sec is not None:
             for key,val in sec.items():
-                x = string.split( key, "." )
+                x = key.split( "." )
                 obj = self
                 for y in x[:-1]:
                     obj = getattr( obj, y )
@@ -2484,9 +2485,8 @@ class _PlotContainer( _ConfAttributes ):
         if len(args) == 4:
             type,width,height,filename = args
         elif len(args) == 3:
-            import string
             width,height,filename = args
-            type = string.lower( filename[-3:] )
+            type = filename[-3:].lower()
 
         with ImageRenderer( type, width, height, filename ) as device:
             self.page_compose( device )
@@ -3102,8 +3102,7 @@ class Text( _PlotContainer ):
         #apply( _PlotContainer.__init__, (self,) )
         self.conf_setattr( "Text", **kw )
         #apply( self.conf_setattr, ("Text",), kw )
-        import string
-        self.lines = string.split( text, "\n" )
+        self.lines = text.split( "\n" )
         if self.lines[0] == '':
             del self.lines[0]
         if self.lines[-1] == '':

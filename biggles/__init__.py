@@ -21,7 +21,7 @@
 
 __version__ = '1.6.7'
 
-from biggles import              \
+from .biggles import              \
     Circle                  ,\
     Circles                 ,\
     ColoredPoint            ,\
@@ -67,19 +67,19 @@ from biggles import              \
     UpperLimits             ,\
     multipage
 
-from config import               \
+from .config import               \
     configure
 
-from contour import              \
+from .contour import              \
     Contour                 ,\
     Contours
 
-from func import             \
+from .func import             \
     plot                    ,\
     make_hist               ,\
     plot_hist
 
-from hammer import               \
+from .hammer import               \
     HammerAitoffPlot
 
 # aliases

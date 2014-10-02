@@ -20,29 +20,28 @@
 #
 
 import ConfigParser
-from string import atoi, split, strip
 
 def _atox( x ):
-    x = strip( x )
+    x = x.strip()
     if x == "None":
         return None
     if x == 'False':
         return False
     if x == 'True':
         return True
-    try: return atoi( x, 0 )
+    try: return int( x, 0 )
     except ValueError:
         try: return float(x)
         except ValueError:
             pass
     if x[0] == "{" and x[-1] == "}":
         style = {}
-        pairs = map( strip, split(x[1:-1], ",") )
+        pairs = map( lambda c: c.strip(), x[1:-1].split(",") )
         for pair in pairs:
             if pair == "":
                 continue
-            key,val = split( pair, ":" )
-            style[ strip(key) ] = _atox( strip(val) )
+            key,val = pair.split( ":" )
+            style[ key.strip() ] = _atox( val.strip() )
         return style
     return x
 

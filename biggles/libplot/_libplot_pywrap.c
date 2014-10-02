@@ -72,24 +72,80 @@ struct PyLibPlot {
     plPlotter *pl;
 };
 
+/*
+   Deal with all the python3 vs python2 string issues
+
+   PyBytes has been backported to newer python2 as a fake alias, but doesn't
+   exist for older versions.
+
+*/
+static int set_param_from_key_value(plPlotterParams *params,
+                                     PyObject *key,
+                                     PyObject *value)
+{
+    int status=0;
+	char *skey=NULL, *svalue=NULL;
+
+#if PY_MAJOR_VERSION >= 3
+
+    PyObject *tmp1, *tmp2;
+
+    tmp1 = PyObject_CallMethod(key,"encode",NULL);
+    if (!tmp1) {
+        goto bail;
+    }
+    skey = PyBytes_AsString(tmp1);
+
+    tmp2 = PyObject_CallMethod(value,"encode",NULL);
+    if (!tmp2) {
+        goto bail;
+    }
+    svalue = PyBytes_AsString(tmp2);
+
+#else
+
+    skey = PyString_AsString( key );
+    if (!skey) {
+        goto bail;
+    }
+    svalue = PyString_AsString( value );
+    if (!svalue) {
+        goto bail;
+    }
+
+#endif
+
+    pl_setplparam( params, skey, svalue );
+
+#if PY_MAJOR_VERSION >= 3
+    Py_XDECREF(tmp1);
+    Py_XDECREF(tmp2);
+#endif
+
+    status=1;
+
+bail:
+    return status;
+}
+
 static int extract_params(PyObject* params_dict, plPlotterParams *params)
 {
     int status=0;
 	PyObject *key=NULL, *value=NULL;
-	char *skey=NULL, *svalue=NULL;
     Py_ssize_t pos=0;
 
 	if ( PyDict_Check(params_dict) ) {
 		while ( PyDict_Next( params_dict, &pos, &key, &value ) ) {
-			skey = PyString_AsString( key );
-			svalue = PyString_AsString( value );
-			pl_setplparam( params, skey, svalue );
+            if (!set_param_from_key_value(params, key, value)) {
+                goto bail;
+            }
 		}
         status=1;
 	} else if ( params_dict != Py_None ) {
 		PyErr_SetString( PyExc_TypeError, "params are not a dict" );
 	}
 
+bail:
     return status;
 }
 
@@ -98,8 +154,6 @@ PyLibPlot_init(struct PyLibPlot* self, PyObject *args, PyObject *kwds)
 {
     int status=0;
 	PyObject *params_dict=NULL;
-	//PyObject *ofile=NULL;
-	//FILE *outfile=NULL;
 	char *type=NULL;
     char *filename=NULL;
 	plPlotterParams *params;
@@ -122,7 +176,6 @@ PyLibPlot_init(struct PyLibPlot* self, PyObject *args, PyObject *kwds)
 
     if (0 != strcmp(filename, "")) {
         // a filename was passed
-        fprintf(stderr,"opening %s\n", filename);
         self->fptr = fopen(filename,"w");
         if (self->fptr==NULL) {
             fprintf(stderr,"error opening %s\n", filename);
@@ -130,15 +183,6 @@ PyLibPlot_init(struct PyLibPlot* self, PyObject *args, PyObject *kwds)
             goto bail;
         }
     }
-
-    /*
-	if ( PyFile_Check(ofile) ) {
-		outfile = PyFile_AsFile( ofile );
-	} else if ( ofile != Py_None ) {
-		PyErr_SetString( PyExc_TypeError, "input file neither a file or None" );
-        goto bail;
-	}
-    */
 
 	self->pl = pl_newpl_r( type, NULL, self->fptr, NULL, params );
 	if (!self->pl) {
@@ -167,7 +211,6 @@ PyLibPlot_dealloc(struct PyLibPlot* self)
 
     // must be closed *after* deleting the plPlotter
     if (self->fptr != NULL) {
-        fprintf(stderr,"closing the file pointer\n");
         fclose(self->fptr);
     }
 
@@ -204,11 +247,6 @@ outcode( double x, double y,
 	if ( x > xmax ) code |= RIGHT;
 	if ( y < ymin ) code |= BOTTOM;
 	if ( y > ymax ) code |= TOP;
-
-	/*
-	printf( "%d (%g,%g,%g) (%g,%g,%g)\n",
-		code, xmin, x, xmax, ymin, y, ymax );
-	*/
 
 	return code;
 }
@@ -314,62 +352,6 @@ clipped_pl_fline_r( plPlotter *pl,
  *
  */
 
-/*
-static PyObject *
-new( PyObject *self, PyObject *args )
-{
-	PyObject *o, *odict, *ofile, *key, *value;
-	Py_ssize_t pos;
-	char *type, *skey, *svalue;
-	FILE *outfile;
-	plPlotterParams *params;
-	plPlotter *pl;
-
-	if ( !PyArg_ParseTuple( args, "sOO", &type, &odict, &ofile ) )
-		return NULL;
-
-	params = pl_newplparams();
-
-	if ( PyDict_Check(odict) )
-	{
-		pos = 0;
-		while ( PyDict_Next( odict, &pos, &key, &value ) )
-		{
-			skey = PyString_AsString( key );
-			svalue = PyString_AsString( value );
-			pl_setplparam( params, skey, svalue );
-		}
-	}
-	else if ( odict != Py_None )
-	{
-		PyErr_SetString( PyExc_TypeError, "not a dict" );
-		return NULL;
-	}
-
-	outfile = NULL;
-
-	if ( PyFile_Check(ofile) )
-	{
-		outfile = PyFile_AsFile( ofile );
-	}
-	else if ( ofile != Py_None )
-	{
-		PyErr_SetString( PyExc_TypeError, "not a file" );
-		return NULL;
-	}
-
-	pl = pl_newpl_r( type, NULL, outfile, NULL, params );
-	pl_deleteplparams( params );
-
-	if (!pl) {
-		PyErr_SetString(PyExc_RuntimeError, "could not create plotter");
-		return NULL;
-	}
-
-	o = PyCObject_FromVoidPtr( (void *) pl, NULL );
-	return Py_BuildValue( "O", o );
-}
-*/
 
 /******************************************************************************
  */
@@ -889,11 +871,6 @@ density_plot(struct PyLibPlot *self, PyObject *args)
 	dx = (xmax - xmin) / xn;
 	dy = (ymax - ymin) / yn;
 
-	/* printf("grid dims %dx%d from (%g,%g) to (%g,%g) first row %g,%g,%g,...\n",
-	 *      grid->dimensions[0], grid->dimensions[1],
-	 *      xmin, ymin, xmax, ymax,
-	 *      PyArray_2D(grid,0,0),PyArray_2D(grid,0,1),PyArray_2D(grid,0,2) );
-	 */
 	
 	for   ( xi=0, px=xmin; xi < xn; xi++, px+=dx ) {
 	  for ( yi=0, py=ymin; yi < yn; yi++, py+=dy ) {
@@ -939,12 +916,6 @@ color_density_plot(struct PyLibPlot *self, PyObject *args)
 	yn = grid->dimensions[1];
 	dx = (xmax - xmin) / xn;
 	dy = (ymax - ymin) / yn;
-
-	/* printf("grid dims %dx%d from (%g,%g) to (%g,%g) first elt %g,%g,%g,...\n",
-	 *      grid->dimensions[0], grid->dimensions[1],
-	 *      xmin, ymin, xmax, ymax,
-	 *      PyArray_3D(grid,0,0,0),PyArray_3D(grid,0,0,1),PyArray_3D(grid,0,0,2) );
-	 */
 	
 	for   ( xi=0, px=xmin; xi < xn; xi++, px+=dx ) {
 	  for ( yi=0, py=ymin; yi < yn; yi++, py+=dy ) {

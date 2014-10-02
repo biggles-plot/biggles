@@ -491,9 +491,52 @@ static PyMethodDef BigglesMethods[] =
 	{ NULL, NULL }
 };
 
-void
-init_biggles( void )
+
+#if PY_MAJOR_VERSION >= 3
+    static struct PyModuleDef moduledef = {
+        PyModuleDef_HEAD_INIT,
+        "_biggles",      /* m_name */
+        "Defines some biggles exension methods",  /* m_doc */
+        -1,                  /* m_size */
+        BigglesMethods,    /* m_methods */
+        NULL,                /* m_reload */
+        NULL,                /* m_traverse */
+        NULL,                /* m_clear */
+        NULL,                /* m_free */
+    };
+#endif
+
+#ifndef PyMODINIT_FUNC  /* declarations for DLL import/export */
+#define PyMODINIT_FUNC void
+#endif
+PyMODINIT_FUNC
+#if PY_MAJOR_VERSION >= 3
+PyInit__biggles(void) 
+#else
+init_biggles(void) 
+#endif
 {
-	Py_InitModule( "_biggles", BigglesMethods );
-	import_array();
+    PyObject* m;
+
+
+#if PY_MAJOR_VERSION >= 3
+    m = PyModule_Create(&moduledef);
+    if (m==NULL) {
+        return NULL;
+    }
+
+#else
+    m = Py_InitModule3("_biggles", BigglesMethods, 
+            "Defines some biggles exension methods");
+    if (m==NULL) {
+        return;
+    }
+#endif
+
+    import_array();
+#if PY_MAJOR_VERSION >= 3
+    return m;
+#endif
 }
+
+/* -*- tab-width: 8-*- */

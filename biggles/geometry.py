@@ -49,18 +49,50 @@ def pt_unit( u ):
 def pt_min( a, b ):
     if a is None: return b
     if b is None: return a
-    return min(a[0],b[0]), min(a[1],b[1])
+
+    # deal with python 3 change w.r.t. None, which
+    # can no longer be considered ordered.  In python2
+    # it always compared less
+    if a[0] is None:
+        min1=a[0]
+    elif b[0] is None:
+        min1=b[0]
+    else:
+        min1=min(a[0], b[0])
+
+    if a[1] is None:
+        min2=a[1]
+    elif b[1] is None:
+        min2=b[1]
+    else:
+        min2=min(a[1], b[1])
+
+    return min1, min2
 
 def pt_max( a, b ):
     if a is None: return b
     if b is None: return a
-    x = max( a[0], b[0] )
-    if x is None:
-        x = min( a[0], b[0] )
-    y = max( a[1], b[1] )
-    if y is None:
-        y = min( a[1], b[1] )
-    return x, y
+
+    # deal with python 3 change w.r.t. None, which
+    # can no longer be considered ordered.  In python2
+    # it always compared less
+    if a[0] is not None and b[0] is not None:
+        max1 = max( a[0], b[0] )
+    else:
+        if a[0] is None:
+            max1=b[0]
+        else:
+            max1=a[0]
+
+    if a[1] is not None and b[1] is not None:
+        max2 = max( a[1], b[1] )
+    else:
+        if a[1] is None:
+            max2=b[1]
+        else:
+            max2=a[1]
+
+    return max1,max2
 
 # BoundingBox -----------------------------------------------------------------
 
