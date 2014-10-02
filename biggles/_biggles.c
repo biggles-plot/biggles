@@ -476,12 +476,14 @@ biggles_hammer_connect( PyObject *self, PyObject *args )
 
 struct module_state { PyObject *error; };
 
+/*
 #if PY_MAJOR_VERSION >= 3
 #define GETSTATE(m) ((struct module_state*)PyModule_GetState(m))
 #else
 #define GETSTATE(m) (&_state)
 static struct module_state _state;
 #endif
+*/
 
 static PyMethodDef BigglesMethods[] = 
 {
@@ -500,6 +502,54 @@ static PyMethodDef BigglesMethods[] =
 	{ NULL, NULL }
 };
 
+
+#if PY_MAJOR_VERSION >= 3
+    static struct PyModuleDef moduledef = {
+        PyModuleDef_HEAD_INIT,
+        "_biggles",      /* m_name */
+        "Defines some biggles exension methods",  /* m_doc */
+        -1,                  /* m_size */
+        BigglesMethods,    /* m_methods */
+        NULL,                /* m_reload */
+        NULL,                /* m_traverse */
+        NULL,                /* m_clear */
+        NULL,                /* m_free */
+    };
+#endif
+
+#ifndef PyMODINIT_FUNC  /* declarations for DLL import/export */
+#define PyMODINIT_FUNC void
+#endif
+PyMODINIT_FUNC
+#if PY_MAJOR_VERSION >= 3
+PyInit__biggles(void) 
+#else
+init_biggles(void) 
+#endif
+{
+    PyObject* m;
+
+
+#if PY_MAJOR_VERSION >= 3
+    m = PyModule_Create(&moduledef);
+    if (m==NULL) {
+        return NULL;
+    }
+
+#else
+    m = Py_InitModule3("_biggles", BigglesMethods, 
+            "Defines some biggles exension methods");
+    if (m==NULL) {
+        return;
+    }
+#endif
+
+    import_array();
+#if PY_MAJOR_VERSION >= 3
+    return m;
+#endif
+}
+/*
 #if PY_MAJOR_VERSION >= 3
 
 static int BigglesTraverse(PyObject *m, visitproc visit, void *arg)
@@ -559,5 +609,6 @@ init_biggles(void)
 	return module;
 #endif
 }
+*/
 
 /* -*- tab-width: 8-*- */
