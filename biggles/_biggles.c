@@ -329,28 +329,36 @@ static PyObject *
 biggles_hammer_call_vec( PyObject *self, PyObject *args )
 {
 	PyObject *ol, *ob, *ret;
-	PyArrayObject *l, *b, *u, *v;
+	//PyArrayObject *l, *b, *u, *v;
+	PyObject *l, *b, *u, *v;
 	double l0, b0, rot;
 	double ll, bb;
-	int i, n;
+	npy_intp i, n;
 
 	ret = NULL;
 
 	if ( !PyArg_ParseTuple(args, "OOddd", &ol, &ob, &l0, &b0, &rot) )
 		return NULL;
 
-	l = (PyArrayObject *)
+    /*
+	l = 
 		PyArray_ContiguousFromObject( ol, PyArray_DOUBLE, 1, 1 );
 	b = (PyArrayObject *)
 		PyArray_ContiguousFromObject( ob, PyArray_DOUBLE, 1, 1 );
+    */
+	l = PyArray_ContiguousFromAny( ol, PyArray_DOUBLE, 1, 1 );
+	b = PyArray_ContiguousFromAny( ob, PyArray_DOUBLE, 1, 1 );
 
 	if ( l == NULL || b == NULL )
 		goto quit0;
 
-	n = BGL_MIN( l->dimensions[0], b->dimensions[0] );
+	//n = BGL_MIN( l->dimensions[0], b->dimensions[0] );
+	n = BGL_MIN( PyArray_DIM(l,0), PyArray_DIM(b,0) );
 
-	u = (PyArrayObject *) PyArray_FromDims( 1, &n, PyArray_DOUBLE );
-	v = (PyArrayObject *) PyArray_FromDims( 1, &n, PyArray_DOUBLE );
+	//u = (PyArrayObject *) PyArray_FromDims( 1, &n, PyArray_DOUBLE );
+	//v = (PyArrayObject *) PyArray_FromDims( 1, &n, PyArray_DOUBLE );
+    u = PyArray_ZEROS(1, &n, NPY_DOUBLE, 0);
+    v = PyArray_ZEROS(1, &n, NPY_DOUBLE, 0);
 
 	if ( u == NULL || v == NULL )
 		goto quit1;
@@ -405,18 +413,17 @@ static PyObject *
 biggles_hammer_geodesic_fill( PyObject *self, PyObject *args )
 {
 	PyObject *ol, *ob, *ref;
-	PyArrayObject *l, *b, *l2, *b2;
-	int i, n, div, dims[1];
+	PyObject *l, *b, *l2, *b2;
+    int div;
+	npy_intp i, n, dims[1];
 
 	ref = NULL;
 
 	if ( !PyArg_ParseTuple(args, "OOi", &ol, &ob, &div) )
 		return NULL;
 
-	l = (PyArrayObject *)
-		PyArray_ContiguousFromObject( ol, PyArray_DOUBLE, 1, 1 );
-	b = (PyArrayObject *)
-		PyArray_ContiguousFromObject( ob, PyArray_DOUBLE, 1, 1 );
+	l = PyArray_ContiguousFromAny( ol, PyArray_DOUBLE, 1, 1 );
+	b = PyArray_ContiguousFromAny( ob, PyArray_DOUBLE, 1, 1 );
 
 	if ( l == NULL || b == NULL )
 	{	
@@ -425,22 +432,22 @@ biggles_hammer_geodesic_fill( PyObject *self, PyObject *args )
 		return NULL;
 	}
 
-	n = l->dimensions[0];
+	n = PyArray_SIZE(l);
 	dims[0] = (n-1)*div + 1;
 
-	l2 = (PyArrayObject *) PyArray_FromDims( 1, dims, PyArray_DOUBLE );
-	b2 = (PyArrayObject *) PyArray_FromDims( 1, dims, PyArray_DOUBLE );
+	l2 = PyArray_ZEROS( 1, dims, NPY_DOUBLE, 0);
+	b2 = PyArray_ZEROS( 1, dims, NPY_DOUBLE, 0);
 
 	if ( l2 == NULL || b2 == NULL )
 		goto quit;
 
-	for ( i = 0; i < n-1; i++ )
+	for ( i = 0; i < n-1; i++ ) {
 		_lb_geodesic( div,
 			BGL_ArrayDouble1(l,i), BGL_ArrayDouble1(b,i),
 			BGL_ArrayDouble1(l,i+1), BGL_ArrayDouble1(b,i+1),
-			((double *)l2->data) + i*div,
-			((double *)b2->data) + i*div );
-
+            BGL_ArrayDouble1_ptr(l2, i*div),
+            BGL_ArrayDouble1_ptr(b2, i*div));
+    }
 
 	ref = Py_BuildValue( "OO", l2, b2 );
 quit:

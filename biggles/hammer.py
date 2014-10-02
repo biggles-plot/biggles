@@ -28,7 +28,7 @@
 # used where l runs from -pi to pi and b from -pi/2 to pi/2.
 # The equator is b=0, and b = +/-pi/2 are the north/south poles.
 #
-
+from __future__ import print_function
 import math
 from biggles import \
         _series, _PlotComposite, _PlotGeometry, _PlotContainer, Geodesic, Curve
