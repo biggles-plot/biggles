@@ -57,7 +57,7 @@ biggles_range( PyObject *self, PyObject *args )
 		return NULL;
 
 	x = (PyArrayObject *)
-		PyArray_ContiguousFromObject( input, PyArray_DOUBLE, 0, 0 );
+		PyArray_ContiguousFromObject( input, NPY_DOUBLE, 0, 0 );
 	if ( x == NULL )
 		return NULL;
 
@@ -198,11 +198,11 @@ biggles_contour_segments( PyObject *self, PyObject *args )
 		return NULL;
 
 	x = (PyArrayObject *)
-		PyArray_ContiguousFromObject( ox, PyArray_DOUBLE, 1, 1 );
+		PyArray_ContiguousFromObject( ox, NPY_DOUBLE, 1, 1 );
 	y = (PyArrayObject *)
-		PyArray_ContiguousFromObject( oy, PyArray_DOUBLE, 1, 1 );
+		PyArray_ContiguousFromObject( oy, NPY_DOUBLE, 1, 1 );
 	z = (PyArrayObject *)
-		PyArray_ContiguousFromObject( oz, PyArray_DOUBLE, 2, 2 );
+		PyArray_ContiguousFromObject( oz, NPY_DOUBLE, 2, 2 );
 
 	if ( x == NULL || y == NULL || z == NULL )
 		goto quit;
@@ -341,8 +341,8 @@ biggles_hammer_call_vec( PyObject *self, PyObject *args )
 		return NULL;
 
     // 1-d C contiguous
-	l = PyArray_ContiguousFromAny( ol, PyArray_DOUBLE, 1, 1 );
-	b = PyArray_ContiguousFromAny( ob, PyArray_DOUBLE, 1, 1 );
+	l = PyArray_ContiguousFromAny( ol, NPY_DOUBLE, 1, 1 );
+	b = PyArray_ContiguousFromAny( ob, NPY_DOUBLE, 1, 1 );
 
 	if ( l == NULL || b == NULL )
 		goto quit0;
@@ -414,8 +414,8 @@ biggles_hammer_geodesic_fill( PyObject *self, PyObject *args )
 	if ( !PyArg_ParseTuple(args, "OOi", &ol, &ob, &div) )
 		return NULL;
 
-	l = PyArray_ContiguousFromAny( ol, PyArray_DOUBLE, 1, 1 );
-	b = PyArray_ContiguousFromAny( ob, PyArray_DOUBLE, 1, 1 );
+	l = PyArray_ContiguousFromAny( ol, NPY_DOUBLE, 1, 1 );
+	b = PyArray_ContiguousFromAny( ob, NPY_DOUBLE, 1, 1 );
 
 	if ( l == NULL || b == NULL )
 	{	
