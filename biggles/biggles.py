@@ -33,7 +33,7 @@ from .libplot import renderer
 _true, _false = 1, 0
 
 def _range(x):
-    x=numpy.array(x)
+    x=numpy.array(x, copy=False)
     return x.min(), x.max()
 
 def _floor(x):
