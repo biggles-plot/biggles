@@ -45,36 +45,6 @@
 #define BGL_MIN(a,b) (((a) < (b)) ? (a) : (b))
 #define BGL_MAX(a,b) (((a) > (b)) ? (a) : (b))
 
-static PyObject *
-biggles_range( PyObject *self, PyObject *args )
-{
-	PyObject *input;
-	PyArrayObject *x;
-	npy_intp i, n;
-	double *dp, min, max;
-
-	if ( !PyArg_ParseTuple(args, "O", &input) )
-		return NULL;
-
-	x = (PyArrayObject *)
-		PyArray_ContiguousFromAny( input, NPY_DOUBLE, 0, 0 );
-	if ( x == NULL )
-		return NULL;
-
-	n = PyArray_Size( input );
-	dp = (double *) x->data;
-
-	min = max = dp[0];
-	for ( i = 1; i < n; i++ )
-	{
-		min = BGL_MIN( min, dp[i] );
-		max = BGL_MAX( max, dp[i] );
-	}
-	
-	Py_DECREF(x);
-	return Py_BuildValue( "dd", min, max );
-}
-
 /******************************************************************************
  *  contour.py
  *
@@ -476,8 +446,6 @@ biggles_hammer_connect( PyObject *self, PyObject *args )
 
 static PyMethodDef BigglesMethods[] = 
 {
-	/* general */
-	{ "range", biggles_range, METH_VARARGS },
 
 	/* contour.py */
 	{ "contour_segments", biggles_contour_segments, METH_VARARGS },
