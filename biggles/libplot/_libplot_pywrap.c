@@ -630,7 +630,8 @@ symbols(struct PyLibPlot *self, PyObject *args)
 	PyObject *ox, *oy;
 	PyArrayObject *x, *y;
 	double d0;
-	int i0, i, n;
+	int i0;
+    npy_intp i, n;
 
 	if ( !PyArg_ParseTuple( args, "OOid", &ox, &oy, &i0, &d0 ) )
 		return NULL;
@@ -643,7 +644,7 @@ symbols(struct PyLibPlot *self, PyObject *args)
 	if ( x == NULL || y == NULL )
 		goto quit;
 
-	n = BGL_MIN( x->dimensions[0], y->dimensions[0] );
+	n = BGL_MIN( PyArray_SIZE(x), PyArray_SIZE(y) );
 
 	_symbol_begin( self->pl, i0, d0 );
 
@@ -665,7 +666,8 @@ clipped_symbols(struct PyLibPlot *self, PyObject *args)
 	PyArrayObject *x, *y;
 	double xmin, xmax, ymin, ymax;
 	double d0;
-	int i0, i, n;
+	int i0;
+    npy_intp i, n;
 	double px, py;
 
 	if ( !PyArg_ParseTuple( args, "OOiddddd", &ox, &oy,
@@ -680,7 +682,7 @@ clipped_symbols(struct PyLibPlot *self, PyObject *args)
 	if ( x == NULL || y == NULL )
 		goto quit;
 
-	n = BGL_MIN( x->dimensions[0], y->dimensions[0] );
+	n = BGL_MIN( PyArray_SIZE(x), PyArray_SIZE(y) );
 
 	_symbol_begin( self->pl, i0, d0 );
 
@@ -709,7 +711,8 @@ clipped_colored_symbols(struct PyLibPlot *self, PyObject *args)
 	PyArrayObject *x, *y, *c;
 	double xmin, xmax, ymin, ymax;
 	double d0;
-	int i0, i, n;
+	int i0;
+    npy_intp i, n;
 	double px, py;
 	int r, g, b;
 
@@ -727,8 +730,8 @@ clipped_colored_symbols(struct PyLibPlot *self, PyObject *args)
 	if ( x == NULL || y == NULL || c == NULL )
 		goto quit;
 
-	n = BGL_MIN( x->dimensions[0], y->dimensions[0] );
-	n = BGL_MIN( n, c->dimensions[0] );
+	n = BGL_MIN( PyArray_SIZE(x), PyArray_SIZE(y) );
+	n = BGL_MIN( n, PyArray_SIZE(c) );
 
 	/* printf("c dims %dx%d first rgb %g,%g,%g\n",
 	 *      c->dimensions[0], c->dimensions[1],
@@ -770,7 +773,7 @@ curve(struct PyLibPlot *self, PyObject *args)
 {
 	PyObject *ox, *oy;
 	PyArrayObject *x, *y;
-	int i, n;
+	npy_intp i, n;
 
 	if ( !PyArg_ParseTuple( args, "OO", &ox, &oy ) )
 		return NULL;
@@ -783,7 +786,7 @@ curve(struct PyLibPlot *self, PyObject *args)
 	if ( x == NULL || y == NULL )
 		goto quit;
 
-	n = BGL_MIN( x->dimensions[0], y->dimensions[0] );
+	n = BGL_MIN( PyArray_SIZE(x), PyArray_SIZE(y) );
 	if ( n <= 0 )
 		goto quit;
 
@@ -804,7 +807,7 @@ clipped_curve(struct PyLibPlot *self, PyObject *args)
 	PyObject *ox, *oy;
 	PyArrayObject *x, *y;
 	double xmin, xmax, ymin, ymax;
-	int i, n;
+	npy_intp i, n;
 
 	if ( !PyArg_ParseTuple( args, "OOdddd", &ox, &oy,
 			&xmin, &xmax, &ymin, &ymax ) )
@@ -818,7 +821,7 @@ clipped_curve(struct PyLibPlot *self, PyObject *args)
 	if ( x == NULL || y == NULL )
 		goto quit;
 
-	n = BGL_MIN( x->dimensions[0], y->dimensions[0] );
+	n = BGL_MIN( PyArray_SIZE(x), PyArray_SIZE(y) );
 	if ( n <= 0 )
 		goto quit;
 
@@ -853,7 +856,7 @@ density_plot(struct PyLibPlot *self, PyObject *args)
 	double xmin, xmax, ymin, ymax;
 	
 	double px, py, dx, dy;
-	int    xi, yi, xn, yn;
+	npy_intp xi, yi, xn, yn;
 	int    r, g, b;
 
 	if ( !PyArg_ParseTuple( args, "Odddd", &ogrid,
@@ -862,14 +865,19 @@ density_plot(struct PyLibPlot *self, PyObject *args)
 
 	grid = (PyArrayObject *)
 		PyArray_ContiguousFromObject( ogrid, PyArray_DOUBLE, 2, 2 );
+
 	if ( grid == NULL )
 		goto quit;
 
-	xn = grid->dimensions[0];
-	yn = grid->dimensions[1];
+	if ( PyArray_NDIM(grid) != 2) {
+		printf("Expect a NxM array for densgrid");
+		goto quit;
+	}
+	
+	xn = PyArray_DIM(grid, 0);
+	yn = PyArray_DIM(grid, 1);
 	dx = (xmax - xmin) / xn;
 	dy = (ymax - ymin) / yn;
-
 	
 	for   ( xi=0, px=xmin; xi < xn; xi++, px+=dx ) {
 	  for ( yi=0, py=ymin; yi < yn; yi++, py+=dy ) {
@@ -895,7 +903,7 @@ color_density_plot(struct PyLibPlot *self, PyObject *args)
 	double xmin, xmax, ymin, ymax;
 	
 	double px, py, dx, dy;
-	int    xi, yi, xn, yn;
+	npy_intp xi, yi, xn, yn;
 	int    r, g, b;
 
 	if ( !PyArg_ParseTuple( args, "Odddd", &ogrid,
@@ -904,15 +912,17 @@ color_density_plot(struct PyLibPlot *self, PyObject *args)
 
 	grid = (PyArrayObject *)
 		PyArray_ContiguousFromObject( ogrid, PyArray_DOUBLE, 3, 3 );
+
 	if ( grid == NULL )
 		goto quit;
-	if ( grid->dimensions[2] != 3) {
-		printf("Expect a NxMx3 array for densgrid");
+
+	if ( PyArray_NDIM(grid) != 3) {
+		printf("Expect a NxMx3 array for color densgrid");
 		goto quit;
 	}
 	
-	xn = grid->dimensions[0];
-	yn = grid->dimensions[1];
+	xn = PyArray_DIM(grid, 0);
+	yn = PyArray_DIM(grid, 1);
 	dx = (xmax - xmin) / xn;
 	dy = (ymax - ymin) / yn;
 	
