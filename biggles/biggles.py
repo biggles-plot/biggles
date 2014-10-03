@@ -32,6 +32,10 @@ from .libplot import renderer
 
 _true, _false = 1, 0
 
+def _range(x):
+    x=numpy.array(x)
+    return x.min(), x.max()
+
 def _floor(x):
     return long(math.floor(x))
 
@@ -466,8 +470,8 @@ class _PathObject( _DeviceObject ):
         self.y = y
 
     def bbox( self, context ):
-        xmin, xmax = _biggles.range( self.x )
-        ymin, ymax = _biggles.range( self.y )
+        xmin, xmax = _range( self.x )
+        ymin, ymax = _range( self.y )
         return BoundingBox( (xmin,ymin), (xmax,ymax) )
 
     def draw( self, context ):
@@ -486,8 +490,8 @@ class _SymbolsObject( _DeviceObject ):
         self.y = y
 
     def bbox( self, context ):
-        xmin, xmax = _biggles.range( self.x )
-        ymin, ymax = _biggles.range( self.y )
+        xmin, xmax = _range( self.x )
+        ymin, ymax = _range( self.y )
         return BoundingBox( (xmin,ymin), (xmax,ymax) )
 
     def draw( self, context ):
@@ -507,8 +511,8 @@ class _ColoredSymbolsObject( _DeviceObject ):
         self.c = c
 
     def bbox( self, context ):
-        xmin, xmax = _biggles.range( self.x )
-        ymin, ymax = _biggles.range( self.y )
+        xmin, xmax = _range( self.x )
+        ymin, ymax = _range( self.y )
         return BoundingBox( (xmin,ymin), (xmax,ymax) )
 
     def draw( self, context ):
