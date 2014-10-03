@@ -57,7 +57,7 @@ biggles_range( PyObject *self, PyObject *args )
 		return NULL;
 
 	x = (PyArrayObject *)
-		PyArray_ContiguousFromObject( input, NPY_DOUBLE, 0, 0 );
+		PyArray_ContiguousFromAny( input, NPY_DOUBLE, 0, 0 );
 	if ( x == NULL )
 		return NULL;
 
@@ -198,11 +198,11 @@ biggles_contour_segments( PyObject *self, PyObject *args )
 		return NULL;
 
 	x = (PyArrayObject *)
-		PyArray_ContiguousFromObject( ox, NPY_DOUBLE, 1, 1 );
+		PyArray_ContiguousFromAny( ox, NPY_DOUBLE, 1, 1 );
 	y = (PyArrayObject *)
-		PyArray_ContiguousFromObject( oy, NPY_DOUBLE, 1, 1 );
+		PyArray_ContiguousFromAny( oy, NPY_DOUBLE, 1, 1 );
 	z = (PyArrayObject *)
-		PyArray_ContiguousFromObject( oz, NPY_DOUBLE, 2, 2 );
+		PyArray_ContiguousFromAny( oz, NPY_DOUBLE, 2, 2 );
 
 	if ( x == NULL || y == NULL || z == NULL )
 		goto quit;
