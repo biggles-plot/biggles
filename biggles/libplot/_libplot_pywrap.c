@@ -35,13 +35,13 @@ typedef int bool_t;
 #endif
 
 #define BGL_DArray1(v,i)\
-	(*(double *)PyArray_GETPTR1((PyObject*)(v),i))
+	(*(double *)PyArray_GETPTR1(v,i))
 
 #define BGL_DArray2(v,i,j)\
-	(*(double *)PyArray_GETPTR2((PyObject*)(v),i,j))
+	(*(double *)PyArray_GETPTR2(v,i,j))
 
 #define BGL_DArray3(v,i,j,k)\
-	(*(double *)PyArray_GETPTR3((PyObject*)(v),i,j,k))
+	(*(double *)PyArray_GETPTR3(v,i,j,k))
 
 
 
@@ -628,7 +628,7 @@ static PyObject *
 symbols(struct PyLibPlot *self, PyObject *args)
 {
 	PyObject *ox, *oy;
-	PyArrayObject *x, *y;
+	PyObject *x, *y;
 	double d0;
 	int i0;
     npy_intp i, n;
@@ -636,10 +636,8 @@ symbols(struct PyLibPlot *self, PyObject *args)
 	if ( !PyArg_ParseTuple( args, "OOid", &ox, &oy, &i0, &d0 ) )
 		return NULL;
 
-	x = (PyArrayObject *)
-		PyArray_ContiguousFromAny( ox, NPY_DOUBLE, 1, 1 );
-	y = (PyArrayObject *)
-		PyArray_ContiguousFromAny( oy, NPY_DOUBLE, 1, 1 );
+	x = PyArray_ContiguousFromAny( ox, NPY_DOUBLE, 1, 1 );
+	y = PyArray_ContiguousFromAny( oy, NPY_DOUBLE, 1, 1 );
 
 	if ( x == NULL || y == NULL )
 		goto quit;
@@ -663,7 +661,7 @@ static PyObject *
 clipped_symbols(struct PyLibPlot *self, PyObject *args)
 {
 	PyObject *ox, *oy;
-	PyArrayObject *x, *y;
+	PyObject *x, *y;
 	double xmin, xmax, ymin, ymax;
 	double d0;
 	int i0;
@@ -674,10 +672,8 @@ clipped_symbols(struct PyLibPlot *self, PyObject *args)
 			&i0, &d0, &xmin, &xmax, &ymin, &ymax ) )
 		return NULL;
 
-	x = (PyArrayObject *)
-		PyArray_ContiguousFromAny( ox, NPY_DOUBLE, 1, 1 );
-	y = (PyArrayObject *)
-		PyArray_ContiguousFromAny( oy, NPY_DOUBLE, 1, 1 );
+	x = PyArray_ContiguousFromAny( ox, NPY_DOUBLE, 1, 1 );
+	y = PyArray_ContiguousFromAny( oy, NPY_DOUBLE, 1, 1 );
 
 	if ( x == NULL || y == NULL )
 		goto quit;
@@ -708,7 +704,7 @@ static PyObject *
 clipped_colored_symbols(struct PyLibPlot *self, PyObject *args)
 {
 	PyObject *ox, *oy, *oc;
-	PyArrayObject *x, *y, *c;
+	PyObject *x, *y, *c;
 	double xmin, xmax, ymin, ymax;
 	double d0;
 	int i0;
@@ -720,23 +716,15 @@ clipped_colored_symbols(struct PyLibPlot *self, PyObject *args)
 			&i0, &d0, &xmin, &xmax, &ymin, &ymax ) )
 		return NULL;
 
-	x = (PyArrayObject *)
-		PyArray_ContiguousFromAny( ox, NPY_DOUBLE, 1, 1 );
-	y = (PyArrayObject *)
-		PyArray_ContiguousFromAny( oy, NPY_DOUBLE, 1, 1 );
-	c = (PyArrayObject *)
-		PyArray_ContiguousFromAny( oc, NPY_DOUBLE, 2, 2 );
+	x = PyArray_ContiguousFromAny( ox, NPY_DOUBLE, 1, 1 );
+	y = PyArray_ContiguousFromAny( oy, NPY_DOUBLE, 1, 1 );
+	c = PyArray_ContiguousFromAny( oc, NPY_DOUBLE, 2, 2 );
 
 	if ( x == NULL || y == NULL || c == NULL )
 		goto quit;
 
 	n = BGL_MIN( PyArray_SIZE(x), PyArray_SIZE(y) );
 	n = BGL_MIN( n, PyArray_SIZE(c) );
-
-	/* printf("c dims %dx%d first rgb %g,%g,%g\n",
-	 *      c->dimensions[0], c->dimensions[1],
-	 *      BGL_DArray2(c,0,0),BGL_DArray2(c,0,1),BGL_DArray2(c,0,2) );
-	 */
 	
 	_symbol_begin( self->pl, i0, d0 );
 
@@ -772,16 +760,14 @@ static PyObject *
 curve(struct PyLibPlot *self, PyObject *args)
 {
 	PyObject *ox, *oy;
-	PyArrayObject *x, *y;
+	PyObject *x, *y;
 	npy_intp i, n;
 
 	if ( !PyArg_ParseTuple( args, "OO", &ox, &oy ) )
 		return NULL;
 
-	x = (PyArrayObject *)
-		PyArray_ContiguousFromAny( ox, NPY_DOUBLE, 1, 1 );
-	y = (PyArrayObject *)
-		PyArray_ContiguousFromAny( oy, NPY_DOUBLE, 1, 1 );
+	x = PyArray_ContiguousFromAny( ox, NPY_DOUBLE, 1, 1 );
+	y = PyArray_ContiguousFromAny( oy, NPY_DOUBLE, 1, 1 );
 
 	if ( x == NULL || y == NULL )
 		goto quit;
@@ -805,7 +791,7 @@ static PyObject *
 clipped_curve(struct PyLibPlot *self, PyObject *args)
 {
 	PyObject *ox, *oy;
-	PyArrayObject *x, *y;
+	PyObject *x, *y;
 	double xmin, xmax, ymin, ymax;
 	npy_intp i, n;
 
@@ -813,10 +799,8 @@ clipped_curve(struct PyLibPlot *self, PyObject *args)
 			&xmin, &xmax, &ymin, &ymax ) )
 		return NULL;
 
-	x = (PyArrayObject *)
-		PyArray_ContiguousFromAny( ox, NPY_DOUBLE, 1, 1 );
-	y = (PyArrayObject *)
-		PyArray_ContiguousFromAny( oy, NPY_DOUBLE, 1, 1 );
+	x = PyArray_ContiguousFromAny( ox, NPY_DOUBLE, 1, 1 );
+	y = PyArray_ContiguousFromAny( oy, NPY_DOUBLE, 1, 1 );
 
 	if ( x == NULL || y == NULL )
 		goto quit;
@@ -852,7 +836,7 @@ static PyObject *
 density_plot(struct PyLibPlot *self, PyObject *args)
 {
 	PyObject *ogrid;
-	PyArrayObject *grid;
+	PyObject *grid;
 	double xmin, xmax, ymin, ymax;
 	
 	double px, py, dx, dy;
@@ -863,8 +847,7 @@ density_plot(struct PyLibPlot *self, PyObject *args)
 				&xmin, &xmax, &ymin, &ymax ) )
 		return NULL;
 
-	grid = (PyArrayObject *)
-		PyArray_ContiguousFromAny( ogrid, NPY_DOUBLE, 2, 2 );
+	grid = PyArray_ContiguousFromAny( ogrid, NPY_DOUBLE, 2, 2 );
 
 	if ( grid == NULL )
 		goto quit;
@@ -899,7 +882,7 @@ static PyObject *
 color_density_plot(struct PyLibPlot *self, PyObject *args)
 {
 	PyObject *ogrid;
-	PyArrayObject *grid;
+	PyObject *grid;
 	double xmin, xmax, ymin, ymax;
 	
 	double px, py, dx, dy;
@@ -910,8 +893,7 @@ color_density_plot(struct PyLibPlot *self, PyObject *args)
 				&xmin, &xmax, &ymin, &ymax ) )
 		return NULL;
 
-	grid = (PyArrayObject *)
-		PyArray_ContiguousFromAny( ogrid, NPY_DOUBLE, 3, 3 );
+	grid = PyArray_ContiguousFromAny( ogrid, NPY_DOUBLE, 3, 3 );
 
 	if ( grid == NULL )
 		goto quit;
