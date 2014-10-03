@@ -106,7 +106,7 @@ _find_zero( double p[3], double q[3], double zero[2] )
 }
 
 static int
-_pixel_interpolate( PyArrayObject *x, PyArrayObject *y, PyArrayObject *z,
+_pixel_interpolate( PyObject *x, PyObject *y, PyObject *z,
 	double z0, int i, int j, double segs[BGL_MAX_SEGS][4] )
 {
 	int k, l, ii, jj, kk;
@@ -157,7 +157,7 @@ static PyObject *
 biggles_contour_segments( PyObject *self, PyObject *args )
 {
 	PyObject *ox, *oy, *oz, *list, *ref;
-	PyArrayObject *x, *y, *z;
+	PyObject *x, *y, *z;
 	double z0;
 	double segs[BGL_MAX_SEGS][4];
 	int i, j, k, ns;
@@ -167,41 +167,37 @@ biggles_contour_segments( PyObject *self, PyObject *args )
 	if ( !PyArg_ParseTuple(args, "OOOd", &ox, &oy, &oz, &z0) )
 		return NULL;
 
-	x = (PyArrayObject *)
-		PyArray_ContiguousFromAny( ox, NPY_DOUBLE, 1, 1 );
-	y = (PyArrayObject *)
-		PyArray_ContiguousFromAny( oy, NPY_DOUBLE, 1, 1 );
-	z = (PyArrayObject *)
-		PyArray_ContiguousFromAny( oz, NPY_DOUBLE, 2, 2 );
+	x = PyArray_ContiguousFromAny( ox, NPY_DOUBLE, 1, 1 );
+	y = PyArray_ContiguousFromAny( oy, NPY_DOUBLE, 1, 1 );
+	z = PyArray_ContiguousFromAny( oz, NPY_DOUBLE, 2, 2 );
 
 	if ( x == NULL || y == NULL || z == NULL )
 		goto quit;
 
-	if ( z->dimensions[0] != x->dimensions[0] ||
-	     z->dimensions[1] != y->dimensions[0] )
-	{
-		PyErr_SetString( PyExc_ValueError,
-			"array dimensions are not compatible" );
-		goto quit;
+    if ( PyArray_DIM(z,0) != PyArray_DIM(x,0)
+             || PyArray_DIM(z,1) != PyArray_DIM(y,0) ) {
+        PyErr_SetString( PyExc_ValueError,
+                         "array dimensions are not compatible" );
+        goto quit;
 	}
 
 	list = PyList_New( 0 );
 	if ( list == NULL )
 		goto quit;
 
-	for ( i = 0; i < z->dimensions[0]-1; i++ )
-	for ( j = 0; j < z->dimensions[1]-1; j++ )
-	{
-		ns = _pixel_interpolate( x, y, z, z0, i, j, segs );
-		for ( k = 0; k < ns; k++ )
-		{
-			ref = Py_BuildValue( "((dd)(dd))",
-				segs[k][0], segs[k][1],
-				segs[k][2], segs[k][3] );
-			PyList_Append( list, ref );
-			Py_DECREF(ref); /* ??? */
-		}
-	}
+	for ( i = 0; i < PyArray_DIM(z,0)-1; i++ )
+        for ( j = 0; j < PyArray_DIM(z,1)-1; j++ )
+        {
+            ns = _pixel_interpolate( x, y, z, z0, i, j, segs );
+            for ( k = 0; k < ns; k++ )
+            {
+                ref = Py_BuildValue( "((dd)(dd))",
+                                     segs[k][0], segs[k][1],
+                                     segs[k][2], segs[k][3] );
+                PyList_Append( list, ref );
+                Py_DECREF(ref); /* ??? */
+            }
+        }
 
 quit:
 	Py_XDECREF(x);
@@ -299,7 +295,6 @@ static PyObject *
 biggles_hammer_call_vec( PyObject *self, PyObject *args )
 {
 	PyObject *ol, *ob, *ret;
-	//PyArrayObject *l, *b, *u, *v;
 	PyObject *l, *b, *u, *v;
 	double l0, b0, rot;
 	double ll, bb;
