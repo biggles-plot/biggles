@@ -34,13 +34,13 @@ typedef int bool_t;
 #define M_PI 3.14159265358979323846
 #endif
 
-#define BGL_ArrayDouble1(v,i)\
+#define BGL_DArray1(v,i)\
 	(*(double *)PyArray_GETPTR1((PyObject*)(v),i))
 
-#define BGL_ArrayDouble2(v,i,j)\
+#define BGL_DArray2(v,i,j)\
 	(*(double *)PyArray_GETPTR2((PyObject*)(v),i,j))
 
-#define BGL_ArrayDouble3(v,i,j,k)\
+#define BGL_DArray3(v,i,j,k)\
 	(*(double *)PyArray_GETPTR3((PyObject*)(v),i,j,k))
 
 
@@ -649,7 +649,7 @@ symbols(struct PyLibPlot *self, PyObject *args)
 	_symbol_begin( self->pl, i0, d0 );
 
 	for ( i = 0; i < n; i++ )
-		_symbol_draw( self->pl, BGL_ArrayDouble1(x,i), BGL_ArrayDouble1(y,i), i0, d0 );
+		_symbol_draw( self->pl, BGL_DArray1(x,i), BGL_DArray1(y,i), i0, d0 );
 
 	_symbol_end( self->pl, i0, d0 );
 
@@ -688,8 +688,8 @@ clipped_symbols(struct PyLibPlot *self, PyObject *args)
 
 	for ( i = 0; i < n; i++ )
 	{
-		px = BGL_ArrayDouble1(x,i);
-		py = BGL_ArrayDouble1(y,i);
+		px = BGL_DArray1(x,i);
+		py = BGL_DArray1(y,i);
 
 		if ( px >= xmin && px <= xmax &&
 		     py >= ymin && py <= ymax )
@@ -735,21 +735,21 @@ clipped_colored_symbols(struct PyLibPlot *self, PyObject *args)
 
 	/* printf("c dims %dx%d first rgb %g,%g,%g\n",
 	 *      c->dimensions[0], c->dimensions[1],
-	 *      BGL_ArrayDouble2(c,0,0),BGL_ArrayDouble2(c,0,1),BGL_ArrayDouble2(c,0,2) );
+	 *      BGL_DArray2(c,0,0),BGL_DArray2(c,0,1),BGL_DArray2(c,0,2) );
 	 */
 	
 	_symbol_begin( self->pl, i0, d0 );
 
 	for ( i = 0; i < n; i++ )
 	{
-		px = BGL_ArrayDouble1(x,i);
-		py = BGL_ArrayDouble1(y,i);
+		px = BGL_DArray1(x,i);
+		py = BGL_DArray1(y,i);
 
 		if ( px >= xmin && px <= xmax &&
 		     py >= ymin && py <= ymax ) {
-			r = (int) floor( BGL_ArrayDouble2(c,i,0)*65535 );
-			g = (int) floor( BGL_ArrayDouble2(c,i,1)*65535 );
-			b = (int) floor( BGL_ArrayDouble2(c,i,2)*65535 );
+			r = (int) floor( BGL_DArray2(c,i,0)*65535 );
+			g = (int) floor( BGL_DArray2(c,i,1)*65535 );
+			b = (int) floor( BGL_DArray2(c,i,2)*65535 );
 			pl_fillcolor_r( self->pl, r, g, b );
 			pl_pencolor_r(  self->pl, r, g, b );
 		  
@@ -790,9 +790,9 @@ curve(struct PyLibPlot *self, PyObject *args)
 	if ( n <= 0 )
 		goto quit;
 
-	pl_fmove_r( self->pl, BGL_ArrayDouble1(x,0), BGL_ArrayDouble1(y,0) );
+	pl_fmove_r( self->pl, BGL_DArray1(x,0), BGL_DArray1(y,0) );
 	for ( i = 1; i < n; i++ )
-		pl_fcont_r( self->pl, BGL_ArrayDouble1(x,i), BGL_ArrayDouble1(y,i) );
+		pl_fcont_r( self->pl, BGL_DArray1(x,i), BGL_DArray1(y,i) );
 	pl_endpath_r( self->pl );
 
 quit:
@@ -829,8 +829,8 @@ clipped_curve(struct PyLibPlot *self, PyObject *args)
 	{
 		clipped_pl_fline_r( self->pl,
 			xmin, xmax, ymin, ymax,
-			BGL_ArrayDouble1(x,i), BGL_ArrayDouble1(y,i),
-			BGL_ArrayDouble1(x,i+1), BGL_ArrayDouble1(y,i+1) );
+			BGL_DArray1(x,i), BGL_DArray1(y,i),
+			BGL_DArray1(x,i+1), BGL_DArray1(y,i+1) );
 	}
 	pl_endpath_r( self->pl );
 
@@ -881,7 +881,7 @@ density_plot(struct PyLibPlot *self, PyObject *args)
 	
 	for   ( xi=0, px=xmin; xi < xn; xi++, px+=dx ) {
 	  for ( yi=0, py=ymin; yi < yn; yi++, py+=dy ) {
-	    r=g=b = (int) floor( BGL_ArrayDouble2(grid,xi,yi)*65535 );
+	    r=g=b = (int) floor( BGL_DArray2(grid,xi,yi)*65535 );
 	    pl_filltype_r ( self->pl, 1.0 );
 	    pl_fillcolor_r( self->pl, r, g, b );
 	    pl_pencolor_r ( self->pl, r, g, b );
@@ -928,9 +928,9 @@ color_density_plot(struct PyLibPlot *self, PyObject *args)
 	
 	for   ( xi=0, px=xmin; xi < xn; xi++, px+=dx ) {
 	  for ( yi=0, py=ymin; yi < yn; yi++, py+=dy ) {
-	    r = (int) floor( BGL_ArrayDouble3(grid,xi,yi,0)*65535 );
-	    g = (int) floor( BGL_ArrayDouble3(grid,xi,yi,1)*65535 );
-	    b = (int) floor( BGL_ArrayDouble3(grid,xi,yi,2)*65535 );
+	    r = (int) floor( BGL_DArray3(grid,xi,yi,0)*65535 );
+	    g = (int) floor( BGL_DArray3(grid,xi,yi,1)*65535 );
+	    b = (int) floor( BGL_DArray3(grid,xi,yi,2)*65535 );
 	    pl_filltype_r ( self->pl, 1.0 );
 	    pl_fillcolor_r( self->pl, r, g, b );
 	    pl_pencolor_r ( self->pl, r, g, b );
