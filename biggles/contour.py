@@ -19,10 +19,11 @@
 # Boston, MA  02111-1307, USA.
 #
 
-from biggles import \
-        _series, _message, \
+from . import biggles
+from .biggles import \
+        _series, _message, _range, \
         _LineComponent,  _PathObject, _PlotComponent, BigglesError
-from geometry import *
+from .geometry import *
 from . import _biggles
 
 import numpy
@@ -206,7 +207,7 @@ class Contours( _PlotComponent ):
 
         zr = self.zrange
         if zr is None:
-            zr = _biggles.range( z )
+            zr = _range( z )
 
         levels = self.levels
         if type(levels) == type(0):
