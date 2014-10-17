@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>biggles</title>
+<link rel="stylesheet" type="text/css" href="frontpage.css"/>
+<style type="text/css">
+/* GeSHi (C) 2004 - 2007 Nigel McNie (http://qbnz.com/highlighter) */
+.python .imp {font-weight: bold; color: red;}
+.python .kw1 {color:purple}
+.python .kw4 {color: #0000cd;}
+.python .co1 {color: #808080; font-style: italic;}
+.python .coMULTI {color: #808080; font-style: italic;}
+.python .st0 {color:green}
+.python .nu0 {color: #ff4500;}
+</style>
+</head>
+<body>
+
+<div id="header">
+<h1>biggles</h1>
+<h2>simple, elegant python plotting</h2>
+<div id="download"><a href="http://github.com/nolta/biggles/archive/v1.6.7.tar.gz">download &darr; 1.6.7</a></div>
+</div>
+
+<div id="content">
+<table id="promo">
+<tr>
+<td>
+<code><pre>
+<pre class="python"><span class="kw1">import</span> <span class="biggles">biggles</span>
+<span class="kw1">import</span> math, numpy 
+&nbsp;
+x = numpy.arange( <span class="nu0">0</span>, <span class="nu0">3</span>*math.pi, math.pi/<span class="nu0">10</span> )
+y = numpy.sin(x)
+&nbsp;
+p = <span class="biggles">biggles</span>.FramedPlot()
+p.title = <span class="st0">&quot;Title&quot;</span>
+p.xlabel = <span class="st0">&quot;X axis&quot;</span>
+p.ylabel = <span class="st0">&quot;Y axis&quot;</span>
+&nbsp;
+p.add( <span class="biggles">biggles</span>.Histogram(y) )
+p.add( <span class="biggles">biggles</span>.PlotLabel(.<span class="nu0">5</span>, .<span class="nu0">5</span>, <span class="st0">&quot;Histogram&quot;</span>, color=0xcc0000) )
+&nbsp;
+t1 = <span class="biggles">biggles</span>.Table( <span class="nu0">1</span>, <span class="nu0">2</span> )
+t1[<span class="nu0">0</span>,<span class="nu0">0</span>] = p
+t1[<span class="nu0">0</span>,<span class="nu0">1</span>] = p
+&nbsp;
+t2 = <span class="biggles">biggles</span>.Table( <span class="nu0">2</span>, <span class="nu0">1</span> )
+t2[<span class="nu0">0</span>,<span class="nu0">0</span>] = t1
+t2[<span class="nu0">1</span>,<span class="nu0">0</span>] = p
+&nbsp;
+t2.write_img( <span class="nu0">400</span>, <span class="nu0">400</span>, <span class="st0">&quot;example3.png&quot;</span> )
+t2.write_eps( <span class="st0">&quot;example3.eps&quot;</span> )
+t2.show()
+&nbsp;</pre></pre></code>
+</td>
+<td>
+<a href="example/example3.eps">
+<img src="example/example3.png" border="0" width="400" height="400"></a>
+</td>
+</tr>
+</table>
+<div style="text-align:center">
+<a href="example2.html">&laquo;</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="index.html">1</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="example2.html">2</a>&nbsp;&nbsp;&nbsp;&nbsp;[3]&nbsp;&nbsp;&nbsp;&nbsp;<a href="example4.html">4</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="example5.html">5</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="example6.html">6</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="example7.html">7</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="example8.html">8</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="example4.html">&raquo;</a></div>
+</div>
+
+<div id="buttons">
+<div class="column">
+<a href="install.html">install</a>
+</div>
+<!--
+<div class="column">
+<a href="http://www.dur.ac.uk/secondary.flow/biggles/">tutorial</a>
+</div>
+-->
+<div class="column">
+<a href="http://github.com/nolta/biggles/wiki/biggles-reference-guide">reference</a>
+</div>
+<div class="column">
+<a href="http://github.com/nolta/biggles">github</a>
+</div>
+<div class="column">
+<a href="http://nolta.net/">contact</a>
+</div>
+</div>
+
+<div style="text-align:center;margin:2em;">
+<A HREF="http://github.com">
+<IMG SRC="github.png" WIDTH="60" BORDER="0" ALT="GitHub Logo"></A>
+</div>
+
+</body>
+</html>

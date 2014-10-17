@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>biggles</title>
+<link rel="stylesheet" type="text/css" href="frontpage.css"/>
+<style type="text/css">
+/* GeSHi (C) 2004 - 2007 Nigel McNie (http://qbnz.com/highlighter) */
+.python .imp {font-weight: bold; color: red;}
+.python .kw1 {color:purple}
+.python .kw4 {color: #0000cd;}
+.python .co1 {color: #808080; font-style: italic;}
+.python .coMULTI {color: #808080; font-style: italic;}
+.python .st0 {color:green}
+.python .nu0 {color: #ff4500;}
+</style>
+</head>
+<body>
+
+<div id="header">
+<h1>biggles</h1>
+<h2>simple, elegant python plotting</h2>
+<div id="download"><a href="http://github.com/nolta/biggles/archive/v1.6.7.tar.gz">download &darr; 1.6.7</a></div>
+</div>
+
+<div id="content">
+<table id="promo">
+<tr>
+<td>
+<code><pre>
+<pre class="python"><span class="kw1">import</span> <span class="biggles">biggles</span>
+<span class="kw1">import</span> numpy
+&nbsp;
+<span class="co1">#</span>
+<span class="co1"># Create example 2-dimensional data set of two solitons colliding.</span>
+<span class="co1">#</span>
+n = <span class="nu0">64</span>
+x = numpy.arange( <span class="nu0">-10</span>., <span class="nu0">10</span>., <span class="nu0">20</span>./n )
+t = numpy.arange( <span class="nu0">-1</span>., <span class="nu0">1</span>., <span class="nu0">2</span>./n )
+z = numpy.zeros( (len(x),len(t)) )
+&nbsp;
+<span class="kw1">for</span> i <span class="kw1">in</span> range(len(x)):
+	<span class="kw1">for</span> j <span class="kw1">in</span> range(len(t)):
+		z[i,j] = <span class="nu0">-12</span>. * (<span class="nu0">3</span>. + <span class="nu0">4</span>.*numpy.cosh(<span class="nu0">2</span>.*x[i]<span class="nu0">-8</span>.*t[j]) \
+			+ numpy.cosh(<span class="nu0">4</span>.*x[i] - <span class="nu0">64</span>.*t[j])) / \
+			(<span class="nu0">3</span>.*numpy.cosh(x[i]<span class="nu0">-28</span>.*t[j]) \
+			+ numpy.cosh(<span class="nu0">3</span>.*x[i]<span class="nu0">-36</span>.*t[j]))**<span class="nu0">2</span>
+&nbsp;
+<span class="co1">#</span>
+<span class="co1"># Make contour component.</span>
+<span class="co1">#</span>
+c = <span class="biggles">biggles</span>.Contours( z, x, t, color=<span class="st0">&quot;red&quot;</span> )
+&nbsp;
+<span class="co1">#</span>
+<span class="co1"># For fine-grained color control, the Contours component allows you to</span>
+<span class="co1"># specify a function which returns the color applied to each contour line.</span>
+<span class="co1"># The arguments passed to the function are:</span>
+<span class="co1">#</span>
+<span class="co1">#	i	integer index of contour (0,..,n-1)</span>
+<span class="co1">#	n 	total number of contours</span>
+<span class="co1">#	z0	z value of contour</span>
+<span class="co1">#	z_min	minimum z contour value</span>
+<span class="co1">#	z_max	maximum z contour value</span>
+<span class="co1">#</span>
+<span class="co1"># The function should return a valid color, or None for the default.</span>
+<span class="co1">#</span>
+<span class="co1"># Here we show how to set every other contour to blue. The remaining </span>
+<span class="co1"># contours are drawn with the default color, defined above to be red.</span>
+<span class="co1">#</span>
+<span class="kw1">def</span> even_blue( i, n, z0, z_min, z_max ):
+	<span class="kw1">if</span> i % <span class="nu0">2</span> == <span class="nu0">0</span>:
+		<span class="kw1">return</span> 0x0000ff
+	<span class="kw1">return</span> None
+&nbsp;
+c.func_color = even_blue
+&nbsp;
+<span class="co1">#</span>
+<span class="co1"># Similarly, Contours accepts similar functions for line type (.func_linestyle)</span>
+<span class="co1"># and width (.func_linewidth). The arguments passed are the same.</span>
+<span class="co1">#</span>
+&nbsp;
+<span class="co1">#</span>
+<span class="co1"># Make framed plot container and add contour component.</span>
+<span class="co1">#</span>
+p = <span class="biggles">biggles</span>.FramedPlot()
+p.add( c )
+&nbsp;
+<span class="co1">#</span>
+<span class="co1"># Output.</span>
+<span class="co1">#</span>
+p.write_img( <span class="nu0">400</span>, <span class="nu0">400</span>, <span class="st0">&quot;example8.png&quot;</span> )
+p.write_eps( <span class="st0">&quot;example8.eps&quot;</span> )
+p.show()
+&nbsp;</pre></pre></code>
+</td>
+<td>
+<a href="example/example8.eps">
+<img src="example/example8.png" border="0" width="400" height="400"></a>
+</td>
+</tr>
+</table>
+<div style="text-align:center">
+<a href="example7.html">&laquo;</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="index.html">1</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="example2.html">2</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="example3.html">3</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="example4.html">4</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="example5.html">5</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="example6.html">6</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="example7.html">7</a>&nbsp;&nbsp;&nbsp;&nbsp;[8]&nbsp;&nbsp;&nbsp;&nbsp;&raquo;</div>
+</div>
+
+<div id="buttons">
+<div class="column">
+<a href="install.html">install</a>
+</div>
+<!--
+<div class="column">
+<a href="http://www.dur.ac.uk/secondary.flow/biggles/">tutorial</a>
+</div>
+-->
+<div class="column">
+<a href="http://github.com/nolta/biggles/wiki/biggles-reference-guide">reference</a>
+</div>
+<div class="column">
+<a href="http://github.com/nolta/biggles">github</a>
+</div>
+<div class="column">
+<a href="http://nolta.net/">contact</a>
+</div>
+</div>
+
+<div style="text-align:center;margin:2em;">
+<A HREF="http://github.com">
+<IMG SRC="github.png" WIDTH="60" BORDER="0" ALT="GitHub Logo"></A>
+</div>
+
+</body>
+</html>

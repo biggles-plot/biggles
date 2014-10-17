@@ -1,0 +1,29 @@
+
+a:link		{ color:	#690020; }
+a:visited	{ color:	#900000; }
+a:active	{ color:	#003600; }
+
+body {
+	margin-top:		2em;
+	margin-bottom:		2em;
+	margin-left:		3em;
+	margin-right:		3em;
+}
+
+h2 {
+	font-style:		italic;
+}
+
+hr {
+	border-left:		none;
+	border-right:		none;
+}
+
+sub,sup {
+	font-size:		smaller;
+}
+
+ul {
+	list-style:		circle;
+}
+
