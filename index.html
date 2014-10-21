@@ -1,63 +1,88 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Biggles by nolta</title>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>biggles</title>
+<link rel="stylesheet" type="text/css" href="frontpage.css"/>
+<style type="text/css">
+/* GeSHi (C) 2004 - 2007 Nigel McNie (http://qbnz.com/highlighter) */
+.python .imp {font-weight: bold; color: red;}
+.python .kw1 {color:purple}
+.python .kw4 {color: #0000cd;}
+.python .co1 {color: #808080; font-style: italic;}
+.python .coMULTI {color: #808080; font-style: italic;}
+.python .st0 {color:green}
+.python .nu0 {color: #ff4500;}
+</style>
+</head>
+<body>
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>
-        <h1>Biggles</h1>
-        <p></p>
-        <p class="view"><a href="https://github.com/nolta/biggles">View the Project on GitHub <small>nolta/biggles</small></a></p>
-        <ul>
-          <li><a href="https://github.com/nolta/biggles/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/nolta/biggles/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/nolta/biggles">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h3>Welcome to GitHub Pages.</h3>
+<div id="header">
+<h1>biggles</h1>
+<h2>simple, elegant python plotting</h2>
+<div id="download"><a href="http://github.com/nolta/biggles/archive/v1.6.7.tar.gz">download &darr; 1.6.7</a></div>
+</div>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<div id="content">
+<table id="promo">
+<tr>
+<td>
+<code><pre>
+<pre class="python"><span class="kw1">import</span> <span class="biggles">biggles</span>
+<span class="kw1">import</span> numpy, math
+&nbsp;
+x = numpy.arange( <span class="nu0">0</span>, <span class="nu0">3</span>*math.pi, math.pi/<span class="nu0">30</span> )
+c = numpy.cos(x)
+s = numpy.sin(x)
+&nbsp;
+p = <span class="biggles">biggles</span>.FramedPlot()
+p.title = <span class="st0">&quot;title&quot;</span>
+p.xlabel = r<span class="st0">&quot;$x$&quot;</span>
+p.ylabel = r<span class="st0">&quot;$\Theta$&quot;</span>
+&nbsp;
+p.add( <span class="biggles">biggles</span>.FillBetween(x, c, x, s) )
+p.add( <span class="biggles">biggles</span>.Curve(x, c, color=<span class="st0">&quot;red&quot;</span>) )
+p.add( <span class="biggles">biggles</span>.Curve(x, s, color=<span class="st0">&quot;blue&quot;</span>) )
+&nbsp;
+p.show() <span class="co1"># X11</span>
+p.write_eps( <span class="st0">&quot;example1.eps&quot;</span> )
+p.write_img( <span class="nu0">400</span>, <span class="nu0">400</span>, <span class="st0">&quot;example1.png&quot;</span> )
+&nbsp;</pre></pre></code>
+</td>
+<td>
+<a href="example/example1.eps">
+<img src="example/example1.png" border="0" width="400" height="400"></a>
+</td>
+</tr>
+</table>
+<div style="text-align:center">
+&laquo;&nbsp;&nbsp;&nbsp;&nbsp;[1]&nbsp;&nbsp;&nbsp;&nbsp;<a href="example2.html">2</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="example3.html">3</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="example4.html">4</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="example5.html">5</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="example6.html">6</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="example7.html">7</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="example8.html">8</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="example2.html">&raquo;</a></div>
+</div>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+<div id="buttons">
+<div class="column">
+<a href="install.html">install</a>
+</div>
+<!--
+<div class="column">
+<a href="http://www.dur.ac.uk/secondary.flow/biggles/">tutorial</a>
+</div>
+-->
+<div class="column">
+<a href="http://github.com/nolta/biggles/wiki/biggles-reference-guide">reference</a>
+</div>
+<div class="column">
+<a href="http://github.com/nolta/biggles">github</a>
+</div>
+<div class="column">
+<a href="http://nolta.net/">contact</a>
+</div>
+</div>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<div style="text-align:center;margin:2em;">
+<A HREF="http://github.com">
+<IMG SRC="github.png" WIDTH="60" BORDER="0" ALT="GitHub Logo"></A>
+</div>
 
-<h3>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/nolta">nolta</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
-    </div>
-    <script src="javascripts/scale.fix.js"></script>
-    
-  </body>
+</body>
 </html>

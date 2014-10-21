@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>biggles</title>
+<link rel="stylesheet" type="text/css" href="frontpage.css"/>
+<style type="text/css">
+/* GeSHi (C) 2004 - 2007 Nigel McNie (http://qbnz.com/highlighter) */
+.python .imp {font-weight: bold; color: red;}
+.python .kw1 {color:purple}
+.python .kw4 {color: #0000cd;}
+.python .co1 {color: #808080; font-style: italic;}
+.python .coMULTI {color: #808080; font-style: italic;}
+.python .st0 {color:green}
+.python .nu0 {color: #ff4500;}
+</style>
+</head>
+<body>
+
+<div id="header">
+<h1>biggles</h1>
+<h2>simple, elegant python plotting</h2>
+<div id="download"><a href="http://github.com/nolta/biggles/archive/v1.6.7.tar.gz">download &darr; 1.6.7</a></div>
+</div>
+
+<div id="content">
+<table id="promo">
+<tr>
+<td>
+<code><pre>
+<pre class="python"><span class="kw1">import</span> <span class="biggles">biggles</span>
+<span class="kw1">import</span> math, numpy 
+&nbsp;
+x = numpy.arange( <span class="nu0">0</span>, <span class="nu0">2</span>*math.pi, math.pi/<span class="nu0">20</span> )
+s = numpy.sin(x)
+c = numpy.cos(x)
+&nbsp;
+inset = <span class="biggles">biggles</span>.FramedPlot()
+inset.title = <span class="st0">&quot;inset&quot;</span>
+inset.frame.draw_ticks = <span class="nu0">0</span>
+&nbsp;
+inset.add( <span class="biggles">biggles</span>.Curve(x, s, type=<span class="st0">&quot;dashed&quot;</span>) )
+&nbsp;
+p = <span class="biggles">biggles</span>.FramedPlot()
+p.aspect_ratio = <span class="nu0">1</span>.
+p.frame.tickdir = <span class="nu0">+1</span>
+p.frame.draw_spine = <span class="nu0">0</span>
+&nbsp;
+p.add( <span class="biggles">biggles</span>.SymmetricErrorBarsY(x, s, [<span class="nu0">0.2</span>]*len(x)) )
+p.add( <span class="biggles">biggles</span>.Points(x, s, color=<span class="st0">&quot;red&quot;</span>) )
+p.add( <span class="biggles">biggles</span>.Inset((.<span class="nu0">6</span>,.<span class="nu0">6</span>), (.<span class="nu0">95</span>,.<span class="nu0">95</span>), inset) )
+&nbsp;
+p.write_img( <span class="nu0">400</span>, <span class="nu0">400</span>, <span class="st0">&quot;example4.png&quot;</span> )
+p.write_eps( <span class="st0">&quot;example4.eps&quot;</span> )
+p.show()
+&nbsp;</pre></pre></code>
+</td>
+<td>
+<a href="example/example4.eps">
+<img src="example/example4.png" border="0" width="400" height="400"></a>
+</td>
+</tr>
+</table>
+<div style="text-align:center">
+<a href="example3.html">&laquo;</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="index.html">1</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="example2.html">2</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="example3.html">3</a>&nbsp;&nbsp;&nbsp;&nbsp;[4]&nbsp;&nbsp;&nbsp;&nbsp;<a href="example5.html">5</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="example6.html">6</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="example7.html">7</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="example8.html">8</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="example5.html">&raquo;</a></div>
+</div>
+
+<div id="buttons">
+<div class="column">
+<a href="install.html">install</a>
+</div>
+<!--
+<div class="column">
+<a href="http://www.dur.ac.uk/secondary.flow/biggles/">tutorial</a>
+</div>
+-->
+<div class="column">
+<a href="http://github.com/nolta/biggles/wiki/biggles-reference-guide">reference</a>
+</div>
+<div class="column">
+<a href="http://github.com/nolta/biggles">github</a>
+</div>
+<div class="column">
+<a href="http://nolta.net/">contact</a>
+</div>
+</div>
+
+<div style="text-align:center;margin:2em;">
+<A HREF="http://github.com">
+<IMG SRC="github.png" WIDTH="60" BORDER="0" ALT="GitHub Logo"></A>
+</div>
+
+</body>
+</html>
