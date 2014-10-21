@@ -26,8 +26,7 @@ p.show()
 ```
 
 This produces an X window with a framed plot of the curve y(x).
-You can find more in the [examples](https://github.com/nolta/biggles/tree/master/examples) directory included with the
-source distribution.
+You can find more in the [examples](https://github.com/nolta/biggles/tree/master/examples) directory included with the source distribution. Also, see the [gallery](http://nolta.github.io/biggles) on the web.
 
 See the full [documentation](https://github.com/nolta/biggles/wiki) for more details.
 
