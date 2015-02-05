@@ -163,6 +163,88 @@ def plot_hist(a, plt=None, visible=True,
 
     keys={}
     keys.update(keys_in)
+    keys['get_hdata']=True
+
+    hist_obj, bin_edges, harray = make_histc(a,
+                                             nbin=nbin, binsize=binsize,
+                                             min=min, max=max, weights=weights,
+                                             norm=norm,
+                                             **keys)
+    pltsent = (plt is not None)
+
+    ylog=keys.get('ylog',False)
+    yrng=keys.get('yrange',None)
+    if ylog:
+        # make_histc already clipped the hist for ylog
+        keys['yrange']=get_log_plot_range(harray, input_range=yrng)
+    else:
+        if yrng is None and not pltsent:
+            keys['yrange']=[0, 1.1*harray.max()]
+
+    if pltsent:
+        for key,value in keys.iteritems():
+            if hasattr(plt,key):
+                setattr(plt,key,value)
+    else:
+        plt = biggles.FramedPlot(**keys)
+
+    plt.add(hist_obj)
+    if visible:
+        plt.show()
+
+    get_hdata=keys_in.get('get_hdata',False)
+    if get_hdata:
+        return plt, bin_edges, harray
+    else:
+        return plt
+
+def plot_hist_old(a, plt=None, visible=True,
+              nbin=10, binsize=None,
+              min=None, max=None, weights=None,
+              norm=None,
+              **keys_in):
+    """
+    bin the data and make a plot of the histogram.
+
+    parameters
+    ----------
+    a: array or sequence
+        The data 
+    nbin: scalar
+        Number of bins to use.
+    binsize: scalar
+        Binsize for histogram. This takes precedence over the nbin=
+        keyword if given
+    min: scalar
+        Minimum value to use, default a.min()
+    max: scalar
+        Maximum value to use, default a.max()
+    weights: array or sequence
+        Weights for each point
+
+    norm: scalar
+        Normalize the histogram such that the integral equals the input norm.
+
+    visible: bool
+        If True, show plot on the screen.  Default True
+    plt: biggles plot object
+        If sent, add the histogram this object.
+    get_hdata: bool
+        if True, returns
+            plot_object, bin_edges, hist_array
+    **keys:
+        keywords for the Histogram object and plot object
+
+    returns
+    -------
+    The plot object.
+
+    If get_hdata=True, returns
+        plot_object, bin_edges, hist_array
+    """
+
+    keys={}
+    keys.update(keys_in)
 
     harray, bin_edges = make_hist(a,
                                   nbin=nbin, binsize=binsize,
@@ -208,6 +290,7 @@ def plot_hist(a, plt=None, visible=True,
         return plt, bin_edges, harray
     else:
         return plt
+
 
 def make_hist(a, nbin=10, binsize=None,
               min=None, max=None, weights=None,
@@ -272,6 +355,80 @@ def make_hist(a, nbin=10, binsize=None,
 
     return harray, bin_edges
 
+def make_histc(a, visible=True,
+               nbin=10, binsize=None,
+               min=None, max=None, weights=None,
+               norm=None,
+               **keys_in):
+    """
+    bin the data and return a biggles Histogram curve
+
+    parameters
+    ----------
+    a: array or sequence
+        The data 
+    nbin: scalar
+        Number of bins to use.
+    binsize: scalar
+        Binsize for histogram. This takes precedence over the nbin=
+        keyword if given
+    min: scalar
+        Minimum value to use, default a.min()
+    max: scalar
+        Maximum value to use, default a.max()
+    weights: array or sequence
+        Weights for each point
+
+    norm: scalar
+        Normalize the histogram such that the integral equals the input norm.
+
+    get_hdata: bool
+        if True, returns
+            plot_object, bin_edges, hist_array
+    **keys:
+        keywords for the Histogram object and plot object
+
+    returns
+    -------
+    The biggles Histogram object
+
+    If get_hdata=True, returns
+        hist_obj, bin_edges, hist_array
+    """
+
+    keys={}
+    keys.update(keys_in)
+
+    harray, bin_edges = make_hist(a,
+                                  nbin=nbin, binsize=binsize,
+                                  min=min, max=max, weights=weights,
+                                  norm=norm)
+    hshow=harray
+
+    ylog=keys.get('ylog',False)
+    if ylog:
+        # prevent zeros in log plot
+        yrng=keys.get('yrange',None)
+        yrng = get_log_plot_range(harray, input_range=yrng)
+        hshow=hshow.clip(min=yrng[0], max=None)
+
+    bsize = bin_edges[1]-bin_edges[0]
+    hist_obj = biggles.Histogram(hshow,
+                                 x0=bin_edges[0],
+                                 binsize=bsize,
+                                 **keys)
+    if ylog:
+        hist_obj.drop_to_zero=False
+
+    label=keys.get('label',None)
+    if label is not None:
+        hist_obj.label=label
+
+    get_hdata=keys.get('get_hdata',False)
+    if get_hdata:
+        return hist_obj, bin_edges, harray
+    else:
+        return hist_obj
 
 class ScatterPlot(dict):
     """
