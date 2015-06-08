@@ -2678,7 +2678,10 @@ class FramedPlot( _PlotContainer ):
                 obj = getattr( obj, x )
             return getattr( obj, xs[-1] )
         else:
-            return self.__dict__[name]
+            if name in self.__dict__:
+                return self.__dict__[name]
+            else:
+                raise AttributeError("attribute not found: '%s'" % name)
 
     def __setattr__( self, name, value ):
         if self._attr_map.has_key( name ):
