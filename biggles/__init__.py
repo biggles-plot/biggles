@@ -77,6 +77,7 @@ from .contour import              \
 from .func import             \
     plot                    ,\
     make_hist               ,\
+    make_histc              ,\
     plot_hist
 
 from .hammer import               \

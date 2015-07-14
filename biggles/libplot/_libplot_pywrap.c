@@ -206,7 +206,9 @@ bail:
 static void
 PyLibPlot_dealloc(struct PyLibPlot* self)
 {
-    pl_deletepl_r(self->pl);
+    if (self->pl) {
+        pl_deletepl_r(self->pl);
+    }
 
     // must be closed *after* deleting the plPlotter
     if (self->fptr != NULL) {
@@ -368,7 +370,19 @@ BGL_PL_FUNC( end_page, pl_closepl_r )
 BGL_PL_FUNC( flush, pl_flushpl_r )
 BGL_PL_FUNC( gsave, pl_savestate_r )
 BGL_PL_FUNC( grestore, pl_restorestate_r )
-BGL_PL_FUNC( begin_page, pl_openpl_r )
+//BGL_PL_FUNC( begin_page, pl_openpl_r )
+
+
+static PyObject* begin_page(struct PyLibPlot *self)
+{
+    if (pl_openpl_r(self->pl) < 0) {
+        fprintf(stderr,"Couldn't open device: '%s'.  If device is X, this is an irrecoverable error\n", self->type );
+        PyErr_Format( PyExc_IOError, "Couldn't open device: '%s'", self->type );
+        return NULL;
+    }
+
+    Py_RETURN_NONE;
+}
 
 /******************************************************************************
  */
@@ -933,71 +947,71 @@ quit:
 static PyMethodDef PyLibPlot_methods[] = {
 
 	// ()
-	{ "clear", (PyCFunction)clear, METH_NOARGS },
-	{ "end_page", (PyCFunction)end_page, METH_NOARGS },
-	{ "flush", (PyCFunction)flush, METH_NOARGS },
-	{ "gsave", (PyCFunction)gsave, METH_NOARGS },
-	{ "grestore", (PyCFunction)grestore, METH_NOARGS },
-	{ "begin_page", (PyCFunction)begin_page, METH_NOARGS },
+	{ "clear", (PyCFunction)clear, METH_NOARGS ,""},
+	{ "end_page", (PyCFunction)end_page, METH_NOARGS ,""},
+	{ "flush", (PyCFunction)flush, METH_NOARGS ,""},
+	{ "gsave", (PyCFunction)gsave, METH_NOARGS ,""},
+	{ "grestore", (PyCFunction)grestore, METH_NOARGS ,""},
+	{ "begin_page", (PyCFunction)begin_page, METH_NOARGS, "open page on device" },
 
 	// (i)
-	{ "set_fill_level", (PyCFunction)set_fill_level, METH_VARARGS },
+	{ "set_fill_level", (PyCFunction)set_fill_level, METH_VARARGS ,""},
 
 	// (d)
-	{ "set_font_size", (PyCFunction)set_font_size, METH_VARARGS },
-	{ "set_line_size", (PyCFunction)set_line_size, METH_VARARGS },
-	{ "set_string_angle", (PyCFunction)set_string_angle, METH_VARARGS },
+	{ "set_font_size", (PyCFunction)set_font_size, METH_VARARGS ,""},
+	{ "set_line_size", (PyCFunction)set_line_size, METH_VARARGS ,""},
+	{ "set_string_angle", (PyCFunction)set_string_angle, METH_VARARGS ,""},
 
 	// (dd)
-	{ "move", (PyCFunction)move, METH_VARARGS },
-	{ "lineto", (PyCFunction)lineto, METH_VARARGS },
-	{ "linetorel", (PyCFunction)linetorel, METH_VARARGS },
+	{ "move", (PyCFunction)move, METH_VARARGS ,""},
+	{ "lineto", (PyCFunction)lineto, METH_VARARGS ,""},
+	{ "linetorel", (PyCFunction)linetorel, METH_VARARGS ,""},
 
 	// (ddd)
-	{ "circle", (PyCFunction)circle, METH_VARARGS },
+	{ "circle", (PyCFunction)circle, METH_VARARGS ,""},
 
 	// (dddd)
-	{ "line", (PyCFunction)line, METH_VARARGS },
-	{ "rect", (PyCFunction)rect, METH_VARARGS },
-	{ "space", (PyCFunction)space, METH_VARARGS },
+	{ "line", (PyCFunction)line, METH_VARARGS ,""},
+	{ "rect", (PyCFunction)rect, METH_VARARGS ,""},
+	{ "space", (PyCFunction)space, METH_VARARGS ,""},
 
 	// (ddddd)
-	{ "ellipse", (PyCFunction)ellipse, METH_VARARGS },
+	{ "ellipse", (PyCFunction)ellipse, METH_VARARGS ,""},
 
 	// (dddddd)
-	{ "arc", (PyCFunction)arc, METH_VARARGS },
+	{ "arc", (PyCFunction)arc, METH_VARARGS ,""},
 
 	// (dddddddd)
-	{ "clipped_line", (PyCFunction)clipped_line, METH_VARARGS },
+	{ "clipped_line", (PyCFunction)clipped_line, METH_VARARGS ,""},
 
 	// (s)
-	{ "set_colorname_bg", (PyCFunction)set_colorname_bg, METH_VARARGS },
-	{ "set_colorname_fg", (PyCFunction)set_colorname_fg, METH_VARARGS },
-	{ "set_colorname_fill", (PyCFunction)set_colorname_fill, METH_VARARGS },
-	{ "set_colorname_pen", (PyCFunction)set_colorname_pen, METH_VARARGS },
-	{ "set_fill_type", (PyCFunction)set_fill_type, METH_VARARGS },
-	{ "set_font_type", (PyCFunction)set_font_type, METH_VARARGS },
-	{ "set_join_type", (PyCFunction)set_join_type, METH_VARARGS },
-	{ "set_line_type", (PyCFunction)set_line_type, METH_VARARGS },
+	{ "set_colorname_bg", (PyCFunction)set_colorname_bg, METH_VARARGS ,""},
+	{ "set_colorname_fg", (PyCFunction)set_colorname_fg, METH_VARARGS ,""},
+	{ "set_colorname_fill", (PyCFunction)set_colorname_fill, METH_VARARGS ,""},
+	{ "set_colorname_pen", (PyCFunction)set_colorname_pen, METH_VARARGS ,""},
+	{ "set_fill_type", (PyCFunction)set_fill_type, METH_VARARGS ,""},
+	{ "set_font_type", (PyCFunction)set_font_type, METH_VARARGS ,""},
+	{ "set_join_type", (PyCFunction)set_join_type, METH_VARARGS ,""},
+	{ "set_line_type", (PyCFunction)set_line_type, METH_VARARGS ,""},
 
 	// color
-	{ "set_color_bg", (PyCFunction)set_color_bg, METH_VARARGS },
-	{ "set_color_fg", (PyCFunction)set_color_fg, METH_VARARGS },
-	{ "set_color_fill", (PyCFunction)set_color_fill, METH_VARARGS },
-	{ "set_color_pen", (PyCFunction)set_color_pen, METH_VARARGS },
+	{ "set_color_bg", (PyCFunction)set_color_bg, METH_VARARGS ,""},
+	{ "set_color_fg", (PyCFunction)set_color_fg, METH_VARARGS ,""},
+	{ "set_color_fill", (PyCFunction)set_color_fill, METH_VARARGS ,""},
+	{ "set_color_pen", (PyCFunction)set_color_pen, METH_VARARGS ,""},
 
-	{ "string", (PyCFunction)string, METH_VARARGS },
-	{ "get_string_width", (PyCFunction)get_string_width, METH_VARARGS },
+	{ "string", (PyCFunction)string, METH_VARARGS ,""},
+	{ "get_string_width", (PyCFunction)get_string_width, METH_VARARGS ,""},
 
-	{ "symbols", (PyCFunction)symbols, METH_VARARGS },
-	{ "clipped_symbols", (PyCFunction)clipped_symbols, METH_VARARGS },
-	{ "clipped_colored_symbols", (PyCFunction)clipped_colored_symbols, METH_VARARGS },
+	{ "symbols", (PyCFunction)symbols, METH_VARARGS ,""},
+	{ "clipped_symbols", (PyCFunction)clipped_symbols, METH_VARARGS ,""},
+	{ "clipped_colored_symbols", (PyCFunction)clipped_colored_symbols, METH_VARARGS ,""},
 
-	{ "curve", (PyCFunction)curve, METH_VARARGS },
-	{ "clipped_curve", (PyCFunction)clipped_curve, METH_VARARGS },
+	{ "curve", (PyCFunction)curve, METH_VARARGS ,""},
+	{ "clipped_curve", (PyCFunction)clipped_curve, METH_VARARGS ,""},
 
-	{ "density_plot",	(PyCFunction)density_plot,		METH_VARARGS },
-	{ "color_density_plot", (PyCFunction)color_density_plot,	METH_VARARGS },
+	{ "density_plot",	(PyCFunction)density_plot,		METH_VARARGS ,""},
+	{ "color_density_plot", (PyCFunction)color_density_plot,	METH_VARARGS ,""},
 
     {NULL}  /* Sentinel */
 };
