@@ -19,6 +19,7 @@
 # Boston, MA  02111-1307, USA.
 #
 
+import os
 import biggles, config
 import string
 import numpy
@@ -28,10 +29,10 @@ LINE_TYPES=["solid","dotted","dotdashed","shortdashed",
             "longdashed","dotdotdashed","dotdotdotdashed"]
 DEFAULT_SYMBOL='filled circle'
 
-def plot(xin, yin, visible=True, plt=None, **kw):
+def plot(xin, yin, plt=None, **kw):
     """
     A wrapper to perform a quick scatter plot with biggles.
-    
+
     For anything more complex, it is better to use the object oriented
     interface.
 
@@ -109,14 +110,14 @@ def plot(xin, yin, visible=True, plt=None, **kw):
 
     splt=ScatterPlot(xin, yin, plt=plt, **kw)
 
-    if visible:
-        splt.show()
-
     plt=splt.get_plot()
+
+    didwrite=_write_plot_maybe(plt, **kw)
+    _show_maybe(plt, didwrite, **kw)
 
     return plt
 
-def plot_hist(a, plt=None, visible=True,
+def plot_hist(a, plt=None,
               nbin=10, binsize=None,
               min=None, max=None, weights=None,
               norm=None,
@@ -189,14 +190,47 @@ def plot_hist(a, plt=None, visible=True,
         plt = biggles.FramedPlot(**keys)
 
     plt.add(hist_obj)
-    if visible:
-        plt.show()
+
+    didwrite=_write_plot_maybe(plt, **keys_in)
+    _show_maybe(plt, didwrite, **keys_in)
 
     get_hdata=keys_in.get('get_hdata',False)
     if get_hdata:
         return plt, bin_edges, harray
     else:
         return plt
+
+def _write_plot_maybe(plt, **kw):
+    fname=kw.get('file',None)
+    if fname is not None:
+        didwrite=True
+        fname=os.path.expanduser(fname)
+        fname=os.path.expandvars(fname)
+
+        if '.eps' == fname[-4:].lower():
+            plt.write_eps(fname)
+        else:
+            width=kw.get('width',800)
+            height=kw.get('height',800)
+            plt.write_img(width, height, fname)
+    else:
+        didwrite=False
+
+    return didwrite
+
+def _show_maybe(plt, didwrite, **kw):
+    if didwrite:
+        visible_default=False
+    else:
+        visible_default=True
+
+    visible=kw.get('visible',visible_default)
+    if visible:
+        width=kw.get('width',None)
+        height=kw.get('height',None)
+        plt.show(width=width, height=height)
+
+
 
 def plot_hist_old(a, plt=None, visible=True,
               nbin=10, binsize=None,
