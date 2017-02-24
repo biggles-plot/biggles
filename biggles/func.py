@@ -703,7 +703,7 @@ class ScatterPlot(dict):
         else:
             x=self.x
             y=self.y
-            for key, grps in itertools.groupby(enumerate(indices), lambda i,x:i-x):
+            for key, grps in itertools.groupby(enumerate(indices), lambda tup:tup[0]-tup[1]):
                 wgrp = map(operator.itemgetter(1), grps)
                 plt.add(biggles.Curve(x[wgrp], y[wgrp], **self))
 

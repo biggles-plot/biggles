@@ -1097,7 +1097,6 @@ init_libplot_pywrap(void)
 {
     PyObject* m;
 
-
     PyLibPlotType.tp_new = PyType_GenericNew;
 
 #if PY_MAJOR_VERSION >= 3
