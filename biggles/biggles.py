@@ -2670,9 +2670,38 @@ class FramedPlot( _PlotContainer ):
 
     parameters
     ----------
-    **keywords
-            See the configuration options for FramedPlot for details (TODO copy
-            into here)
+    xlabel: string
+        Label for the lower x axis
+    ylabel: string
+        Label for the left y axis
+
+
+    xrange: sequence
+        range for the x axis, e.g. [0.2, 5.5]
+    yrange: sequence
+        range for the y axis, e.g. [8, 100]
+
+    xlog: bool
+        Set True to use a log axis
+    ylog: bool
+        Set True to use a log axis
+
+    title: string
+        Title for the plot, above the top x axis
+    title_offset: number
+        The distance between the title and the container's contents.
+    title_style: dict
+        Dict describing the style of the title.
+    aspect_ratio: float
+        height/width
+
+    key: PlotKey
+        A PlotKey instance to be managed by the plot.  When
+        components are added to the plot, they are also added
+        to this key if they have a label attribute.  Note the
+        user can still add PlotKey instances to the plot
+        as normal using .add(key)
+
     """
     def __init__( self, **kw ):
         super(FramedPlot,self).__init__()
@@ -2682,7 +2711,9 @@ class FramedPlot( _PlotContainer ):
         self.content2 = _PlotComposite()
 
         # the user can send a key, and things are added to it
-        self.key = kw.pop('key',None)
+        key = kw.pop('key',None)
+        self._add_key(key)
+
         self.content1.add(self.key)
 
         self.x1 = _HalfAxisX()
@@ -2742,17 +2773,51 @@ class FramedPlot( _PlotContainer ):
         return self.content1.empty() and self.content2.empty()
 
     def add( self, *args ):
+        """
+        Add components to the plot
+
+        parameters
+        -----------
+        *args: plot objects
+            any number of plot objects
+
+        usage
+        -----
+        plt=FramedPlot()
+        plt.add( points )
+        plt.add( more_points, curve )
+        """
         self.content1.add( *args )
 
         if self.key is not None:
             for arg in args:
                 if hasattr(arg, 'label'):
                     self.key.add(arg)
-        #apply( self.content1.add, args )
 
     def add2( self, *args ):
         self.content2.add( *args )
-        #apply( self.content2.add, args )
+
+    def _add_key(self, key):
+        """
+        Add a plot key to by managed by the plot.  This is treated specially,
+        in that objects are added to the key if they are added to the plot, if
+        they have label attributes
+
+        parameters
+        ----------
+        key: PlotKey
+            An instance of a PlotKey
+        """
+        self.key = key
+        if self.key is None:
+            return
+
+        if isinstance(key, PlotKey):
+            self.content1.add(self.key)
+        else:
+            raise ValueError("expected PlotKey, got '%s'" % type(key))
+
+
 
     def _xy2log( self ):
         return _first_not_none(self.x2.log, self.x1.log), \
