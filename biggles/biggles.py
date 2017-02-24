@@ -831,6 +831,9 @@ class Histogram( _LineComponent ):
     binsize: keyword, optional
             The binsize for the histogram. the plotted
             x values will start at x0 with spacing binsize.
+    smooth: bool
+        If set to True, draw a smooth curve rather than a
+        bar graph.  Default is False.
 
     Style and other keywords for the histogram.
     These can also be set as attributes
@@ -842,13 +845,14 @@ class Histogram( _LineComponent ):
         If true, draw down to zero always. Default True.  Useful
         to set False for log plots.
     """
-    def __init__( self, values, x0=0, binsize=1, **kw ):
+    def __init__( self, values, x0=0, binsize=1, smooth=False, **kw ):
         _LineComponent.__init__( self )
         self.conf_setattr( "Histogram" )
         self.kw_init( kw )
         self.values = values
         self.x0 = x0
         self.binsize = binsize
+        self.smooth=smooth
 
     def limits( self ):
         nval = len( self.values )
@@ -860,6 +864,18 @@ class Histogram( _LineComponent ):
         return BoundingBox( p, q )
 
     def make( self, context ):
+        if self.smooth:
+            x,y=self._make_smooth()
+        else:
+            x,y=self._make_bar()
+
+        u, v = context.geom.call_vec( x, y )
+        self.add( _PathObject(u, v) )
+
+    def _make_bar(self):
+        """
+        make a bar graph
+        """
         nval = len( self.values )
         x = []
         y = []
@@ -874,8 +890,24 @@ class Histogram( _LineComponent ):
         if self.drop_to_zero:
             x.append( self.x0 + nval*self.binsize )
             y.append( 0 )
-        u, v = context.geom.call_vec( x, y )
-        self.add( _PathObject(u, v) )
+        return x,y
+
+    def _make_smooth(self):
+        """
+        Plot a smooth curve
+        """
+        nval = len( self.values )
+
+        x = numpy.arange(
+            self.x0 + 0.5*self.binsize,
+            self.x0 + nval*self.binsize,
+            self.binsize,
+            dtype='f8'
+        )
+        y=self.values
+
+        return x,y
+
 
 class LineX( _LineComponent ):
 
