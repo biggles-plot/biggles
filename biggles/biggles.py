@@ -32,15 +32,26 @@ from .libplot import renderer
 
 _true, _false = 1, 0
 
-
-def check_X_is_running():
+def X11_is_running():
     from subprocess import Popen, PIPE
+
     p = Popen(["xset", "-q"], stdout=PIPE, stderr=PIPE)
     p.communicate()
     return p.returncode == 0
 
-have_X11 = check_X_is_running()
+class X11Checker(object):
+    def __init__(self):
+        self.have_X11 = None
 
+    def check(self):
+        from subprocess import Popen, PIPE
+
+        if self.have_X11 is None:
+            self.have_X11 = X11_is_running()
+
+        return self.have_X11 == True
+     
+_x11_checker=X11Checker()
 
 def _range(x):
     x=numpy.array(x, copy=False)
@@ -2451,7 +2462,7 @@ class _PlotContainer( _ConfAttributes ):
     def show_x11( self, width, height ):
         from .libplot.renderer import ScreenRenderer
 
-        if not have_X11:
+        if not _x11_checker.check():
             raise RuntimeError("No X11 display found")
 
         persistent = config.interactive() and \

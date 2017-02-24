@@ -21,51 +21,54 @@
 
 __version__ = '1.6.7'
 
-from .biggles import              \
-    Circle                  ,\
-    Circles                 ,\
-    ColoredPoint            ,\
-    ColoredPoints           ,\
-    Curve                   ,\
-    DataArc                 ,\
-    DataBox                 ,\
-    DataInset               ,\
-    DataLabel               ,\
-    DataLine                ,\
-    Density                 ,\
-    Ellipse                 ,\
-    Ellipses                ,\
-    ErrorBarsX              ,\
-    ErrorBarsY              ,\
-    FillAbove               ,\
-    FillBelow               ,\
-    FillBetween             ,\
-    FramedArray             ,\
-    FramedPlot              ,\
-    Geodesic                ,\
-    Histogram               ,\
-    Labels                  ,\
-    LineX                   ,\
-    LineY                   ,\
-    LowerLimits             ,\
-    OldCustomFramedPlot     ,\
-    OldKey                  ,\
-    Plot                    ,\
-    PlotArc                 ,\
-    PlotBox                 ,\
-    PlotInset               ,\
-    PlotKey                 ,\
-    PlotLabel               ,\
-    PlotLine                ,\
-    Point                   ,\
-    Points                  ,\
-    Slope                   ,\
-    SymmetricErrorBarsX     ,\
-    SymmetricErrorBarsY     ,\
-    Table                   ,\
-    Text                    ,\
-    UpperLimits             ,\
-    multipage
+from .biggles import (
+    Circle,
+    Circles,
+    ColoredPoint,
+    ColoredPoints,
+    Curve,
+    DataArc,
+    DataBox,
+    DataInset,
+    DataLabel,
+    DataLine,
+    Density,
+    Ellipse,
+    Ellipses,
+    ErrorBarsX,
+    ErrorBarsY,
+    FillAbove,
+    FillBelow,
+    FillBetween,
+    FramedArray,
+    FramedPlot,
+    Geodesic,
+    Histogram,
+    Labels,
+    LineX,
+    LineY,
+    LowerLimits,
+    OldCustomFramedPlot,
+    OldKey,
+    Plot,
+    PlotArc,
+    PlotBox,
+    PlotInset,
+    PlotKey,
+    PlotLabel,
+    PlotLine,
+    Point,
+    Points,
+    Slope,
+    SymmetricErrorBarsX,
+    SymmetricErrorBarsY,
+    Table,
+    Text,
+    UpperLimits,
+    multipage,
+    X11_is_running,
+    X11Checker,
+)
 
 from .config import               \
     configure
@@ -93,14 +96,6 @@ SymmetricXErrorBars = SymmetricErrorBarsX
 SymmetricYErrorBars = SymmetricErrorBarsY
 XErrorBars = ErrorBarsX
 YErrorBars = ErrorBarsY
-
-def check_X_is_running():
-    from subprocess import Popen, PIPE
-    p = Popen(["xset", "-q"], stdout=PIPE, stderr=PIPE)
-    p.communicate()
-    return p.returncode == 0
-
-have_X11 = check_X_is_running()
 
 class _deprecated:
 
