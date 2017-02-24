@@ -1742,13 +1742,19 @@ class PlotKey( _PlotComponent ):
             'valign'        : 'textvalign',
     }
 
-    def __init__( self, x, y, components, **kw ):
+    def __init__( self, x, y, components=None, **kw ):
         _PlotComponent.__init__( self )
         self.conf_setattr( "PlotKey" )
         self.kw_init( kw )
         self.x = x
         self.y = y
+
+        if components is None:
+            components=[]
         self.components = components
+
+    def add(self, *args):
+        self.components += args
 
     def make( self, context ):
         key_pos = context.plot_geom( self.x, self.y )
@@ -1774,8 +1780,9 @@ class PlotKey( _PlotComponent ):
                 obj = comp
                 str = getattr( comp, "label", "" )
             t = _TextObject( text_pos,str, **self.kw_style )
-            #t = apply( _TextObject, (text_pos,str), self.kw_style )
-            self.add( t, obj.make_key(bbox) )
+            #self.add( t, obj.make_key(bbox) )
+            # add means something different in the parent
+            super(PlotKey,self).add( t, obj.make_key(bbox) )
             text_pos = pt_add( text_pos, dp )
             bbox.shift( dp )
 
@@ -2669,9 +2676,15 @@ class FramedPlot( _PlotContainer ):
     """
     def __init__( self, **kw ):
         super(FramedPlot,self).__init__()
-        #apply( _PlotContainer.__init__, (self,) )
+
+
         self.content1 = _PlotComposite()
         self.content2 = _PlotComposite()
+
+        # the user can send a key, and things are added to it
+        self.key = kw.pop('key',None)
+        self.content1.add(self.key)
+
         self.x1 = _HalfAxisX()
         self.x1.ticklabels_dir = -1
         self.y1 = _HalfAxisY()
@@ -2686,7 +2699,7 @@ class FramedPlot( _PlotContainer ):
         self.x = _Alias( self.x1, self.x2 )
         self.y = _Alias( self.y1, self.y2 )
         self.conf_setattr( "FramedPlot", **kw )
-        #apply( self.conf_setattr, ("FramedPlot",), kw )
+
 
     _attr_map = {
             "xlabel"        : ("x1", "label"),
@@ -2730,6 +2743,11 @@ class FramedPlot( _PlotContainer ):
 
     def add( self, *args ):
         self.content1.add( *args )
+
+        if self.key is not None:
+            for arg in args:
+                if hasattr(arg, 'label'):
+                    self.key.add(arg)
         #apply( self.content1.add, args )
 
     def add2( self, *args ):
