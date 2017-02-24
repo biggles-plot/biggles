@@ -2464,35 +2464,58 @@ class _PlotContainer( _ConfAttributes ):
         with PSRenderer(filename, **opt ) as device:
             self.page_compose( device )
 
-
-    def write_eps_old( self, filename, **kw ):
+    def write_pdf( self, pdfname, **kw ):
         """
-
-        we don't use a context for the renderer here because I think the
-        compose actually keeps referenes to the device. So despite the context
-        the plotter is not closed until the function exits.
-
-        This causes problems because it is still using the file when it
-        is closed.
+        write the plot to pdf. Extra keywords can be
+        sent, they will be passed onto the eps writer
         """
-        from .libplot.renderer import PSRenderer
+        import tempfile
 
-        opt = copy.copy( config.options("postscript") )
-        opt.update( kw )
+        epsname = tempfile.mktemp(suffix='.eps')
 
-        #file = _open_output( filename )
+        self.write_eps(epsname, **kw)
 
-        #device=PSRenderer(file, **opt )
-        device=PSRenderer(filename, **opt )
-        self.page_compose( device )
+        if not os.path.exists(epsname):
+            raise RuntimeError("failed to write "
+                               "temporary eps file '%s'" % epsname)
 
-        # so the internal plPlotter closes and stops accessing the file.
-        del device
+        self._convert_eps_to_pdf(epsname, pdfname)
 
-        #_close_output( file )
+        try:
+            os.remove(epsname)
+        except:
+            pass
+
+    def _convert_eps_to_pdf(self, epsname, pdfname):
+        """
+        currently requires epstopdf, we probably want
+        to check other programs if it is not found
+        """
+        from subprocess import Popen, PIPE
+
+        ret=os.system("epstopdf %s -o %s" % (epsname,pdfname))
+
+        #p = Popen(["epstopdf", epsname,"-o"+pdfname], stdout=PIPE, stderr=PIPE)
+        #p = Popen(["epstopdf", epsname,"-o",pdfname], stdout=PIPE, stderr=PIPE)
+        #p.communicate()
+        #ret=p.returncode
+        if ret != 0:
+            raise RuntimeError("failed to convert %s to %s" % (epsname,pdfname))
+
 
 
     def write_img( self, *args ):
+        """
+        Write an image file.  can be called in one of two
+        ways
+
+        write_imge(type, width, height, filename )
+        write_imge(width, height, filename )
+
+        In the second case, the type is inferred from the extension,
+        e.g. ".png"
+
+        """
         from .libplot.renderer import ImageRenderer
         if len(args) == 4:
             type,width,height,filename = args
