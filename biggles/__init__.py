@@ -94,6 +94,14 @@ SymmetricYErrorBars = SymmetricErrorBarsY
 XErrorBars = ErrorBarsX
 YErrorBars = ErrorBarsY
 
+def check_X_is_running():
+    from subprocess import Popen, PIPE
+    p = Popen(["xset", "-q"], stdout=PIPE, stderr=PIPE)
+    p.communicate()
+    return p.returncode == 0
+
+have_X11 = check_X_is_running()
+
 class _deprecated:
 
     def __init__( self, obj, old, new, harrass=1 ):
