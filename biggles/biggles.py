@@ -35,7 +35,8 @@ _true, _false = 1, 0
 def X11_is_running():
     from subprocess import Popen, PIPE
 
-    p = Popen(["xset", "-q"], stdout=PIPE, stderr=PIPE)
+    #p = Popen(["xset", "-q"], stdout=PIPE, stderr=PIPE)
+    p = Popen(["xdpyinfo"], stdout=PIPE, stderr=PIPE)
     p.communicate()
     return p.returncode == 0
 

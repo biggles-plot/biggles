@@ -67,7 +67,6 @@ from .biggles import (
     UpperLimits,
     multipage,
     X11_is_running,
-    X11Checker,
 )
 
 from .config import               \
