@@ -39,20 +39,6 @@ def X11_is_running():
     p.communicate()
     return p.returncode == 0
 
-class X11Checker(object):
-    def __init__(self):
-        self.have_X11 = None
-
-    def check(self):
-        from subprocess import Popen, PIPE
-
-        if self.have_X11 is None:
-            self.have_X11 = X11_is_running()
-
-        return self.have_X11 == True
-     
-_x11_checker=X11Checker()
-
 def _range(x):
     x=numpy.array(x, copy=False)
     return x.min(), x.max()
@@ -2404,9 +2390,16 @@ class _PlotContainer( _ConfAttributes ):
                     % os.name )
 
     def show_x11( self, width, height ):
+        """
+        show the plot in an X11 window
+        """
         from .libplot.renderer import ScreenRenderer
 
-        if not _x11_checker.check():
+        # need to check each time.  An example is when
+        # using screen, and reattaching a running session
+        # without an existing display
+
+        if not X11_is_running():
             raise RuntimeError("No X11 display found")
 
         persistent = config.interactive() and \
