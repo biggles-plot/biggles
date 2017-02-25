@@ -22,6 +22,7 @@
 from __future__ import print_function
 import copy, math, os
 import numpy
+import tempfile
 
 from . import config, _biggles
 from geometry import *
@@ -2417,7 +2418,6 @@ class _PlotContainer( _ConfAttributes ):
         they must be manually cleaned up during normal
         temp directory maintenance.
         """
-        import os, tempfile
         #tf = os.path.join( win_temp_path(), 'biggles_graph.png' )
         tf = tempfile.mktemp('_biggles.png')
         self.write_img( width, height, tf )
@@ -2445,7 +2445,7 @@ class _PlotContainer( _ConfAttributes ):
         printer.close()
     '''
 
-    def write_eps( self, filename, **kw ):
+    def write_eps( self, outfile, **kw ):
         """
         write the plot to postscript. Extra keywords can be
         sent 
@@ -2455,7 +2455,7 @@ class _PlotContainer( _ConfAttributes ):
         opt = copy.copy( config.options("postscript") )
         opt.update( kw )
 
-        with PSRenderer(filename, **opt ) as device:
+        with PSRenderer(outfile, **opt ) as device:
             self.page_compose( device )
 
     def write_pdf( self, pdfname, **kw ):
@@ -2463,7 +2463,6 @@ class _PlotContainer( _ConfAttributes ):
         write the plot to pdf. Extra keywords can be
         sent, they will be passed onto the eps writer
         """
-        import tempfile
 
         epsname = tempfile.mktemp(suffix='.eps')
 
@@ -2485,39 +2484,130 @@ class _PlotContainer( _ConfAttributes ):
         currently requires epstopdf, we probably want
         to check other programs if it is not found
         """
-        from subprocess import Popen, PIPE
 
-        ret=os.system("epstopdf %s -o %s" % (epsname,pdfname))
+        cmd = """
+        gs \
+                -dEPSCrop \
+                -dSAFER \
+                -dBATCH \
+                -dNOPAUSE \
+                -sDEVICE=pdfwrite \
+                -sOutputFile={pdf} {eps} > /dev/null
+        """
+        cmd=cmd.format(eps=epsname, pdf=pdfname)
 
-        #p = Popen(["epstopdf", epsname,"-o"+pdfname], stdout=PIPE, stderr=PIPE)
-        #p = Popen(["epstopdf", epsname,"-o",pdfname], stdout=PIPE, stderr=PIPE)
-        #p.communicate()
-        #ret=p.returncode
+        ret=os.system(cmd)
+
+        if ret != 0:
+            raise RuntimeError("failed to convert %s to %s" % (epsname,pdfname))
+
+    def write(self, outfile, **kw):
+        """
+        write PDF, EPS, or image files with antialiasing
+
+        parameters
+        ----------
+        outfile: string
+            Output file name
+        type: string, optional
+            File type, e.g. pdf, eps, png, jpg
+        dpi: int, optional
+            Optional dpi for image output, default 100
+        **kw: keywords
+            Other keywords for the eps writer
+        """
+
+        type=kw.pop('type',None)
+        if type is None:
+            type = outfile[-3:].lower()
+        else:
+            type=type.lower()
+
+        if type == 'eps':
+            self.write_eps(outfile, **kw)
+        elif type == 'pdf':
+            self.write_pdf(outfile, **kw)
+        else:
+            self._write_img_from_eps(type, outfile, **kw)
+
+    def _write_img_from_eps(self, type, outfile, **kw):
+
+        dpi = kw.pop('dpi',100)
+
+        epsname = tempfile.mktemp(suffix='.eps')
+
+        self.write_eps(epsname, **kw)
+
+        if not os.path.exists(epsname):
+            raise RuntimeError("failed to write "
+                               "temporary eps file '%s'" % epsname)
+
+        self._convert_eps_to_img(type, outfile, epsname, dpi, **kw)
+
+        try:
+            os.remove(epsname)
+        except:
+            pass
+
+    def _convert_eps_to_img(self, type, outfile, epsname, dpi, **kw):
+
+        if type=='png':
+            device='png16m'
+        elif type=='jpg':
+            device='jpeg'
+        else:
+            raise NotImplementedError("image type should be png or jpg")
+
+        cmd="""
+        gs -dTextAlphaBits={bits} \
+                -dGraphicsAlphaBits={bits} \
+                -dEPSCrop \
+                -dSAFER \
+                -dBATCH \
+                -dNOPAUSE \
+                -r{dpi} \
+                -sDEVICE={device} \
+                -sOutputFile={ofile} \
+                {eps} > /dev/null
+        """
+        cmd = cmd.format(
+            bits=4,
+            device=device,
+            ofile=outfile,
+            dpi=dpi,
+            eps=epsname,
+        )
+
+        ret=os.system(cmd)
+
         if ret != 0:
             raise RuntimeError("failed to convert %s to %s" % (epsname,pdfname))
 
 
-
-    def write_img( self, *args ):
+    def write_img( self, *args, **kw ):
         """
-        Write an image file.  can be called in one of two
-        ways
+        Deprecated method to write an image file.  Use write() instead
+        
+        can be called in one of two ways
 
-        write_imge(type, width, height, filename )
-        write_imge(width, height, filename )
+        write_imge(type, width, height, outfile )
+        write_imge(width, height, outfile )
 
         In the second case, the type is inferred from the extension,
         e.g. ".png"
 
         """
         from .libplot.renderer import ImageRenderer
-        if len(args) == 4:
-            type,width,height,filename = args
-        elif len(args) == 3:
-            width,height,filename = args
-            type = filename[-3:].lower()
 
-        with ImageRenderer( type, width, height, filename ) as device:
+        antialias=kw.get('noaa',False)
+
+        if len(args) == 4:
+            type,width,height,outfile = args
+        elif len(args) == 3:
+            width,height,outfile = args
+            type = outfile[-3:].lower()
+
+        with ImageRenderer( type, width, height, outfile ) as device:
             self.page_compose( device )
 
     save_as_eps = write_eps
@@ -2542,7 +2632,6 @@ class _PlotContainer( _ConfAttributes ):
         """
         Saves PNG file in temporary file. Returns file contents.
         """
-        import tempfile, os
         if len(args) == 2:
             width,height = args
         type = 'png'
