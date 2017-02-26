@@ -46,7 +46,8 @@ _config.read( SITECONFIGFILE )
 
 if os.environ.has_key( "HOME" ):
     USERCONFIGFILE = os.path.join( os.environ["HOME"], ".biggles" )
-    _config.read( USERCONFIGFILE )
+    if os.path.exists( USERCONFIGFILE ):
+        _config.read( USERCONFIGFILE )
 
 def interactive():
     return hasattr( sys, "ps1" )
