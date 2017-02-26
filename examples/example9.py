@@ -53,6 +53,6 @@ t.aspect_ratio = 0.5
 t[0,0] = p1
 t[0,1] = p2
 
-#t.write_img( 400, 400, "example9.png" )
-#t.write_eps( "example9.eps" )
+t.write("example9.png", dpi=55)
+t.write("example9.eps")
 t.show()

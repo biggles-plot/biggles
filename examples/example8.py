@@ -60,6 +60,7 @@ p.add( c )
 #
 # Output.
 #
-#p.write_img( 400, 400, "example8.png" )
-#p.write_eps( "example8.eps" )
+
+p.write("example8.png", dpi=55)
+p.write("example8.eps")
 p.show()

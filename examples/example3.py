@@ -22,6 +22,6 @@ t2 = biggles.Table( 2, 1 )
 t2[0,0] = t1
 t2[1,0] = p
 
-#t2.write_img( 400, 400, "example3.png" )
-#t2.write_eps( "example3.eps" )
+t2.write("example3.png", dpi=55)
+t2.write("example3.eps")
 t2.show()

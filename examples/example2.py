@@ -27,6 +27,6 @@ k = biggles.PlotKey( .1, .9, [a,b,l] )
 
 p.add( l, a, b, k )
 
-#p.write_img( 400, 400, "example2.png" )
-#p.write_eps( "example2.eps" )
+p.write("example2.png", dpi=55)
+p.write("example2.eps")
 p.show()

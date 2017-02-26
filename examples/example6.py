@@ -29,6 +29,6 @@ p.y2.ticklabels = [ "-1", "-1/2", "0", "1/2", "1" ]
 p.add( biggles.Curve(x, c, type='dash') )
 p.add( biggles.Curve(x, s) )
 
-#p.write_img( 400, 400, "example6.png" )
-#p.write_eps( "example6.eps" )
+p.write("example6.png", dpi=55)
+p.write("example6.eps")
 p.show()

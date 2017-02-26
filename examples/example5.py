@@ -20,6 +20,6 @@ a[0,1].add( biggles.Curve(x, .50*y) )
 a[1,0].add( biggles.Curve(x, .75*y) )
 a[1,1].add( biggles.Curve(x, y) )
 
-#a.write_img( 400, 400, "example5.png" )
-#a.write_eps( "example5.eps" )
+a.write("example5.png", dpi=55)
+a.write("example5.eps")
 a.show()

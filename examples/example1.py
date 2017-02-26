@@ -16,6 +16,6 @@ p.add( biggles.FillBetween(x, c, x, s) )
 p.add( biggles.Curve(x, c, color="red") )
 p.add( biggles.Curve(x, s, color="blue") )
 
-#p.write_img( 400, 400, "example1.png" )
-#p.write_eps( "example1.eps" )
+p.write("example1.png", dpi=55)
+p.write("example1.eps" )
 p.show()

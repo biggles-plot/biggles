@@ -19,6 +19,6 @@ for i in range(len(m)//2):
     b = m[2*i+1]
     p.add( biggles.Curve(l, b) )
 
-#p.write_img( 400, 400, "example7.png" )
-#p.write_eps( "example7.eps" )
+p.write("example7.png", dpi=55)
+p.write("example7.eps")
 p.show()

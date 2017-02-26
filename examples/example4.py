@@ -22,6 +22,6 @@ p.add( biggles.SymmetricErrorBarsY(x, s, [0.2]*len(x)) )
 p.add( biggles.Points(x, s, color="red") )
 p.add( biggles.Inset((.6,.6), (.95,.95), inset) )
 
-#p.write_img( 400, 400, "example4.png" )
-#p.write_eps( "example4.eps" )
+p.write("example4.png", dpi=55)
+p.write("example4.eps")
 p.show()
