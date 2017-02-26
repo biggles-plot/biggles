@@ -24,4 +24,5 @@ p.add( biggles.Inset((.6,.6), (.95,.95), inset) )
 
 p.write("example4.png", dpi=55)
 p.write("example4.eps")
+p.write("example4.pdf")
 p.show()

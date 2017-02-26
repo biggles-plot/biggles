@@ -55,4 +55,5 @@ t[0,1] = p2
 
 t.write("example9.png", dpi=55)
 t.write("example9.eps")
+t.write("example9.pdf")
 t.show()

@@ -24,4 +24,5 @@ t2[1,0] = p
 
 t2.write("example3.png", dpi=55)
 t2.write("example3.eps")
+t2.write("example3.pdf")
 t2.show()

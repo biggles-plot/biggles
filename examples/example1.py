@@ -17,5 +17,6 @@ p.add( biggles.Curve(x, c, color="red") )
 p.add( biggles.Curve(x, s, color="blue") )
 
 p.write("example1.png", dpi=55)
-p.write("example1.eps" )
+p.write("example1.eps")
+p.write("example1.pdf")
 p.show()

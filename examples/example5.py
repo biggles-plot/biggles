@@ -22,4 +22,5 @@ a[1,1].add( biggles.Curve(x, y) )
 
 a.write("example5.png", dpi=55)
 a.write("example5.eps")
+a.write("example5.pdf")
 a.show()

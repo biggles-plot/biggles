@@ -31,4 +31,5 @@ p.add( biggles.Curve(x, s) )
 
 p.write("example6.png", dpi=55)
 p.write("example6.eps")
+p.write("example6.pdf")
 p.show()

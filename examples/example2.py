@@ -29,4 +29,5 @@ p.add( l, a, b, k )
 
 p.write("example2.png", dpi=55)
 p.write("example2.eps")
+p.write("example2.pdf")
 p.show()

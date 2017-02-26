@@ -21,4 +21,5 @@ for i in range(len(m)//2):
 
 p.write("example7.png", dpi=55)
 p.write("example7.eps")
+p.write("example7.pdf")
 p.show()

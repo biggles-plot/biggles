@@ -63,4 +63,5 @@ p.add( c )
 
 p.write("example8.png", dpi=55)
 p.write("example8.eps")
+p.write("example8.pdf")
 p.show()
