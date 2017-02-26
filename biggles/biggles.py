@@ -2481,9 +2481,9 @@ class _PlotContainer( _ConfAttributes ):
 
     def _convert_eps_to_pdf(self, epsname, pdfname):
         """
-        currently requires epstopdf, we probably want
-        to check other programs if it is not found
+        convert using ghostscript (gs)
         """
+	from subprocess import Popen, PIPE
 
         cmd = """
         gs \
@@ -2500,6 +2500,31 @@ class _PlotContainer( _ConfAttributes ):
 
         if ret != 0:
             raise RuntimeError("failed to convert %s to %s" % (epsname,pdfname))
+
+    def _show_eps(self, epsname):
+        """
+        test using ghostscript with display device x11alpha
+
+        this would work in principle for an antialiased 
+        x11 viewer, but ghostscript doesn't seem to want
+        to go into the background, it either wants to
+        be interactive or exit
+        """
+	from subprocess import Popen, PIPE
+
+                #-dBATCH \
+                #-dEPSCrop \
+        cmd = """
+        gs \
+                -dSAFER \
+                -dBATCH \
+                -sDEVICE=x11alpha \
+		-r75 {eps}
+        """
+
+        cmd=cmd.format(eps=epsname)
+
+        ret=os.system(cmd)
 
     def write(self, outfile, **kw):
         """
