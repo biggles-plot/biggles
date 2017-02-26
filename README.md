@@ -2,6 +2,8 @@
 Biggles : Scientific Plotting with/in/for Python
 ================================================
 
+[![Build Status](https://travis-ci.org/biggles-plot/biggles.svg?branch=master)](https://travis-ci.org/biggles-plot/biggles)
+
 Biggles is a Python module for creating publication-quality 2D scientific
 plots. It supports multiple output formats (postscript, x11, png, svg, gif),
 understands simple TeX, and sports a high-level, elegant interface. It's
