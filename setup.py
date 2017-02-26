@@ -30,6 +30,7 @@
 
 from __future__ import print_function
 from setuptools import setup, Extension
+from distutils.command.install_data import install_data
 import sys, os, os.path
 
 # include/library directories
@@ -130,7 +131,7 @@ else:
     if libX11_dir is not None:
         libplot_module_lib_dirs.append( libX11_dir )
     else:
-        print( 'unable to find plot.h; add "-L/path/to/libX11"' )
+        print( 'unable to find libX11; add "-L/path/to/libX11"' )
 
     #_biggles_module_inc_dirs = [ numpy_inc_dir ]
     #libplot_module_inc_dirs = [ plot_h_dir, numpy_inc_dir ]
@@ -144,6 +145,17 @@ else:
     except ImportError:
         from distutils.command.build_py import build_py
 
+
+# own install_data class to allow installation of data file
+# (config.ini) to biggles directory
+class my_install_data(install_data):
+    def finalize_options(self):
+        self.set_undefined_options(
+            "install",
+            ("install_lib", "install_dir"),
+            ("root", "root"),
+            ("force", "force")
+        )
 
 long_description = """\
 Biggles is a Python module for creating publication-quality 2D scientific
@@ -174,7 +186,8 @@ setup(
                   library_dirs=libplot_module_lib_dirs,
                   libraries=libplot_module_libs),
         ],
-    cmdclass={'build_py' : build_py},
+    cmdclass={"install_data" : my_install_data,
+              'build_py' : build_py},
     package_data={'biggles': ['biggles/config.ini']},
-    data_files=[('biggles', ['biggles/config.ini'])]
+    data_files=[("biggles", ["biggles/config.ini"])]
 )
