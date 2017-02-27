@@ -30,7 +30,6 @@
 
 from __future__ import print_function
 from setuptools import setup, Extension
-from distutils.command.install_data import install_data
 import sys, os, os.path
 
 # include/library directories
@@ -139,17 +138,6 @@ else:
 
     libplot_module_libs = ["plot","Xaw","Xmu","Xt","SM","ICE","Xext","X11"]
 
-# own install_data class to allow installation of data file
-# (config.ini) to biggles directory
-class my_install_data(install_data):
-    def finalize_options(self):
-        self.set_undefined_options(
-            "install",
-            ("install_lib", "install_dir"),
-            ("root", "root"),
-            ("force", "force")
-        )
-
 long_description = """\
 Biggles is a Python module for creating publication-quality 2D scientific
 plots. It supports multiple output formats (postscript, x11, png, svg, gif),
@@ -179,9 +167,6 @@ setup(
                   library_dirs=libplot_module_lib_dirs,
                   libraries=libplot_module_libs),
         ],
-    cmdclass={"install_data" : my_install_data},
     use_2to3=True,
     test_suite="biggles.tests",
-    package_data={'biggles': ['biggles/config.ini']},
-    data_files=[("biggles", ["biggles/config.ini"])]
 )

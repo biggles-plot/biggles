@@ -23,6 +23,7 @@
 # biggles checks here if it fails to find an option
 # in other sections
 #
+CONFIG_BASE = """\
 [default]
 
 fillcolor		= 0xf0f0f0
@@ -38,12 +39,12 @@ textvalign		= center
 
 # --------------------------------------------------
 [screen]
- 
+
 # dimensions of window (pixels)
 #
 width			= 512
 height			= 512
- 
+
 # make window persistent when using interactively?
 #
 persistent		= no
@@ -199,4 +200,4 @@ page_margin		= 0.1
 title			= None
 title_offset		= 1.0
 title_style		= {fontsize:3.0}
-
+"""

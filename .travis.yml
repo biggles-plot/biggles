@@ -12,5 +12,4 @@ python:
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq libplot-dev plotutils
-install: python setup.py install_data
 script: python setup.py test
