@@ -7,6 +7,11 @@ from _continents import CONTINENTS
 
 IMTYPES = ['png', 'eps', 'pdf', 'jpg']
 
+def test():
+    suite_examples = unittest.TestLoader().loadTestsFromTestCase(ExampleTests)
+    suite = unittest.TestSuite([suite_examples])
+    if not unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful():
+        sys.exit(1)
 
 def _write_example(i, p):
     for ftail in IMTYPES:

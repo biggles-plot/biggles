@@ -29,7 +29,7 @@
 #
 
 from __future__ import print_function
-from setuptools import setup, Extension
+from distutils.core import setup, Extension
 import sys, os, os.path
 
 # include/library directories
@@ -138,6 +138,12 @@ else:
 
     libplot_module_libs = ["plot","Xaw","Xmu","Xt","SM","ICE","Xext","X11"]
 
+    # use 2to3 to build for python 3.x
+    try:
+        from distutils.command.build_py import build_py_2to3 as build_py
+    except ImportError:
+        from distutils.command.build_py import build_py
+
 long_description = """\
 Biggles is a Python module for creating publication-quality 2D scientific
 plots. It supports multiple output formats (postscript, x11, png, svg, gif),
@@ -155,7 +161,7 @@ setup(
     description="scientific plotting module",
     long_description=long_description,
     packages=["biggles", "biggles.libplot", "biggles.tests"],
-    package_dir={"biggles" : "biggles"},
+    package_dir={"biggles": "biggles"},
     ext_package="biggles",
     ext_modules=[
         Extension("_biggles",
@@ -167,6 +173,6 @@ setup(
                   library_dirs=libplot_module_lib_dirs,
                   libraries=libplot_module_libs),
         ],
-    use_2to3=True,
+    cmdclass={'build_py': build_py},
     test_suite="biggles.tests",
 )
