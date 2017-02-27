@@ -174,5 +174,4 @@ setup(
                   libraries=libplot_module_libs),
         ],
     cmdclass={'build_py': build_py},
-    test_suite="biggles.tests",
 )
