@@ -19,7 +19,7 @@
 # Boston, MA  02111-1307, USA.
 #
 
-import os, sys, tempfile
+import os, sys, io
 import confit
 from config_base import CONFIG_BASE
 
@@ -40,9 +40,7 @@ _config.deprecated( \
 
 # XXX:deprecated 1.6.4
 _config.deprecated( ('printer','paper'), ('postscript','paper') )
-with tempfile.TemporaryFile(mode='w+') as fp:
-    fp.write(CONFIG_BASE)
-    fp.seek(0, 0)
+with io.BytesIO(CONFIG_BASE.encode('utf-8')) as fp:
     _config.readfp(fp)
 
 if os.environ.has_key( "HOME" ):
