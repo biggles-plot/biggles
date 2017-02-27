@@ -2483,7 +2483,6 @@ class _PlotContainer( _ConfAttributes ):
         """
         convert using ghostscript (gs)
         """
-	from subprocess import Popen, PIPE
 
         cmd = """
         gs \
@@ -2510,10 +2509,6 @@ class _PlotContainer( _ConfAttributes ):
         to go into the background, it either wants to
         be interactive or exit
         """
-	from subprocess import Popen, PIPE
-
-                #-dBATCH \
-                #-dEPSCrop \
         cmd = """
         gs \
                 -dSAFER \
