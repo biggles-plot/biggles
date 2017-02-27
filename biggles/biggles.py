@@ -3161,9 +3161,24 @@ class FramedArray( _PlotContainer ):
     ncols: int
             Number of columns of plots
 
-    keywords:
-            See the configuration options for FramedArray for details (TODO copy
-            into here)
+    uniform_limits: bool
+        If True, the axislimits are set to be the same
+        for all plots
+    cellspacing: float
+        Spacing between cells
+
+    xlog, ylog: bool
+        Set xlog and ylog for the entire frame.  These can also
+        be set for individual plots
+    xrange, yrange: bool
+        Set xrange and yrange for the entire frame.  These can also
+        be set for individual plots
+
+    row_fractions: sequence
+        The fraction of the frame taken up by each row of plots
+    col_fractions: sequence
+        The fraction of the frame taken up by each column of plots
+
     """
     def __init__( self, nrows, ncols, **kw ):
         super(FramedArray,self).__init__()
