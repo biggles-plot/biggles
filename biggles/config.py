@@ -40,7 +40,7 @@ _config.deprecated( \
 
 # XXX:deprecated 1.6.4
 _config.deprecated( ('printer','paper'), ('postscript','paper') )
-if sys.version_info.major < 3:
+if sys.version_info < (3, 0, 0):
     with io.StringIO(CONFIG_BASE.decode('utf-8')) as fp:
         _config.readfp(fp)
 else:
