@@ -40,8 +40,12 @@ _config.deprecated( \
 
 # XXX:deprecated 1.6.4
 _config.deprecated( ('printer','paper'), ('postscript','paper') )
-with io.BytesIO(CONFIG_BASE.encode('utf-8')) as fp:
-    _config.readfp(fp)
+if sys.version_info.major < 3:
+    with io.StringIO(CONFIG_BASE.decode('utf-8')) as fp:
+        _config.readfp(fp)
+else:
+    with io.StringIO(CONFIG_BASE) as fp:
+        _config.readfp(fp)
 
 if os.environ.has_key( "HOME" ):
     USERCONFIGFILE = os.path.join( os.environ["HOME"], ".biggles" )
