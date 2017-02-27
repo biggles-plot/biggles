@@ -528,10 +528,13 @@ class _DensityObject( _DeviceObject ):
     kw_rename = {
     }
 
-    def __init__( self, densgrid, ((xmin,ymin), (xmax,ymax)), **kw ):
+    def __init__( self, densgrid, exent,  **kw ):
+        """
+        extent is of the form ((xmin,ymin), (xmax,ymax))
+        """
         self.kw_init( kw )
         self.densgrid = densgrid
-        self.extent   = ( (xmin,ymin), (xmax,ymax) )
+        self.extent   = extent
 
     def bbox( self, context ):
         return BoundingBox( *self.extent )
@@ -1197,10 +1200,8 @@ class Density( _PlotComponent ):
     ----------
     densgrid/image:
             The image or density grid.
-    bounds_tuple:
-            ( (xmin,ymin), (xmax,ymax) )
-
-            TODO: Should support a more intuitive object.
+    extent:
+            extent = ( (xmin,ymin), (xmax,ymax) )
 
     **keywords
             Style and other keywords for the Density.
@@ -1214,12 +1215,15 @@ class Density( _PlotComponent ):
             'foo' : config.value('Points','symbolsize'),
     }
 
-    def __init__( self, densgrid, ((xmin,ymin), (xmax,ymax)), **kw ):
+    def __init__( self, densgrid, extent, **kw ):
+        """
+        extent has the form ((xmin,ymin), (xmax,ymax))
+        """
         _PlotComponent.__init__( self )
         self.conf_setattr( "Density" )
         self.kw_init( kw )
         self.densgrid = densgrid
-        self.extent   = ((xmin,ymin), (xmax,ymax))
+        self.extent   = extent
 
     def limits( self ):
         return BoundingBox( *self.extent )
@@ -3099,6 +3103,66 @@ def _range_union( a, b ):
     if b is None: return a
     return min(a[0],b[0]), max(a[1],b[1])
 
+class _FramedPlotForFramedArray(FramedPlot):
+    """
+    for use in a FramedArray
+    """
+    def limits(self):
+        return self._limits1()
+
+    def _limits1(self, limits=None):
+        if limits is None:
+            limits=super(_FramedPlotForFramedArray,self)._limits1()
+        return limits
+
+    #def _limits2(self, limits=None):
+    #    if limits is None:
+    #        limits=super(_FramedPlotForFramedArray,self)._limits2()
+    #    return limits
+
+
+    def _limits2( self, limits=None):
+        if limits is None:
+            limits = self.content2.limits()
+            if self.content2.empty():
+                limits = self.content1.limits()
+
+        xlog, ylog = self._xy2log()
+        xrange = _first_not_none( self.x2.range, self.x1.range )
+        yrange = _first_not_none( self.y2.range, self.y1.range )
+        return _limits( limits, self.gutter, xlog, ylog, \
+                xrange, yrange )
+
+    def _context1( self, device, region, limits=None):
+        return _PlotContext( device, region, self._limits1(limits=limits),
+                xlog=self.x1.log, ylog=self.y1.log )
+
+    def _context2( self, device, region, limits=None):
+
+        if limits is None:
+            limits = self._limits2()
+
+        xlog, ylog = self._xy2log()
+        return _PlotContext( device, region, limits,
+                xlog, ylog )
+
+
+
+    def compose_interior(self, device, region, limits=None):
+        _PlotContainer.compose_interior( self, device, region )
+
+        context1 = self._context1( device, region, limits=limits )
+        context2 = self._context2( device, region, limits=limits )
+
+        self.content1.render( context1 )
+        self.content2.render( context2 )
+
+        self.y2.render( context2 )
+        self.x2.render( context2 )
+        self.y1.render( context1 )
+        self.x1.render( context1 )
+
+
 class FramedArray( _PlotContainer ):
     """
     A framed array of plots
@@ -3123,7 +3187,11 @@ class FramedArray( _PlotContainer ):
         self.content = {}
         for i in range(nrows):
             for j in range(ncols):
-                self.content[i,j] = Plot()
+                plt = _FramedPlotForFramedArray()
+                #plt.x1.draw_ticklabels=False 
+                #plt.y1.draw_ticklabels=False 
+                self.content[i,j] = plt
+                #self.content[i,j] = Plot()
                 self[i,j].visible=True
         self.conf_setattr( "FramedArray", **kw )
 
@@ -3193,6 +3261,7 @@ class FramedArray( _PlotContainer ):
             obj = self.content[key]
             subregion = g.cell( *key )
             limits = self._limits( *key )
+            print("limits:",limits)
             axislabels = [0,0,0,0]
             if key[0] == self.nrows-1:
                 axislabels[1] = 1
@@ -3226,10 +3295,21 @@ class FramedArray( _PlotContainer ):
                 subregion = g.cell( *key )
                 limits = self._limits( *key )
                 axislabels = [0,0,0,0]
+                '''
                 if key[0] == self.nrows-1:
                     axislabels[1] = 1
                 if key[1] == 0:
                     axislabels[2] = 1
+                '''
+                if key[0] == self.nrows-1:
+                    obj.x1.draw_ticklabels=1
+                else:
+                    obj.x1.draw_ticklabels=0
+                if key[1] == 0:
+                    obj.y1.draw_ticklabels=1
+                else:
+                    obj.y1.draw_ticklabels=0
+
                 fontsizefac = 1.0
                 if self.row_fractions is not None or self.col_fractions is not None:
                     if self.row_fractions is not None:
