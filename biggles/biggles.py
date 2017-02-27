@@ -3103,7 +3103,7 @@ def _range_union( a, b ):
     if b is None: return a
     return min(a[0],b[0]), max(a[1],b[1])
 
-class _FramedPlotForFramedArray(FramedPlot):
+class _FAFramedPlot(FramedPlot):
     """
     for use in a FramedArray
     """
@@ -3112,26 +3112,13 @@ class _FramedPlotForFramedArray(FramedPlot):
 
     def _limits1(self, limits=None):
         if limits is None:
-            limits=super(_FramedPlotForFramedArray,self)._limits1()
+            limits=super(_FAFramedPlot,self)._limits1()
         return limits
 
-    #def _limits2(self, limits=None):
-    #    if limits is None:
-    #        limits=super(_FramedPlotForFramedArray,self)._limits2()
-    #    return limits
-
-
-    def _limits2( self, limits=None):
+    def _limits2(self, limits=None):
         if limits is None:
-            limits = self.content2.limits()
-            if self.content2.empty():
-                limits = self.content1.limits()
-
-        xlog, ylog = self._xy2log()
-        xrange = _first_not_none( self.x2.range, self.x1.range )
-        yrange = _first_not_none( self.y2.range, self.y1.range )
-        return _limits( limits, self.gutter, xlog, ylog, \
-                xrange, yrange )
+            limits=super(_FAFramedPlot,self)._limits2()
+        return limits
 
     def _context1( self, device, region, limits=None):
         return _PlotContext( device, region, self._limits1(limits=limits),
@@ -3187,12 +3174,22 @@ class FramedArray( _PlotContainer ):
         self.content = {}
         for i in range(nrows):
             for j in range(ncols):
-                plt = _FramedPlotForFramedArray()
-                #plt.x1.draw_ticklabels=False 
-                #plt.y1.draw_ticklabels=False 
+                plt = _FAFramedPlot()
+
+                if i==self.nrows-1:
+                    plt.x1.draw_ticklabels=1
+                else:
+                    plt.x1.draw_ticklabels=0
+
+                if j==0:
+                    plt.y1.draw_ticklabels=1
+                else:
+                    plt.y1.draw_ticklabels=0
+
                 self.content[i,j] = plt
-                #self.content[i,j] = Plot()
+
                 self[i,j].visible=True
+
         self.conf_setattr( "FramedArray", **kw )
 
     _attr_distribute = [
@@ -3261,7 +3258,6 @@ class FramedArray( _PlotContainer ):
             obj = self.content[key]
             subregion = g.cell( *key )
             limits = self._limits( *key )
-            print("limits:",limits)
             axislabels = [0,0,0,0]
             if key[0] == self.nrows-1:
                 axislabels[1] = 1
@@ -3295,21 +3291,10 @@ class FramedArray( _PlotContainer ):
                 subregion = g.cell( *key )
                 limits = self._limits( *key )
                 axislabels = [0,0,0,0]
-                '''
-                if key[0] == self.nrows-1:
-                    axislabels[1] = 1
-                if key[1] == 0:
-                    axislabels[2] = 1
-                '''
-                if key[0] == self.nrows-1:
-                    obj.x1.draw_ticklabels=1
-                else:
-                    obj.x1.draw_ticklabels=0
-                if key[1] == 0:
-                    obj.y1.draw_ticklabels=1
-                else:
-                    obj.y1.draw_ticklabels=0
-
+                #if key[0] == self.nrows-1:
+                #    axislabels[1] = 1
+                #if key[1] == 0:
+                #    axislabels[2] = 1
                 fontsizefac = 1.0
                 if self.row_fractions is not None or self.col_fractions is not None:
                     if self.row_fractions is not None:
