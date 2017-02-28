@@ -528,7 +528,7 @@ class _DensityObject( _DeviceObject ):
     kw_rename = {
     }
 
-    def __init__( self, densgrid, exent,  **kw ):
+    def __init__( self, densgrid, extent,  **kw ):
         """
         extent is of the form ((xmin,ymin), (xmax,ymax))
         """
