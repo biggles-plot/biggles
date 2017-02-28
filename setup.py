@@ -30,9 +30,6 @@
 
 from __future__ import print_function
 from distutils.core import setup, Extension
-from distutils.command.install_data import install_data
-from distutils.sysconfig import get_python_inc
-import distutils.log
 import sys, os, os.path
 
 # include/library directories
@@ -74,9 +71,7 @@ libplot_module_inc_dirs = []
 libplot_module_lib_dirs = []
 
 if sys.platform == "win32":
-
     libplot_module_libs = ["plot.dll"]
-
 else:
     try:
         import numpy
@@ -135,7 +130,7 @@ else:
     if libX11_dir is not None:
         libplot_module_lib_dirs.append( libX11_dir )
     else:
-        print( 'unable to find plot.h; add "-L/path/to/libX11"' )
+        print( 'unable to find libX11; add "-L/path/to/libX11"' )
 
     #_biggles_module_inc_dirs = [ numpy_inc_dir ]
     #libplot_module_inc_dirs = [ plot_h_dir, numpy_inc_dir ]
@@ -149,18 +144,6 @@ else:
     except ImportError:
         from distutils.command.build_py import build_py
 
-# own install_data class to allow installation of data file
-# (config.ini) to biggles directory
-
-class my_install_data( install_data ):
-
-    def finalize_options( self ):
-        self.set_undefined_options( "install", \
-                ( "install_lib", "install_dir" ), \
-                ( "root", "root" ), \
-                ( "force", "force" ), \
-        )
-
 long_description = """\
 Biggles is a Python module for creating publication-quality 2D scientific
 plots. It supports multiple output formats (postscript, x11, png, svg, gif),
@@ -169,45 +152,26 @@ intended for technical users with sophisticated plotting needs.
 """
 
 setup(
-        # Distribution meta-data
-
-        name            = "python2-biggles",
-        version         = "1.6.7",
-        author          = "Mike Nolta",
-        author_email    = "mike@nolta.net",
-        url             = "http://biggles.sourceforge.net/",
-        license         = "GPL",
-        description     = "scientific plotting module",
-        long_description= long_description,
-
-        # Description of the modules and packages in the distribution
-
-        packages        = [ "biggles", "biggles.libplot" ],
-        package_dir     = { "biggles" : "biggles" },
-
-        ext_package     = "biggles",
-        ext_modules     = [
-                Extension( "_biggles",
-                        ["biggles/_biggles.c"],
-                        include_dirs = _biggles_module_inc_dirs ),
-
-                # the old plotter
-                #Extension( "libplot.libplot",
-                #        ["biggles/libplot/libplot.c"],
-                #        include_dirs = libplot_module_inc_dirs,
-                #        library_dirs = libplot_module_lib_dirs,
-                #        libraries = libplot_module_libs ),
-
-                Extension( "libplot._libplot_pywrap",
-                        ["biggles/libplot/_libplot_pywrap.c"],
-                        include_dirs = libplot_module_inc_dirs,
-                        library_dirs = libplot_module_lib_dirs,
-                        libraries = libplot_module_libs ),
-
+    name="biggles",
+    version="1.6.7",
+    author="Mike Nolta",
+    author_email="mike@nolta.net",
+    url="https://github.com/biggles-plot/biggles",
+    license="GPL",
+    description="scientific plotting module",
+    long_description=long_description,
+    packages=["biggles", "biggles.libplot", "biggles.tests"],
+    package_dir={"biggles": "biggles"},
+    ext_package="biggles",
+    ext_modules=[
+        Extension("_biggles",
+                  ["biggles/_biggles.c"],
+                  include_dirs=_biggles_module_inc_dirs),
+        Extension("libplot._libplot_pywrap",
+                  ["biggles/libplot/_libplot_pywrap.c"],
+                  include_dirs=libplot_module_inc_dirs,
+                  library_dirs=libplot_module_lib_dirs,
+                  libraries=libplot_module_libs),
         ],
-
-        cmdclass        = { "install_data" : my_install_data,
-                            'build_py' : build_py },
-        data_files      = [ ("biggles", ["biggles/config.ini"]) ]
+    cmdclass={'build_py': build_py},
 )
-

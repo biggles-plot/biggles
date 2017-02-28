@@ -1,3 +1,6 @@
 *.pyc
 *.so
 build/
+.cache/
+biggles.egg-info/*
+dist/

@@ -528,7 +528,7 @@ class _DensityObject( _DeviceObject ):
     kw_rename = {
     }
 
-    def __init__( self, densgrid, exent,  **kw ):
+    def __init__( self, densgrid, extent,  **kw ):
         """
         extent is of the form ((xmin,ymin), (xmax,ymax))
         """
@@ -1328,7 +1328,7 @@ class _ErrorBar( _PlotComponent ):
 class ErrorBarsX( _ErrorBar ):
     """
     An object representing Error bars in the X direction.
-    
+
     Can be added to plot containers.
 
     parameters
@@ -1376,7 +1376,7 @@ class ErrorBarsX( _ErrorBar ):
 class ErrorBarsY( _ErrorBar ):
     """
     An object representing Error bars in the Y direction.
-    
+
     Can be added to plot containers.
 
     parameters
@@ -1424,7 +1424,7 @@ class ErrorBarsY( _ErrorBar ):
 def SymmetricErrorBarsX( x, y, err, **kw ):
     """
     get an object representing Symmetric Error bars in the X direction.
-    
+
     Can be added to plot containers.
 
     parameters
@@ -1452,7 +1452,7 @@ def SymmetricErrorBarsX( x, y, err, **kw ):
 def SymmetricErrorBarsY( x, y, err, **kw ):
     """
     get an object representing Symmetric Error bars in the Y direction.
-    
+
     Can be added to plot containers.
 
     parameters
@@ -1671,7 +1671,7 @@ def Circle( x, y, r, **kw ):
     y: scalar
         y center of circle
     r: scalar
-        radius of circle 
+        radius of circle
 
     **keywords
             Style and other keywords for the curve.
@@ -2452,7 +2452,7 @@ class _PlotContainer( _ConfAttributes ):
     def write_eps( self, outfile, **kw ):
         """
         write the plot to postscript. Extra keywords can be
-        sent 
+        sent
         """
         from .libplot.renderer import PSRenderer
 
@@ -2508,11 +2508,12 @@ class _PlotContainer( _ConfAttributes ):
         """
         test using ghostscript with display device x11alpha
 
-        this would work in principle for an antialiased 
+        this would work in principle for an antialiased
         x11 viewer, but ghostscript doesn't seem to want
         to go into the background, it either wants to
         be interactive or exit
         """
+
         cmd = """
         gs \
                 -dSAFER \
@@ -2611,7 +2612,7 @@ class _PlotContainer( _ConfAttributes ):
     def write_img( self, *args, **kw ):
         """
         Deprecated method to write an image file.  Use write() instead
-        
+
         can be called in one of two ways
 
         write_imge(type, width, height, outfile )

@@ -97,3 +97,14 @@ class Confit(object):
                     continue
                 a = cp.get( section, option, raw=1 )
                 self.set( section, option, _atox(a) )
+
+    def readfp( self, fp ):
+        cp = ConfigParser.ConfigParser()
+        cp.readfp( fp )
+
+        for section in cp.sections():
+            for option in cp.options( section ):
+                if option == "__name__":
+                    continue
+                a = cp.get( section, option, raw=1 )
+                self.set( section, option, _atox(a) )

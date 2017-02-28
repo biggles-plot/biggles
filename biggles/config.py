@@ -19,8 +19,9 @@
 # Boston, MA  02111-1307, USA.
 #
 
-import os, sys
+import os, sys, io
 import confit
+from config_base import CONFIG_BASE
 
 _config = confit.Confit()
 
@@ -39,14 +40,17 @@ _config.deprecated( \
 
 # XXX:deprecated 1.6.4
 _config.deprecated( ('printer','paper'), ('postscript','paper') )
-
-#SITECONFIGFILE = os.path.join( imp.find_module("biggles")[1], "config.ini" )
-SITECONFIGFILE = os.path.join( os.path.dirname(__file__), "config.ini" )
-_config.read( SITECONFIGFILE )
+if sys.version_info < (3, 0, 0):
+    with io.StringIO(CONFIG_BASE.decode('utf-8')) as fp:
+        _config.readfp(fp)
+else:
+    with io.StringIO(CONFIG_BASE) as fp:
+        _config.readfp(fp)
 
 if os.environ.has_key( "HOME" ):
     USERCONFIGFILE = os.path.join( os.environ["HOME"], ".biggles" )
-    _config.read( USERCONFIGFILE )
+    if os.path.exists( USERCONFIGFILE ):
+        _config.read( USERCONFIGFILE )
 
 def interactive():
     return hasattr( sys, "ps1" )
