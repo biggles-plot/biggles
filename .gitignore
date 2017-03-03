@@ -4,3 +4,8 @@ build/
 .cache/
 biggles.egg-info/*
 dist/
+*.png
+*.eps
+*.pdf
+*.jpg
+*.svg
