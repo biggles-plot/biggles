@@ -54,16 +54,16 @@ def pt_min( a, b ):
     # can no longer be considered ordered.  In python2
     # it always compared less
     if a[0] is None:
-        min1=a[0]
-    elif b[0] is None:
         min1=b[0]
+    elif b[0] is None:
+        min1=a[0]
     else:
         min1=min(a[0], b[0])
 
     if a[1] is None:
-        min2=a[1]
-    elif b[1] is None:
         min2=b[1]
+    elif b[1] is None:
+        min2=a[1]
     else:
         min2=min(a[1], b[1])
 
