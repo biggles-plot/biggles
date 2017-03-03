@@ -29,8 +29,12 @@
 #
 
 from __future__ import print_function
-from distutils.core import setup, Extension
 import sys, os, os.path
+if 'develop' in sys.argv[1]:
+    from setuptools import setup, Extension
+else:
+    from distutils.core import setup, Extension
+
 
 # include/library directories
 # if None, setup will try to discover the correct value automatically
