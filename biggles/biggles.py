@@ -2706,16 +2706,10 @@ def _limits_axis( content_range, gutter, user_range, log ):
         if b is not None:
             r1 = math.log10(b) if log else b
 
-        if r0 > r1:
-            r0, r1 = r1, r0
-
     if gutter is not None:
         dx = 0.5 * gutter * (r1 - r0)
         r0 = r0 - dx
         r1 = r1 + dx
-
-        if r0 > r1:
-            r0, r1 = r1, r0
 
     if user_range is not None:
         a, b = user_range
@@ -2723,9 +2717,6 @@ def _limits_axis( content_range, gutter, user_range, log ):
             r0 = math.log10(a) if log else a
         if b is not None:
             r1 = math.log10(b) if log else b
-
-        if r0 > r1:
-            r0, r1 = r1, r0
 
     if r0 == r1:
         r0 = r0 - 1
