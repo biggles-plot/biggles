@@ -1311,6 +1311,28 @@ class FillBetween( _FillComponent ):
         coords = map( context.geom, x, y )
         self.add( _PolygonObject(coords) )
 
+# Polygons --------------------------------------------------------------------
+
+class Polygon( _FillComponent ):
+
+    def __init__( self, x, y, **kw ):
+        _FillComponent.__init__( self )
+        self.conf_setattr( "Polygon" )
+        self.kw_init( kw )
+        self.x = x
+        self.y = y
+
+    def limits( self ):
+        min_x = min( self.x )
+        max_x = max( self.x )
+        min_y = min( self.y )
+        max_y = max( self.y )
+        return BoundingBox( (min_x,min_y), (max_x,max_y) )
+
+    def make( self, context ):
+        x, y = context.geom.call_vec( self.x, self.y )
+        self.add( _PolygonObject( zip(x, y) ) )
+
 # ErrorBars -------------------------------------------------------------------
 
 class _ErrorBar( _PlotComponent ):

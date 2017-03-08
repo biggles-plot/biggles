@@ -59,6 +59,7 @@ from .biggles import (
     PlotLine,
     Point,
     Points,
+    Polygon,
     Slope,
     SymmetricErrorBarsX,
     SymmetricErrorBarsY,
@@ -69,21 +70,18 @@ from .biggles import (
     X11_is_running,
 )
 
-from .config import               \
-    configure
+from .config import configure
 
-from .contour import              \
-    Contour                 ,\
-    Contours
+from .contour import Contour, Contours
 
-from .func import             \
-    plot                    ,\
-    make_hist               ,\
-    make_histc              ,\
+from .func import (
+    plot,
+    make_hist,
+    make_histc,
     plot_hist
+)
 
-from .hammer import               \
-    HammerAitoffPlot
+from .hammer import HammerAitoffPlot
 
 # aliases
 Arc = DataArc
@@ -124,8 +122,8 @@ LineSlope = _deprecated( Slope, "LineSlope", "Slope" )
 SymbolKey = _deprecated( OldKey, "SymbolKey", "PlotKey" )
 
 # XXX:deprecated 1.5
-CustomFramedPlot = _deprecated( \
-        OldCustomFramedPlot, "CustomFramedPlot", "FramedPlot", 0 )
+CustomFramedPlot = _deprecated(
+    OldCustomFramedPlot, "CustomFramedPlot", "FramedPlot", 0 )
 
 try:
     del _biggles

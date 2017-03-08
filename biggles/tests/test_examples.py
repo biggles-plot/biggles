@@ -361,3 +361,13 @@ class ExampleTests(unittest.TestCase):
         p.add(biggles.LineY(0.5))
 
         _write_example(11, p)
+
+    def test_example12(self):
+        p = biggles.FramedPlot()
+        p.title = "triangle"
+        p.xlabel = r"$x$"
+        p.ylabel = r"$y$"
+
+        p.add(biggles.Polygon([0, 1, 0.5], [0, 0, 1]))
+
+        _write_example(12, p)
