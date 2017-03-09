@@ -3,8 +3,13 @@
 
 Features
 --------
+* Added `+=` syntax for adding components to a `PlotKey`.
+* Added `+=` syntax for adding components to containers.
 * Added `Polygon` component.
 
+Code Changes
+------------
+* Updated examples to use new `+=` syntax.
 
 1.7.0 (08 Mar 2017)
 ===================
