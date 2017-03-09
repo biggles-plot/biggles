@@ -148,12 +148,9 @@ else:
     except ImportError:
         from distutils.command.build_py import build_py
 
-long_description = """\
-Biggles is a Python module for creating publication-quality 2D scientific
-plots. It supports multiple output formats (postscript, x11, png, svg, gif),
-understands simple TeX, and sports a high-level, elegant interface. It's
-intended for technical users with sophisticated plotting needs.
-"""
+fp = open('README.rst', 'r')
+long_description = fp.read()
+fp.close()
 
 setup(
     name="biggles",
@@ -161,8 +158,8 @@ setup(
     author="Mike Nolta",
     author_email="mike@nolta.net",
     url="https://github.com/biggles-plot/biggles",
-    license="GPL",
-    description="scientific plotting module",
+    license="GPL-2",
+    description="simple, elegant python plotting",
     long_description=long_description,
     packages=["biggles", "biggles.libplot", "biggles.tests"],
     package_dir={"biggles": "biggles"},
