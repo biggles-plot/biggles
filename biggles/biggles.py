@@ -2766,14 +2766,21 @@ class Plot( _PlotContainer ):
         self.conf_setattr( "Plot", **kw )
         self.content = _PlotComposite()
 
-    def __iadd__( self, other ):
-        self.add( other )
-
     def empty( self ):
         return self.content.empty()
 
     def add( self, *args ):
         self.content.add( *args )
+
+    def __iadd__( self, *args ):
+        fargs = []
+        for a in args:
+            if hasattr(a, '__iter__'):
+                fargs.extend(list(a))
+            else:
+                fargs.append(a)
+        self.add( *fargs )
+        return self
 
     def limits( self ):
         return _limits( self.content.limits(), self.gutter, \
@@ -2920,6 +2927,16 @@ class FramedPlot( _PlotContainer ):
             for arg in args:
                 if hasattr(arg, 'label'):
                     self.key.add(arg)
+
+    def __iadd__( self, *args ):
+        fargs = []
+        for a in args:
+            if hasattr(a, '__iter__'):
+                fargs.extend(list(a))
+            else:
+                fargs.append(a)
+        self.add( *fargs )
+        return self
 
     def add2( self, *args ):
         self.content2.add( *args )
@@ -3263,6 +3280,9 @@ class FramedArray( _PlotContainer ):
     def __getitem__( self, key ):
         return self.content[key]
 
+    def __setitem__( self, key, value ):
+        self.content[key] = value
+
     def _limits( self, i, j ):
         if self.uniform_limits:
             return self._limits_uniform()
@@ -3395,6 +3415,16 @@ class FramedArray( _PlotContainer ):
     def add( self, *args ):
         for obj in self.content.values():
             obj.add( *args )
+
+    def __iadd__( self, *args ):
+        fargs = []
+        for a in args:
+            if hasattr(a, '__iter__'):
+                fargs.extend(list(a))
+            else:
+                fargs.append(a)
+        self.add( *fargs )
+        return self
 
     def compose_interior( self, device, interior ):
         _PlotContainer.compose_interior( self, device, interior )

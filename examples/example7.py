@@ -14,10 +14,7 @@ for line in open('continents.dat','r'):
 p = biggles.HammerAitoffPlot()
 p.ribs_l = 2
 
-for i in range(len(m)//2):
-    l = m[2*i]
-    b = m[2*i+1]
-    p.add( biggles.Curve(l, b) )
+p += [biggles.Curve(m[2*i], m[2*i+1]) for i in range(len(m)//2)]
 
 p.write("example7.png", dpi=55)
 p.write("example7.eps")

@@ -104,12 +104,19 @@ class HammerAitoffPlot( _PlotContainer ):
     def __setattr__( self, name, value ):
         self.__dict__[ self._attr_deprecated.get(name,name) ] = value
 
-    def __iadd__( self, other ):
-        self.add( other )
-
     def add( self, *args ):
         self.content.add( *args )
         #apply( self.content.add, args )
+
+    def __iadd__( self, *args ):
+        fargs = []
+        for a in args:
+            if hasattr(a, '__iter__'):
+                fargs.extend(list(a))
+            else:
+                fargs.append(a)
+        self.add( *fargs )
+        return self
 
     def _draw_background( self, context ):
         pc = _PlotComposite()

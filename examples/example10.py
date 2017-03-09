@@ -35,16 +35,15 @@ pts.label='data'
 mcurve.label='1/x'
 
 key=biggles.PlotKey(0.9,0.9,[pts,mcurve],halign='right')
-
-a[0,0].add(pts, epts, mcurve, key)
+a[0,0] += pts, epts, mcurve, key
 a[0,0].ytitle=r'$\Delta\Sigma  [M_{\odot} pc^{-2}]$'
 a[0,0].yrange=[0.05,20.0]
 a[0,0].xrange=[0.05,20.0]
 a[0,0].ylog=True  # log y axis only for the top plot
 
-a[1,0].add( biggles.Points(x, yratio, type=sym,color=color,size=3) )
-a[1,0].add( biggles.SymmetricErrorBarsY(x,yratio,yratio_err, color=color) )
-a[1,0].add( biggles.Curve(x, x*0 + 1) )
+a[1,0] += biggles.Points(x, yratio, type=sym,color=color,size=3)
+a[1,0] += biggles.SymmetricErrorBarsY(x,yratio,yratio_err, color=color)
+a[1,0] += biggles.Curve(x, x*0 + 1)
 a[1,0].ytitle=r'$ratio$'
 a[1,0].yrange=[0.5,1.5]
 

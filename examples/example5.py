@@ -13,7 +13,8 @@ a.ylabel = "y label"
 a.uniform_limits = 1
 a.cellspacing = 1.
 
-a.add( biggles.LineY(0, type='dot') )
+a += biggles.LineY(0, type='dot')
+a += [biggles.LineY(-1, type='dashed'), biggles.LineY(1, type='dashed')]
 
 a[0,0].add( biggles.Curve(x, .25*y) )
 a[0,1].add( biggles.Curve(x, .50*y) )
