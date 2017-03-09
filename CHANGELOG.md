@@ -1,41 +1,47 @@
-1.7.0 (?? ?? ??)
--------------------
+1.7.0 (?? Mar 2017)
+===================
 
 Features
-=========
-
-    - added option to change panel ratios in FramedArray using
-      row_fractions and col_fractions keywords
-    - visibility of panels in FramedArray can be controlled
-      with the visibility attribute.  arr[i,j].visible=False
-    - added \odot to latex conversion, for sun symbol
-    - new func.plot function with more functionality.
-    - Major classes and functions documented. This facilitates
-    checking docs from an interactive session, e.g. help() or
-    ? in ipython
-    - new documentation on GitHub wiki
+--------
+* Increased default screen size to 640x640.
+* Changed default font to `HersheySerif`.
+* Changed default to non-persistent windows.
+* Added new write functions for anti-aliased images.
+* Added smooth keyword to histogram.
+* Added option to change panel ratios in `FramedArray` using
+  `row_fractions` and `col_fractions` keywords.
+* Visibility of panels in `FramedArray` can be controlled
+  with the visibility attribute, `arr[i,j].visible=False`.
+* Added `\odot` to latex conversion, for sun symbol.
+* New `func.plot` function with more functionality.
+* Major classes and functions documented. This facilitates
+  checking docs from an interactive session, e.g. `help()` or `?` in ipython.
+* New documentation on GitHub wiki.
 
 Bug Fixes
-=========
-    - added try: finally: blocks around compose operations.  Fixes segfault
-    when an exception is thrown while composing and more plotting is
-    attempted.
-    - fixed bug in DataArc/PlotArc
+---------
+* Fixed plotting of vertical and horizontal lines on log axes.
+* Fixed bug in bounding box unions computing minimum.
+* Added `try: finally:` blocks around compose operations. Fixes segfault
+  when an exception is thrown while composing and more plotting is attempted.
+* Fixed bug in `DataArc`/`PlotArc`.
 
-Code Style Changes
-==================
-    - converted to new style classes
-    - converted to extended calling syntax
-    - use spaces instead of tabs
+Code Changes
+------------
+* Added Travis CI for testing.
+* Converted to new style classes.
+* Converted to extended calling syntax.
+* Moved to spaces instead of tabs.
 
 Removed Code
-=============
-
-    - removed matlab compatible interface.
-    - removed read_* I/O code from func.py
+------------
+* Removed old C wrapper for GNU plotutils.
+* Removed old Makefile build system.
+* Removed matlab compatible interface.
+* Removed read_* I/O code from `func.py`.
 
 1.6.7 (02 May 2012)
--------------------
+===================
 
 * Fix segfault when libplot isn't built with X11 (reported by Daniel Ericsson
   & Sebastien Maret).
@@ -43,7 +49,7 @@ Removed Code
 * Move to github.
 
 1.6.6 (27 Nov 2008)
--------------------
+===================
 
 * Fixed issue that caused all images to be 570x570 on some systems, due to a
   change in the python2.5 C API.
@@ -56,12 +62,12 @@ Removed Code
   of symbols.
 
 1.6.5 (20 Mar 2007)
--------------------
+===================
 
 * Replaced Numeric with numpy.
 
 1.6.4 (08 Mar 2004)
--------------------
+===================
 
 * Phil Kromer contributed the new ColoredPoints and Density components.
   See example9.py for details.
@@ -80,12 +86,12 @@ Removed Code
 * Added TeX codes \`,\',\^,\",\~ for character accents.
 
 1.6.3 (16 Jul 2002)
--------------------
+===================
 
 * Mike Romberg fixed bugs related to packaging biggles with imputil.
 
 1.6.2 (23 May 2002)
--------------------
+===================
 
 * Spiros Papadimitriou contributed an experimental piddle port.
 
@@ -98,7 +104,7 @@ Removed Code
 * Fixed bug with added space in scientific notation ticklabels.
 
 1.6.1 (14 Nov 2001)
--------------------
+===================
 
 * Martin Lamar ported the code to Windows.
 
@@ -106,7 +112,7 @@ Removed Code
   This should fix crashes with recent versions of numpy.
 
 1.6.0 (07 Nov 2001)
--------------------
+===================
 
 * Clipping!
 
@@ -126,7 +132,7 @@ Removed Code
   "thousand tiny lines" problem with contour plots.
 
 1.5.0 (31 Aug 2001)
--------------------
+===================
 
 * Completely rewrote FramedPlot. Fully backward compatible with
   the old FramedPlot, it adds a tremendous number of new features.
@@ -163,7 +169,7 @@ Removed Code
   Suns.
 
 1.4.0 (06 Mar 2001)
--------------------
+===================
 
 * Biggles now requires the Numeric Python module, and is no longer
   a pure Python module.
@@ -186,12 +192,12 @@ Removed Code
   is set; several related to calculating limits.
 
 1.3.0 (17 Dec 2000)
--------------------
+===================
 
 * Breaks old Table cell{spacing,padding} values; multipying them by
   100 should work in most cases.
 
-* Renamed Label{Data,Plot} -> {Data,Plot}Label, LineSlope -> Slope, 
+* Renamed Label{Data,Plot} -> {Data,Plot}Label, LineSlope -> Slope,
   and ErrorEllipses -> Ellipses. The old names still work but are
   deprecated.
 
@@ -215,7 +221,7 @@ Removed Code
 * Various speed improvements, bug fixes, and infrastructure work.
 
 1.2.1 (31 Oct 2000)
--------------------
+===================
 
 * Reorganized config.ini file.
 
@@ -226,7 +232,7 @@ Removed Code
 * Fixed a couple of axis bugs triggered by very large limits.
 
 1.2.0 (09 Oct 2000)
--------------------
+===================
 
 * Added distutils setup.py file. [contributed by Berthold H�llmann]
 
@@ -247,7 +253,7 @@ Removed Code
 * Fixed stupid printing bug.
 
 1.1.0 (22 Sep 2000)
--------------------
+===================
 
 * LineKey, SymbolKey, and Inset now take plot coordinates instead of
   data coordinates. Plot coordinates run from 0 -> 1 for each axis.
@@ -268,7 +274,7 @@ Removed Code
 * More namespace cleanup.
 
 1.0.3 (02 Sep 2000)
--------------------
+===================
 
 * Fixed a couple of layout bugs. Handling of large tables and
   elongated plots is greatly improved. [thanks to Jamie Mazer]
@@ -280,7 +286,7 @@ Removed Code
 * Namespace cleanup.
 
 1.0.2 (18 Aug 2000)
--------------------
+===================
 
 * Top level layout overhauled. Ugly-hack-that-sorta-worked replaced
   with Elegant Solution. Naturally, it's quite a bit slower.
@@ -289,14 +295,13 @@ Removed Code
   tables.
 
 1.0.1 (14 Aug 2000)
--------------------
+===================
 
-* Prettier tick labels. 
+* Prettier tick labels.
 
 * Fixed stupid aspect_ratio bug.
 
 1.0.0 (12 Aug 2000)
--------------------
+===================
 
 * First stable release.
-

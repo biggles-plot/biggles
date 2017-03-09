@@ -157,7 +157,7 @@ intended for technical users with sophisticated plotting needs.
 
 setup(
     name="biggles",
-    version="1.6.7",
+    version="1.7.0",
     author="Mike Nolta",
     author_email="mike@nolta.net",
     url="https://github.com/biggles-plot/biggles",
