@@ -21,7 +21,8 @@
 
 import ConfigParser
 
-def _atox( x ):
+
+def _atox(x):
     x = x.strip()
     if x == "None":
         return None
@@ -29,82 +30,87 @@ def _atox( x ):
         return False
     if x == 'True':
         return True
-    try: return int( x, 0 )
+    try:
+        return int(x, 0)
     except ValueError:
-        try: return float(x)
+        try:
+            return float(x)
         except ValueError:
             pass
     if x[0] == "{" and x[-1] == "}":
         style = {}
-        pairs = map( lambda c: c.strip(), x[1:-1].split(",") )
+        pairs = map(lambda c: c.strip(), x[1:-1].split(","))
         for pair in pairs:
             if pair == "":
                 continue
-            key,val = pair.split( ":" )
-            style[ key.strip() ] = _atox( val.strip() )
+            key, val = pair.split(":")
+            style[key.strip()] = _atox(val.strip())
         return style
     return x
+
 
 class Confit(object):
 
     default_sect = "default"
 
-    def __init__( self ):
+    def __init__(self):
         self._sections = {}
         self._deprecated = {}
 
-    def _defaults( self ):
-        return self._sections[ self.default_sect ]
+    def _defaults(self):
+        return self._sections[self.default_sect]
 
-    def _get( self, section, option ):
+    def _get(self, section, option):
         return self._sections[section][option]
 
-    def _set( self, section, option, value ):
-        if not self._sections.has_key( section ):
+    def _set(self, section, option, value):
+        if not self._sections.has_key(section):
             self._sections[section] = {}
         self._sections[section][option] = value
 
-    def deprecated( self, old, new ):
+    def deprecated(self, old, new):
         self._deprecated[old] = new
 
-    def get( self, section, option, notfound=None ):
-        try: rval = self._get( section, option )
+    def get(self, section, option, notfound=None):
+        try:
+            rval = self._get(section, option)
         except KeyError:
-            try: rval = self._defaults()[option]
+            try:
+                rval = self._defaults()[option]
             except KeyError:
                 rval = notfound
         return rval
 
-    def get_section( self, section ):
-        if not self._sections.has_key( section ):
+    def get_section(self, section):
+        if not self._sections.has_key(section):
             return None
         return self._sections[section]
 
-    def set( self, section, option, value ):
-        if self._deprecated.has_key( (section,option) ):
-            sect,opt = self._deprecated[ (section,option) ]
-            self._set( sect, opt, value )
+    def set(self, section, option, value):
+        if self._deprecated.has_key((section, option)):
+            sect, opt = self._deprecated[(section, option)]
+            self._set(sect, opt, value)
         else:
-            self._set( section, option, value )
+            self._set(section, option, value)
 
-    def read( self, filename ):
+    def read(self, filename):
         cp = ConfigParser.ConfigParser()
-        cp.read( filename )
+        cp.read(filename)
 
         for section in cp.sections():
-            for option in cp.options( section ):
+            for option in cp.options(section):
                 if option == "__name__":
                     continue
-                a = cp.get( section, option, raw=1 )
-                self.set( section, option, _atox(a) )
+                a = cp.get(section, option, raw=1)
+                self.set(section, option, _atox(a))
 
-    def readfp( self, fp ):
+    def readfp(self, fp):
         cp = ConfigParser.ConfigParser()
-        cp.readfp( fp )
+        cp.readfp(fp)
 
         for section in cp.sections():
-            for option in cp.options( section ):
+            for option in cp.options(section):
                 if option == "__name__":
                     continue
-                a = cp.get( section, option, raw=1 )
-                self.set( section, option, _atox(a) )
+                a = cp.get(section, option, raw=1)
+                self.set(section, option, _atox(a))

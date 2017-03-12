@@ -29,7 +29,9 @@
 #
 
 from __future__ import print_function
-import sys, os, os.path
+import sys
+import os
+import os.path
 if 'develop' in sys.argv[1]:
     from setuptools import setup, Extension
 else:
@@ -38,34 +40,37 @@ else:
 
 # include/library directories
 # if None, setup will try to discover the correct value automatically
-plot_h_dir  = None  # dir containing plot.h (from plotutils)
+plot_h_dir = None  # dir containing plot.h (from plotutils)
 libplot_dir = None  # dir containing libplot.so (from plotutils)
-libX11_dir  = None  # dir containing libX11.so
+libX11_dir = None  # dir containing libX11.so
 
-def search_for_file( name, dirs ):
+
+def search_for_file(name, dirs):
     for dir in dirs:
-        if not os.path.isdir( dir ):
+        if not os.path.isdir(dir):
             continue
-        fn = os.path.join( dir, name )
+        fn = os.path.join(dir, name)
         if os.path.exists(fn):
             return dir
     #print( "%s not found" % name )
     return None
 
-def search_for_library( name, dirs ):
-    extns = ['a','so','dylib']
+
+def search_for_library(name, dirs):
+    extns = ['a', 'so', 'dylib']
     for extn in extns:
-        dir = search_for_file( 'lib'+name+'.'+extn, dirs )
+        dir = search_for_file('lib' + name + '.' + extn, dirs)
         if dir is not None:
             return dir
     #print( "lib%s not found" % name )
     return None
 
-def dir_ends_in( dir, x ):
+
+def dir_ends_in(dir, x):
     # returns True is dir is of the form "/../../x"
-    head,tail = os.path.split( dir )
+    head, tail = os.path.split(dir)
     if tail == '':
-        head,tail = os.path.split( head )
+        head, tail = os.path.split(head)
     if tail == x:
         return True
     return False
@@ -80,67 +85,67 @@ else:
     try:
         import numpy
         numpy_inc_dir = numpy.get_include()
-        _biggles_module_inc_dirs.append( numpy_inc_dir )
-        libplot_module_inc_dirs.append( numpy_inc_dir )
+        _biggles_module_inc_dirs.append(numpy_inc_dir)
+        libplot_module_inc_dirs.append(numpy_inc_dir)
     except:
-        print( "numpy module not found; add /path/to/numpy to PYTHONPATH" )
+        print("numpy module not found; add /path/to/numpy to PYTHONPATH")
 
     candidate_dirs = [
-            '/usr',
-            '/usr/X11R6',
-            sys.prefix,
+        '/usr',
+        '/usr/X11R6',
+        sys.prefix,
     ]
 
     if 'LD_LIBRARY_PATH' in os.environ:
         for dir in os.environ['LD_LIBRARY_PATH'].split(':'):
-            head,tail = os.path.split( dir )
+            head, tail = os.path.split(dir)
             if tail == '':
-                head,tail = os.path.split( head )
+                head, tail = os.path.split(head)
             if tail == 'lib' or tail == 'lib64':
-                candidate_dirs.append( head )
+                candidate_dirs.append(head)
 
-    candidate_dirs.append( '/usr/local' )
-    candidate_dirs.append( '/opt/local' )
+    candidate_dirs.append('/usr/local')
+    candidate_dirs.append('/opt/local')
 
     candidate_lib_dirs = []
     for dir in candidate_dirs:
-        candidate_lib_dirs.append( os.path.join(dir,'lib') )
-        candidate_lib_dirs.append( os.path.join(dir,'lib64') )
+        candidate_lib_dirs.append(os.path.join(dir, 'lib'))
+        candidate_lib_dirs.append(os.path.join(dir, 'lib64'))
 
     candidate_inc_dirs = []
     for dir in candidate_dirs:
-        candidate_inc_dirs.append( os.path.join(dir,'include') )
+        candidate_inc_dirs.append(os.path.join(dir, 'include'))
 
     if plot_h_dir is None:
-        plot_h_dir = search_for_file( 'plot.h', candidate_inc_dirs )
-        print( "found plot.h in %s" % plot_h_dir )
+        plot_h_dir = search_for_file('plot.h', candidate_inc_dirs)
+        print("found plot.h in %s" % plot_h_dir)
     if libplot_dir is None:
-        libplot_dir = search_for_library( 'plot', candidate_lib_dirs )
-        print( "found libplot in %s" % libplot_dir )
+        libplot_dir = search_for_library('plot', candidate_lib_dirs)
+        print("found libplot in %s" % libplot_dir)
     if libX11_dir is None:
-        libX11_dir = search_for_library( 'X11', candidate_lib_dirs )
-        print( "found libX11 in %s" % libX11_dir )
+        libX11_dir = search_for_library('X11', candidate_lib_dirs)
+        print("found libX11 in %s" % libX11_dir)
 
     if plot_h_dir is not None:
-        libplot_module_inc_dirs.append( plot_h_dir )
+        libplot_module_inc_dirs.append(plot_h_dir)
     else:
-        print( 'unable to find plot.h; add "-I/path/to/plot.h"' )
+        print('unable to find plot.h; add "-I/path/to/plot.h"')
 
     if libplot_dir is not None:
-        libplot_module_lib_dirs.append( libplot_dir )
+        libplot_module_lib_dirs.append(libplot_dir)
     else:
-        print( 'unable to find libplot; add "-L/path/to/libplot"' )
+        print('unable to find libplot; add "-L/path/to/libplot"')
 
     if libX11_dir is not None:
-        libplot_module_lib_dirs.append( libX11_dir )
+        libplot_module_lib_dirs.append(libX11_dir)
     else:
-        print( 'unable to find libX11; add "-L/path/to/libX11"' )
+        print('unable to find libX11; add "-L/path/to/libX11"')
 
     #_biggles_module_inc_dirs = [ numpy_inc_dir ]
     #libplot_module_inc_dirs = [ plot_h_dir, numpy_inc_dir ]
     #libplot_module_lib_dirs = [ libplot_dir, libX11_dir ]
 
-    libplot_module_libs = ["plot","Xaw","Xmu","Xt","SM","ICE","Xext","X11"]
+    libplot_module_libs = ["plot", "Xaw", "Xmu", "Xt", "SM", "ICE", "Xext", "X11"]
 
     # use 2to3 to build for python 3.x
     try:
@@ -173,6 +178,6 @@ setup(
                   include_dirs=libplot_module_inc_dirs,
                   library_dirs=libplot_module_lib_dirs,
                   libraries=libplot_module_libs),
-        ],
+    ],
     cmdclass={'build_py': build_py},
 )

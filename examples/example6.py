@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
 import biggles
-import numpy, math
+import numpy
+import math
 
-x = numpy.arange( 1*math.pi, 3*math.pi, math.pi/30 )
+x = numpy.arange(1 * math.pi, 3 * math.pi, math.pi / 30)
 c = numpy.cos(x)
 s = numpy.sin(x)
 
@@ -24,10 +25,10 @@ p.x2.log = 1
 
 p.y2.label = "right"
 p.y2.draw_ticks = 0
-p.y2.ticklabels = [ "-1", "-1/2", "0", "1/2", "1" ]
+p.y2.ticklabels = ["-1", "-1/2", "0", "1/2", "1"]
 
-p.add( biggles.Curve(x, c, type='dash') )
-p.add( biggles.Curve(x, s) )
+p.add(biggles.Curve(x, c, type='dash'))
+p.add(biggles.Curve(x, s))
 
 p.write("example6.png", dpi=55)
 p.write("example6.eps")

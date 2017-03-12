@@ -94,36 +94,37 @@ SymmetricYErrorBars = SymmetricErrorBarsY
 XErrorBars = ErrorBarsX
 YErrorBars = ErrorBarsY
 
+
 class _deprecated:
 
-    def __init__( self, obj, old, new, harrass=1 ):
+    def __init__(self, obj, old, new, harrass=1):
         self.obj = obj
         self.old = old
         self.new = new
         self.harrass = harrass
 
-    def __call__( self, *args, **kw ):
+    def __call__(self, *args, **kw):
         import sys
         if self.harrass == 1:
-            sys.stderr.write( \
-                    "biggles: %s is deprecated - use %s instead\n" \
-                    % (self.old, self.new) )
-        return apply( self.obj, args, kw )
+            sys.stderr.write(
+                "biggles: %s is deprecated - use %s instead\n"
+                % (self.old, self.new))
+        return apply(self.obj, args, kw)
 
 # XXX:deprecated 1.0
-Plot2D = _deprecated( FramedPlot, "Plot2D", "FramedPlot" )
+Plot2D = _deprecated(FramedPlot, "Plot2D", "FramedPlot")
 
 # XXX:deprecated 1.3
-ErrorEllipses = _deprecated( Ellipses, "ErrorEllipses", "Ellipses"  )
-LabelData = _deprecated( DataLabel, "LabelData", "DataLabel" )
-LabelPlot = _deprecated( PlotLabel, "LabelPlot", "PlotLabel" )
-LineKey = _deprecated( OldKey, "LineKey", "PlotKey" )
-LineSlope = _deprecated( Slope, "LineSlope", "Slope" )
-SymbolKey = _deprecated( OldKey, "SymbolKey", "PlotKey" )
+ErrorEllipses = _deprecated(Ellipses, "ErrorEllipses", "Ellipses")
+LabelData = _deprecated(DataLabel, "LabelData", "DataLabel")
+LabelPlot = _deprecated(PlotLabel, "LabelPlot", "PlotLabel")
+LineKey = _deprecated(OldKey, "LineKey", "PlotKey")
+LineSlope = _deprecated(Slope, "LineSlope", "Slope")
+SymbolKey = _deprecated(OldKey, "SymbolKey", "PlotKey")
 
 # XXX:deprecated 1.5
 CustomFramedPlot = _deprecated(
-    OldCustomFramedPlot, "CustomFramedPlot", "FramedPlot", 0 )
+    OldCustomFramedPlot, "CustomFramedPlot", "FramedPlot", 0)
 
 try:
     del _biggles

@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
 import biggles
-import numpy, math
+import numpy
+import math
 
-x = numpy.arange( 0, 3*math.pi, math.pi/30 )
+x = numpy.arange(0, 3 * math.pi, math.pi / 30)
 c = numpy.cos(x)
 s = numpy.sin(x)
 
@@ -12,9 +13,9 @@ p.title = "title"
 p.xlabel = r"$x$"
 p.ylabel = r"$\Theta$"
 
-p.add( biggles.FillBetween(x, c, x, s) )
-p.add( biggles.Curve(x, c, color="red") )
-p.add( biggles.Curve(x, s, color="blue") )
+p.add(biggles.FillBetween(x, c, x, s))
+p.add(biggles.Curve(x, c, color="red"))
+p.add(biggles.Curve(x, s, color="blue"))
 
 p.write("example1.png", dpi=55)
 p.write("example1.eps")

@@ -8,11 +8,13 @@ from _continents import CONTINENTS
 
 IMTYPES = ['png', 'eps', 'pdf', 'jpg']
 
+
 def test():
     suite_examples = unittest.TestLoader().loadTestsFromTestCase(ExampleTests)
     suite = unittest.TestSuite([suite_examples])
     if not unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful():
         sys.exit(1)
+
 
 def _write_example(i, p):
     for ftail in IMTYPES:
@@ -26,6 +28,7 @@ def _write_example(i, p):
 
 
 class ExampleTests(unittest.TestCase):
+
     @classmethod
     def tearDownClass(cls):
         for i in range(9):
@@ -37,7 +40,7 @@ class ExampleTests(unittest.TestCase):
                     pass
 
     def test_example1(self):
-        x = numpy.arange(0, 3*numpy.pi, numpy.pi/30)
+        x = numpy.arange(0, 3 * numpy.pi, numpy.pi / 30)
         c = numpy.cos(x)
         s = numpy.sin(x)
 
@@ -72,16 +75,16 @@ class ExampleTests(unittest.TestCase):
         l = biggles.Slope(1, type="dotted")
         l.label = "slope"
 
-        k = biggles.PlotKey( .1, .9 )
+        k = biggles.PlotKey(.1, .9)
         k += a
-        k += b,l
+        k += b, l
 
         p.add(l, a, b, k)
 
         _write_example(2, p)
 
     def test_example3(self):
-        x = numpy.arange(0, 3*numpy.pi, numpy.pi/10)
+        x = numpy.arange(0, 3 * numpy.pi, numpy.pi / 10)
         y = numpy.sin(x)
 
         p = biggles.FramedPlot()
@@ -93,17 +96,17 @@ class ExampleTests(unittest.TestCase):
         p.add(biggles.PlotLabel(.5, .5, "Histogram", color=0xcc0000))
 
         t1 = biggles.Table(1, 2)
-        t1[0,0] = p
-        t1[0,1] = p
+        t1[0, 0] = p
+        t1[0, 1] = p
 
         t2 = biggles.Table(2, 1)
-        t2[0,0] = t1
-        t2[1,0] = p
+        t2[0, 0] = t1
+        t2[1, 0] = p
 
         _write_example(3, p)
 
     def test_example4(self):
-        x = numpy.arange(0, 2*numpy.pi, numpy.pi/20)
+        x = numpy.arange(0, 2 * numpy.pi, numpy.pi / 20)
         s = numpy.sin(x)
         c = numpy.cos(x)
 
@@ -118,14 +121,14 @@ class ExampleTests(unittest.TestCase):
         p.frame.tickdir = +1
         p.frame.draw_spine = 0
 
-        p.add(biggles.SymmetricErrorBarsY(x, s, [0.2]*len(x)))
+        p.add(biggles.SymmetricErrorBarsY(x, s, [0.2] * len(x)))
         p.add(biggles.Points(x, s, color="red"))
         p.add(biggles.Inset((.6, .6), (.95, .95), inset))
 
         _write_example(4, p)
 
     def test_example5(self):
-        x = numpy.arange(0, 3*numpy.pi, numpy.pi/10)
+        x = numpy.arange(0, 3 * numpy.pi, numpy.pi / 10)
         y = numpy.sin(x)
 
         a = biggles.FramedArray(2, 2, title='title')
@@ -138,15 +141,15 @@ class ExampleTests(unittest.TestCase):
         a += biggles.LineY(0, type='dot')
         a += [biggles.LineY(-1, type='dashed'), biggles.LineY(1, type='dashed')]
 
-        a[0,0].add(biggles.Curve(x, .25*y))
-        a[0,1].add(biggles.Curve(x, .50*y))
-        a[1,0].add(biggles.Curve(x, .75*y))
-        a[1,1].add(biggles.Curve(x, y))
+        a[0, 0].add(biggles.Curve(x, .25 * y))
+        a[0, 1].add(biggles.Curve(x, .50 * y))
+        a[1, 0].add(biggles.Curve(x, .75 * y))
+        a[1, 1].add(biggles.Curve(x, y))
 
         _write_example(5, a)
 
     def test_example6(self):
-        x = numpy.arange(1*numpy.pi, 3*numpy.pi, numpy.pi/30)
+        x = numpy.arange(1 * numpy.pi, 3 * numpy.pi, numpy.pi / 30)
         c = numpy.cos(x)
         s = numpy.sin(x)
 
@@ -187,7 +190,7 @@ class ExampleTests(unittest.TestCase):
         p = biggles.HammerAitoffPlot()
         p.ribs_l = 2
 
-        p += [biggles.Curve(m[2*i], m[2*i+1]) for i in range(len(m)//2)]
+        p += [biggles.Curve(m[2 * i], m[2 * i + 1]) for i in range(len(m) // 2)]
 
         _write_example(7, p)
 
@@ -196,16 +199,16 @@ class ExampleTests(unittest.TestCase):
         # Create example 2-dimensional data set of two solitons colliding.
         #
         n = 64
-        x = numpy.arange(-10., 10., 20./n)
-        t = numpy.arange( -1., 1., 2./n)
+        x = numpy.arange(-10., 10., 20. / n)
+        t = numpy.arange(-1., 1., 2. / n)
         z = numpy.zeros((len(x), len(t)))
 
         for i in range(len(x)):
             for j in range(len(t)):
-                z[i,j] = -12. * (3. + 4.*numpy.cosh(2.*x[i]-8.*t[j])
-                                 + numpy.cosh(4.*x[i] - 64.*t[j])) / \
-                        (3.*numpy.cosh(x[i]-28.*t[j])
-                         + numpy.cosh(3.*x[i]-36.*t[j]))**2
+                z[i, j] = -12. * (3. + 4. * numpy.cosh(2. * x[i] - 8. * t[j])
+                                  + numpy.cosh(4. * x[i] - 64. * t[j])) / \
+                    (3. * numpy.cosh(x[i] - 28. * t[j])
+                     + numpy.cosh(3. * x[i] - 36. * t[j]))**2
 
         #
         # Make contour component.
@@ -249,17 +252,17 @@ class ExampleTests(unittest.TestCase):
         _write_example(8, p)
 
     def test_example9(self):
-        def mag( vec ):
+        def mag(vec):
             return numpy.sqrt(numpy.sum(vec**2, -1))
 
         def make_coloredpoints_plot():
             # This is the magic recipe for an array of points from (0,0) to (10,10)
-            (x,y) = numpy.reshape(numpy.indices([10+1, 10+1]), (2, -1))
+            (x, y) = numpy.reshape(numpy.indices([10 + 1, 10 + 1]), (2, -1))
 
             # Let's color the points by their distance from the point (3,7)
-            center    = (3,7)
-            rad       = mag(numpy.transpose([x, y]) - center )
-            scaledrad = (1 - rad/numpy.max(rad))[:, numpy.newaxis]
+            center = (3, 7)
+            rad = mag(numpy.transpose([x, y]) - center)
+            scaledrad = (1 - rad / numpy.max(rad))[:, numpy.newaxis]
 
             # Go from light blue to intense red.
             minColor = numpy.array([0.6, 0.9, 1.0])
@@ -267,7 +270,7 @@ class ExampleTests(unittest.TestCase):
             colorrad = minColor + scaledrad * (maxColor - minColor)
 
             cp = biggles.ColoredPoints(
-                x, y, colorrad, type='filled circle', size=6 )
+                x, y, colorrad, type='filled circle', size=6)
 
             # make plot
             p = biggles.FramedPlot()
@@ -278,9 +281,9 @@ class ExampleTests(unittest.TestCase):
 
         def make_density_plot():
             a = numpy.reshape(numpy.arange(90.0), (5, 6, 3))
-            a[...,1] = 100 - a[...,1]
+            a[..., 1] = 100 - a[..., 1]
 
-            d = biggles.Density(1 - (a/numpy.max(a)), [[0,0], [5,10]])
+            d = biggles.Density(1 - (a / numpy.max(a)), [[0, 0], [5, 10]])
 
             # make plot
             p = biggles.FramedPlot()
@@ -292,10 +295,10 @@ class ExampleTests(unittest.TestCase):
         p1 = make_coloredpoints_plot()
         p2 = make_density_plot()
 
-        t = biggles.Table( 1, 2 )
+        t = biggles.Table(1, 2)
         t.aspect_ratio = 0.5
-        t[0,0] = p1
-        t[0,1] = p2
+        t[0, 0] = p1
+        t[0, 1] = p2
 
         _write_example(9, t)
 
@@ -305,47 +308,46 @@ class ExampleTests(unittest.TestCase):
         # set up some data
         x = logspace(log10(0.1), log10(10.0), 10)
 
-        model = 1.0/x
-        yerr = 0.1*model
-        y = model + yerr*random.normal(size=x.size)
+        model = 1.0 / x
+        yerr = 0.1 * model
+        y = model + yerr * random.normal(size=x.size)
 
-        yratio = y/model
-        yratio_err = yerr/model
-
+        yratio = y / model
+        yratio_err = yerr / model
 
         # build the FramedArray.  Note the x axis
         # is set to log for all plots
         a = biggles.FramedArray(
-            2,1,
+            2, 1,
             xlog=True,
             aspect_ratio=1.2,
             xlabel=r'$R [h^{-1} Mpc]$',
-            row_fractions=[0.75,0.25],
+            row_fractions=[0.75, 0.25],
         )
 
-        color='blue'
-        sym='filled circle'
+        color = 'blue'
+        sym = 'filled circle'
 
         mcurve = biggles.Curve(x, model)
-        pts = biggles.Points(x,y, type=sym, color=color)
-        epts = biggles.SymmetricErrorBarsY(x,y,yerr, color=color)
+        pts = biggles.Points(x, y, type=sym, color=color)
+        epts = biggles.SymmetricErrorBarsY(x, y, yerr, color=color)
 
-        pts.label='data'
-        mcurve.label='1/x'
+        pts.label = 'data'
+        mcurve.label = '1/x'
 
-        key=biggles.PlotKey(0.9,0.9,[pts,mcurve],halign='right')
+        key = biggles.PlotKey(0.9, 0.9, [pts, mcurve], halign='right')
 
-        a[0,0] += pts, epts, mcurve, key
-        a[0,0].ytitle=r'$\Delta\Sigma  [M_{\odot} pc^{-2}]$'
-        a[0,0].yrange=[0.05,20.0]
-        a[0,0].xrange=[0.05,20.0]
-        a[0,0].ylog=True  # log y axis only for the top plot
+        a[0, 0] += pts, epts, mcurve, key
+        a[0, 0].ytitle = r'$\Delta\Sigma  [M_{\odot} pc^{-2}]$'
+        a[0, 0].yrange = [0.05, 20.0]
+        a[0, 0].xrange = [0.05, 20.0]
+        a[0, 0].ylog = True  # log y axis only for the top plot
 
-        a[1,0] += biggles.Points(x, yratio, type=sym,color=color,size=3)
-        a[1,0] += biggles.SymmetricErrorBarsY(x,yratio,yratio_err, color=color)
-        a[1,0] += biggles.Curve(x, x*0 + 1)
-        a[1,0].ytitle=r'$ratio$'
-        a[1,0].yrange=[0.5,1.5]
+        a[1, 0] += biggles.Points(x, yratio, type=sym, color=color, size=3)
+        a[1, 0] += biggles.SymmetricErrorBarsY(x, yratio, yratio_err, color=color)
+        a[1, 0] += biggles.Curve(x, x * 0 + 1)
+        a[1, 0].ytitle = r'$ratio$'
+        a[1, 0].yrange = [0.5, 1.5]
 
         _write_example(10, a)
 

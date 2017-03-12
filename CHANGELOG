@@ -10,6 +10,7 @@ Features
 Code Changes
 ------------
 * Updated examples to use new `+=` syntax.
+* Updated code to PEP8 with `autopep8`.
 
 1.7.0 (08 Mar 2017)
 ===================
