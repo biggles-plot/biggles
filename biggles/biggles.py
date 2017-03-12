@@ -1750,6 +1750,16 @@ class PlotKey( _PlotComponent ):
     def add(self, *args):
         self.components += args
 
+    def __iadd__( self, *args ):
+        fargs = []
+        for a in args:
+            if hasattr(a, '__iter__'):
+                fargs.extend(list(a))
+            else:
+                fargs.append(a)
+        self.add( *fargs )
+        return self        
+
     def make( self, context ):
         key_pos = context.plot_geom( self.x, self.y )
         key_width = _size_relative( self.key_width, context.dev_bbox )

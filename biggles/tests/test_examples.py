@@ -72,7 +72,9 @@ class ExampleTests(unittest.TestCase):
         l = biggles.Slope(1, type="dotted")
         l.label = "slope"
 
-        k = biggles.PlotKey(.1, .9, [a, b ,l])
+        k = biggles.PlotKey( .1, .9 )
+        k += a
+        k += b,l
 
         p.add(l, a, b, k)
 
