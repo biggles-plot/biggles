@@ -93,6 +93,7 @@ else:
     candidate_dirs = [
         '/usr',
         '/usr/X11R6',
+        '/usr/X11/',
         sys.prefix,
     ]
 
