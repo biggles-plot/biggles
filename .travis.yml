@@ -26,3 +26,4 @@ deploy:
   on:
     tags: true
     condition: $TRAVIS_PYTHON_VERSION = 2.7
+  skip_upload_docs: true
