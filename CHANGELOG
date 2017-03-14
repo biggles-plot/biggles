@@ -1,4 +1,4 @@
-1.7.X (?? ??? ????)
+1.7.1 (13 Mar 2017)
 ===================
 
 Features
@@ -7,10 +7,15 @@ Features
 * Added `+=` syntax for adding components to containers.
 * Added `Polygon` component.
 
+Bug Fixes
+---------
+* Added /usr/X11 to search path for linking plotutils. (Thank you @smaret!)
+
 Code Changes
 ------------
 * Updated examples to use new `+=` syntax.
 * Updated code to PEP8 with `autopep8`.
+* Updated travis-ci to ship to pypi on tags.
 
 1.7.0 (08 Mar 2017)
 ===================
