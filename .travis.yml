@@ -13,7 +13,7 @@ before_install:
 - sudo apt-get install -qq libplot-dev plotutils
 install: python setup.py install
 
-script: cd .. && python -c "import biggles.tests; biggles.tests.test()"
+script: cd .. && python -c "import biggles.tests; biggles.tests.test()" && cd biggles
 
 notifications:
   email: false
@@ -25,4 +25,4 @@ deploy:
     secure: Aiyd+uJeXc2oyuVwSu+J8oO49rkNL52lwiFlQT33omwPYl81E+7oB/ZvamjMOuibHIVSfzNTR99hOVK9aqHu33bytlyxGW9wv/xtKsDFDiRoemKR5byJ7R1vNEHjebygEKDVb4fOCleKRZuCqLkGt91THdBa7QJnG4aZ4PYoHZo=
   on:
     tags: true
-    repo: biggles-plot/biggles
+    condition: $TRAVIS_PYTHON_VERSION = 2.7
