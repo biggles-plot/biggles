@@ -19,7 +19,7 @@
 # Boston, MA  02111-1307, USA.
 #
 
-__version__ = '1.7.1'
+__version__ = '1.7.2'
 
 from .biggles import (
     Circle,

@@ -160,7 +160,7 @@ fp.close()
 
 setup(
     name="biggles",
-    version="1.7.1",
+    version="1.7.2",
     author="Mike Nolta",
     author_email="mike@nolta.net",
     url="https://github.com/biggles-plot/biggles",
