@@ -1,4 +1,4 @@
-1.7.1 (13 Mar 2017)
+1.7.1 (14 Mar 2017)
 ===================
 
 Features
@@ -16,6 +16,7 @@ Code Changes
 * Updated examples to use new `+=` syntax.
 * Updated code to PEP8 with `autopep8`.
 * Updated travis-ci to ship to pypi on tags.
+* Added `MANIFEST.in` file to include `README.rst` in the package.
 
 1.7.0 (08 Mar 2017)
 ===================
