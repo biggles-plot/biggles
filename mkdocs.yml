@@ -1,0 +1,11 @@
+site_name: biggles
+repo_url: https://github.com/biggles-plot/biggles
+pages:
+  - Introduction: index.md
+  - Quick Start: quickstart.md
+  - Reference Guide:
+    - Overview: guide/overview.md
+    - Containers: guide/containers.md
+    - Components: guide/components.md
+    - Style: guide/style.md
+theme: readthedocs

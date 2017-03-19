@@ -27,7 +27,7 @@ You can find more in the `examples <https://github.com/biggles-plot/biggles/tree
 directory included with the source distribution. Also, see the `gallery <http://biggles-plot.github.io/biggles>`_
 on the web.
 
-See the full `documentation <https://github.com/biggles-plot/biggles/wiki>`_ for more details.
+See the full `documentation <http://biggles.readthedocs.io/en/latest/>`_ for more details.
 
 Installation
 ------------

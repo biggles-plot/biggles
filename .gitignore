@@ -10,3 +10,4 @@ dist/
 *.jpg
 *.svg
 MANIFEST
+site/
