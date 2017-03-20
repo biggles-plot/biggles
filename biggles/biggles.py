@@ -2760,41 +2760,6 @@ class _PlotContainer(_ConfAttributes):
         os.unlink(fname)
         return data
 
-        '''
-        return io.BytesIO(data)
-
-        fname = tempfile.mktemp(suffix='_biggles.eps')
-        self.write_eps(fname)
-
-        #time.sleep(3)
-
-        cmd = [
-            'gs',
-            '-dTextAlphaBits=4',
-            '-dGraphicsAlphaBits=4',
-            '-dEPSCrop',
-            '-dSAFER',
-            '-dBATCH',
-            '-dNOPAUSE',
-            '-r100',
-            '-sDEVICE=png16m',
-            '-sOutputFile=-',
-            fname]
-
-        os.system(' '.join(cmd))
-        return
-        print(cmd)
-
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-        data, error = p.communicate()
-        os.unlink(fname)
-
-
-        if error != 0:
-            raise RuntimeError("failed to convert %s to png stream" % fname)
-        return io.BytesIO(data)
-        '''
-
     def write_img(self, *args, **kw):
         """
         Deprecated method to write an image file.  Use write() instead
