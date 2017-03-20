@@ -96,7 +96,6 @@ and the upper-right corner is at (1,1).
 
 
 ## Images and Filled Regions
-Countour(s), Density, Histogram, FillAbove, FillBelow, FillBetween
 
 **Contour(z[,], x[], y[], z0) / Contours(z[,], x[]=None, y[]=None, (zrange)=None)**
 
