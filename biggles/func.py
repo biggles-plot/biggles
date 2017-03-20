@@ -32,6 +32,15 @@ LINE_TYPES = ["solid", "dotted", "dotdashed", "shortdashed",
               "longdashed", "dotdotdashed", "dotdotdotdashed"]
 DEFAULT_SYMBOL = 'filled circle'
 
+try:
+    # if in an ipython notebook, will display inline
+    if 'ZMQ' in get_ipython().__class__.__name__:
+        _in_jupyter=True
+    else:
+        _in_jupyter=False
+except:
+    _in_jupyter=False
+
 
 def plot(xin, yin, plt=None, **kw):
     """
@@ -226,12 +235,16 @@ def _write_plot_maybe(plt, **kw):
 
 
 def _show_maybe(plt, didwrite, **kw):
-    if didwrite:
-        visible_default = False
+    if _in_jupyter:
+        visible=False
     else:
-        visible_default = True
+        if didwrite:
+            visible_default = False
+        else:
+            visible_default = True
 
-    visible = kw.get('visible', visible_default)
+        visible = kw.get('visible', visible_default)
+
     if visible:
         width = kw.get('width', None)
         height = kw.get('height', None)
@@ -396,7 +409,7 @@ def make_hist(a, nbin=10, binsize=None,
     return harray, bin_edges
 
 
-def make_histc(a, visible=True,
+def make_histc(a,
                nbin=10, binsize=None,
                min=None, max=None, weights=None,
                norm=None,

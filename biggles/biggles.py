@@ -2744,6 +2744,57 @@ class _PlotContainer(_ConfAttributes):
         if ret != 0:
             raise RuntimeError("failed to convert %s to %s" % (epsname, pdfname))
 
+    def _repr_png_(self):
+        """
+        for jupyter notebook inline display
+        """
+        import subprocess
+        import time
+        import io
+
+        fname = tempfile.mktemp(suffix='_biggles.png')
+        self.write(fname,dpi=55)
+
+        with open(fname,'rb') as fobj:
+            data=fobj.read()
+        os.unlink(fname)
+        return data
+
+        '''
+        return io.BytesIO(data)
+
+        fname = tempfile.mktemp(suffix='_biggles.eps')
+        self.write_eps(fname)
+
+        #time.sleep(3)
+
+        cmd = [
+            'gs',
+            '-dTextAlphaBits=4',
+            '-dGraphicsAlphaBits=4',
+            '-dEPSCrop',
+            '-dSAFER',
+            '-dBATCH',
+            '-dNOPAUSE',
+            '-r100',
+            '-sDEVICE=png16m',
+            '-sOutputFile=-',
+            fname]
+
+        os.system(' '.join(cmd))
+        return
+        print(cmd)
+
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+        data, error = p.communicate()
+        os.unlink(fname)
+
+
+        if error != 0:
+            raise RuntimeError("failed to convert %s to png stream" % fname)
+        return io.BytesIO(data)
+        '''
+
     def write_img(self, *args, **kw):
         """
         Deprecated method to write an image file.  Use write() instead
