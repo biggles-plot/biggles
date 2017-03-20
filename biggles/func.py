@@ -222,12 +222,13 @@ def _write_plot_maybe(plt, **kw):
         fname = os.path.expanduser(fname)
         fname = os.path.expandvars(fname)
 
-        if '.eps' == fname[-4:].lower():
-            plt.write_eps(fname)
-        else:
+        if 'width' in kw:
+            # faster, not antialiased image writer
             width = kw.get('width', 800)
             height = kw.get('height', 800)
             plt.write_img(width, height, fname)
+        else:
+            plt.write(fname, **kw)
     else:
         didwrite = False
 
@@ -237,6 +238,8 @@ def _write_plot_maybe(plt, **kw):
 def _show_maybe(plt, didwrite, **kw):
     if _in_jupyter:
         visible=False
+        if 'dpi' in kw:
+            plt.dpi=kw['dpi']
     else:
         if didwrite:
             visible_default = False

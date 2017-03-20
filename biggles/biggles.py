@@ -2517,8 +2517,22 @@ class _PlotContainer(_ConfAttributes):
         self.compose(device, bb)
         device.close()
 
-    def show(self, width=None, height=None):
+    def show(self, width=None, height=None, dpi=55):
+        """
+        show the plot
+
+        On linux/osx this opens an X window.  On windows this
+        generates a temporary image file and opens it
+
+        parameters
+        ----------
+        width: int
+            Width in pixels
+        height: int
+            Height in pixels
+        """
         import os
+
         if width is None:
             width = config.value('screen', 'width')
         if height is None:
@@ -2752,8 +2766,13 @@ class _PlotContainer(_ConfAttributes):
         import time
         import io
 
+        if hasattr(self,'dpi'):
+            dpi=self.dpi
+        else:
+            dpi=55
+
         fname = tempfile.mktemp(suffix='_biggles.png')
-        self.write(fname,dpi=55)
+        self.write(fname,dpi=dpi)
 
         with open(fname,'rb') as fobj:
             data=fobj.read()
