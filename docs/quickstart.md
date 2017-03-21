@@ -68,6 +68,14 @@ These steps will produce a plot that looks like this:
 
 ![Example Plot](quickstart.png)
 
+If you are in a jupyter notebook, simply typing the name of the plot object and
+enter will produce an inline plot.  You can control the resolution of the
+inline plot by setting the `dpi` attribute.
+
+```python
+p.dpi=100
+p
+```
 
 ## Next Steps
 

@@ -2517,8 +2517,22 @@ class _PlotContainer(_ConfAttributes):
         self.compose(device, bb)
         device.close()
 
-    def show(self, width=None, height=None):
+    def show(self, width=None, height=None, dpi=55):
+        """
+        show the plot
+
+        On linux/osx this opens an X window.  On windows this
+        generates a temporary image file and opens it
+
+        parameters
+        ----------
+        width: int
+            Width in pixels
+        height: int
+            Height in pixels
+        """
         import os
+
         if width is None:
             width = config.value('screen', 'width')
         if height is None:
@@ -2743,6 +2757,27 @@ class _PlotContainer(_ConfAttributes):
 
         if ret != 0:
             raise RuntimeError("failed to convert %s to %s" % (epsname, pdfname))
+
+    def _repr_png_(self):
+        """
+        for jupyter notebook inline display
+        """
+        import subprocess
+        import time
+        import io
+
+        if hasattr(self,'dpi'):
+            dpi=self.dpi
+        else:
+            dpi=55
+
+        fname = tempfile.mktemp(suffix='_biggles.png')
+        self.write(fname,dpi=dpi)
+
+        with open(fname,'rb') as fobj:
+            data=fobj.read()
+        os.unlink(fname)
+        return data
 
     def write_img(self, *args, **kw):
         """
