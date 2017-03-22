@@ -2509,13 +2509,15 @@ class _PlotContainer(_ConfAttributes):
 
     def page_compose(self, device):
         device.open()
-        bb = BoundingBox(device.lowerleft, device.upperright)
-        device.bbox = bb.copy()
-        for key, val in config.options('default').items():
-            device.set(key, val)
-        bb.expand(-self.page_margin)
-        self.compose(device, bb)
-        device.close()
+        try:
+            bb = BoundingBox(device.lowerleft, device.upperright)
+            device.bbox = bb.copy()
+            for key, val in config.options('default').items():
+                device.set(key, val)
+            bb.expand(-self.page_margin)
+            self.compose(device, bb)
+        finally:
+            device.close()
 
     def show(self, width=None, height=None, dpi=55):
         """

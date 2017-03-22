@@ -6,6 +6,14 @@ Features
 
 * plots now show inline in jupyter notebooks
 
+Bug Fixes
+----------
+
+* add try/finally block around page_compose() to guarantee
+  the device is closed. This prevents a seg fault that
+  could occur when the X11 device was open and an
+  error occured, and the device was not then closed. 
+
 1.7.2 (14 Mar 2017)
 ===================
 
