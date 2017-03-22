@@ -164,10 +164,6 @@ class LibplotRenderer(Plotter):
         #raw.clear( self.pl )
         self.clear()
 
-    # def close( self ):
-    #    if self.pl is not None:
-    #        #raw.end_page( self.pl )
-    #        self.pl.end_page()
     def close(self):
         self.end_page()
 
@@ -177,23 +173,6 @@ class LibplotRenderer(Plotter):
     def __exit__(self, exception_type, exception_value, traceback):
         pass
         # self.flush()
-
-    '''
-    def delete( self ):
-        """ 
-        if not hasattr(self, 'pl'):
-            return
-        if self.pl is not None:
-            #raw.delete( self.pl )
-            del self.pl
-            self.pl = None
-        """
-        pass
-    '''
-    """
-    def __del__( self ):
-        self.delete()
-    """
 
     # state commands
 
@@ -437,10 +416,8 @@ class NonInteractiveScreenRenderer(LibplotRenderer):
                                                            parameters)
 
     def __exit__(self, exception_type, exception_value, traceback):
-        """
-        we don't close screen
-        """
         self.flush()
+        self.close()
 
 
 class InteractiveScreenRenderer(LibplotRenderer):
@@ -458,20 +435,11 @@ class InteractiveScreenRenderer(LibplotRenderer):
                                                         parameters)
 
     def close(self):
-        #raw.flush( self.pl )
         self.flush()
+        self.close()
 
     def __exit__(self, exception_type, exception_value, traceback):
-        """
-        we don't close screen
-        """
-        self.flush()
-
-    '''
-    def delete( self ):
-        #raw.flush( self.pl )
-        self.flush()
-    '''
+        self.close()
 
 _saved_screen_renderer = None
 

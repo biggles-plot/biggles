@@ -2509,15 +2509,13 @@ class _PlotContainer(_ConfAttributes):
 
     def page_compose(self, device):
         device.open()
-        try:
-            bb = BoundingBox(device.lowerleft, device.upperright)
-            device.bbox = bb.copy()
-            for key, val in config.options('default').items():
-                device.set(key, val)
-            bb.expand(-self.page_margin)
-            self.compose(device, bb)
-        finally:
-            device.close()
+        bb = BoundingBox(device.lowerleft, device.upperright)
+        device.bbox = bb.copy()
+        for key, val in config.options('default').items():
+            device.set(key, val)
+        bb.expand(-self.page_margin)
+        self.compose(device, bb)
+        device.close()
 
     def show(self, width=None, height=None, dpi=55):
         """
@@ -2564,6 +2562,7 @@ class _PlotContainer(_ConfAttributes):
             config.bool('screen', 'persistent')
 
         with ScreenRenderer(persistent, width, height) as device:
+            # note after leaving context, device is closed
             self.page_compose(device)
 
     def show_win(self, width, height):

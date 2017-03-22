@@ -9,10 +9,11 @@ Features
 Bug Fixes
 ----------
 
-* add try/finally block around page_compose() to guarantee
-  the device is closed. This prevents a seg fault that
-  could occur when the X11 device was open and an
-  error occured, and the device was not then closed. 
+* make ScreenRender close itself after leaving the context
+  manager (or being cleaned up). This prevents a seg fault that could occur
+  when the X11 device was open and an error occured, and the device was not
+  then closed.  This was basically a mistake on my part thinking
+  that close would close the window, so I had not deleted it.
 
 1.7.2 (14 Mar 2017)
 ===================
