@@ -24,8 +24,8 @@ controls the style of these objects.
 ## Lightweight Plotting Routines
 Biggles provides a few simple routines to allow you to quickly make plots during interactive work.
 
- - [plot](https://github.com/biggles-plot/biggles/blob/master/biggles/func.py#L36): Make simple plots of lines and points in 2D.
- - [plot_hist](https://github.com/biggles-plot/biggles/blob/master/biggles/func.py#L241): Make simple histograms.
+ - [plot](https://github.com/biggles-plot/biggles/blob/master/biggles/func.py#L45): Make simple plots of lines and points in 2D.
+ - [plot_hist](https://github.com/biggles-plot/biggles/blob/master/biggles/func.py#L134): Make simple histograms.
 
 See the function doc strings (linked above) for more details.
 
