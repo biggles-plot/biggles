@@ -444,9 +444,9 @@ class InteractiveScreenRenderer(LibplotRenderer):
 _saved_screen_renderer = None
 
 
-def ScreenRenderer(persistent=0, width=512, height=512):
+def ScreenRenderer(persistent=False, width=512, height=512):
 
-    if persistent == 1:
+    if persistent:
         global _saved_screen_renderer
         if _saved_screen_renderer is None:
             _saved_screen_renderer \
