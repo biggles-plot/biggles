@@ -68,7 +68,9 @@ These steps will produce a plot that looks like this:
 
 ![Example Plot](quickstart.png)
 
-If you are in a jupyter notebook, simply typing the name of the plot object and
+## Jupyter Notebooks
+
+If you are working in a jupyter notebook, simply typing the name of the plot object and
 enter will produce an inline plot.  You can control the resolution of the
 inline plot by setting the `dpi` attribute.
 
@@ -76,6 +78,18 @@ inline plot by setting the `dpi` attribute.
 p.dpi=100
 p
 ```
+
+## Lightweight Plotting Routines
+
+For quick, interactive work, you can also use the convenience function `plot` like this:
+
+```python
+from biggles import plot
+
+plot(x, yA, symboltype='circle')
+```
+
+See the documentation [here](https://github.com/biggles-plot/biggles/blob/master/biggles/func.py#L45).
 
 ## Next Steps
 

@@ -3,8 +3,8 @@
 
 Features
 --------
-
-* plots now show inline in jupyter notebooks
+* Plots now show inline in jupyter notebooks.
+* Added docs/examples for jupyter notebooks.
 
 1.7.2 (14 Mar 2017)
 ===================
