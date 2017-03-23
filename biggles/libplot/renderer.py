@@ -436,7 +436,7 @@ class InteractiveScreenRenderer(LibplotRenderer):
 
     def close(self):
         self.flush()
-        self.close()
+        super(InteractiveScreenRenderer,self).close()
 
     def __exit__(self, exception_type, exception_value, traceback):
         self.close()
