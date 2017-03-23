@@ -2561,7 +2561,11 @@ class _PlotContainer(_ConfAttributes):
         persistent = config.interactive() and \
             config.bool('screen', 'persistent')
 
+        if persistent:
+            raise NotImplementedError("persistent window does not work")
+
         with ScreenRenderer(persistent, width, height) as device:
+            # note after leaving context, device is closed
             self.page_compose(device)
 
     def show_win(self, width, height):
