@@ -42,7 +42,7 @@ except:
     _in_jupyter=False
 
 
-def plot(xin, yin, plt=None, **kw):
+def plot(xin, yin, type=None, plt=None, **kw):
     """
     A wrapper to perform a quick scatter plot with biggles.
 
@@ -121,7 +121,7 @@ def plot(xin, yin, plt=None, **kw):
     biggles.plot(x, y, yerr=yerr, type='filled circle')
     """
 
-    splt = ScatterPlot(xin, yin, plt=plt, **kw)
+    splt = ScatterPlot(xin, yin, type=type, plt=plt, **kw)
 
     plt = splt.get_plot()
 
@@ -135,6 +135,7 @@ def plot_hist(a, plt=None,
               nbin=10, binsize=None,
               min=None, max=None, weights=None,
               norm=None,
+              type=None, # line type
               **keys_in):
     """
     bin the data and make a plot of the histogram.
@@ -184,6 +185,7 @@ def plot_hist(a, plt=None,
                                              nbin=nbin, binsize=binsize,
                                              min=min, max=max, weights=weights,
                                              norm=norm,
+                                             type=type,
                                              **keys)
     pltsent = (plt is not None)
 
