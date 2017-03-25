@@ -663,7 +663,7 @@ class ScatterPlot(dict):
         """
 
         # shorthand for either symbol or line type
-        type = self.get('type', None)
+        type = self.pop('type', None)
 
         # figure out what marker type we have
         if type is not None:
