@@ -1,6 +1,29 @@
 ## Your First Plot with Biggles
 
-Biggles lets you build plots using a simple, object-oriented interface. You declare [containers](guide/containers.md)
+The easiest way to start plotting with biggles is to use the [convenience functions](guide/overview.md#lightweight-plotting-routines):
+
+```python
+from biggles import plot
+
+plot(x, y)
+```
+
+See the documentation [here](https://github.com/biggles-plot/biggles/blob/master/biggles/func.py#L45).
+
+## Jupyter Notebooks
+
+If you are working in a jupyter notebook, simply typing the name of the plot object (returned by the function above or you 
+can declare one below) and enter will produce an inline plot.  You can control the resolution of the
+inline plot by setting the `dpi` attribute.
+
+```python
+p.dpi=100
+p
+```
+
+## The Object-Oriented Interface
+
+For more complicated plots, biggles has a simple, object-oriented interface. You declare [containers](guide/containers.md)
 and then add [components](guide/components.md) to them. Let's make out first plot with biggles!
 
 First, you instantiate a container. In this example, we will use a [`FramedPlot`](guide/containers.md#framedplot).
@@ -67,29 +90,6 @@ p.write("example.pdf")
 These steps will produce a plot that looks like this:
 
 ![Example Plot](quickstart.png)
-
-## Jupyter Notebooks
-
-If you are working in a jupyter notebook, simply typing the name of the plot object and
-enter will produce an inline plot.  You can control the resolution of the
-inline plot by setting the `dpi` attribute.
-
-```python
-p.dpi=100
-p
-```
-
-## Lightweight Plotting Routines
-
-For quick, interactive work, you can also use the convenience function `plot` like this:
-
-```python
-from biggles import plot
-
-plot(x, yA, symboltype='circle')
-```
-
-See the documentation [here](https://github.com/biggles-plot/biggles/blob/master/biggles/func.py#L45).
 
 ## Next Steps
 
