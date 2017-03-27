@@ -2611,7 +2611,8 @@ class _PlotContainer(_ConfAttributes):
         from .libplot.renderer import PSRenderer
 
         opt = copy.copy(config.options("postscript"))
-        opt.update(kw)
+        if 'paper' in kw:
+            opt['paper'] = kw['paper']
 
         with PSRenderer(outfile, **opt) as device:
             self.page_compose(device)
