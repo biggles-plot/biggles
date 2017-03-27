@@ -135,7 +135,7 @@ def plot_hist(a, plt=None,
               nbin=10, binsize=None,
               min=None, max=None, weights=None,
               norm=None,
-              type=None, # line type
+              type='solid', # line type
               **keys_in):
     """
     bin the data and make a plot of the histogram.
