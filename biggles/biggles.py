@@ -2559,11 +2559,6 @@ class _PlotContainer(_ConfAttributes):
         """
         from .libplot.renderer import ScreenRenderer
 
-        bgcolor    = config.value('default','bgcolor')
-        sc_bgcolor = config.value('screen','bgcolor')
-        if sc_bgcolor is not None:
-            bgcolor = sc_bgcolor
-
         # need to check each time.  An example is when
         # using screen, and reattaching a running session
         # without an existing display
@@ -2577,10 +2572,16 @@ class _PlotContainer(_ConfAttributes):
         if persistent:
             raise NotImplementedError("persistent window does not work")
 
+        bgcolor    = config.value('default','bgcolor')
+        sc_bgcolor = config.value('screen','bgcolor')
+        if sc_bgcolor is not None:
+            bgcolor = sc_bgcolor
+
         extra_config={}
         sc_color = config.value('screen','color')
         if sc_color is not None:
             extra_config['color'] = sc_color
+
         with ScreenRenderer(width=width, height=height, bgcolor=bgcolor) as device:
             # note after leaving context, device is closed
             self.page_compose(device, extra_config=extra_config)
@@ -2685,7 +2686,8 @@ class _PlotContainer(_ConfAttributes):
 
     def _write_img_from_eps(self, type, outfile, **kw):
 
-        dpi = kw.pop('dpi', 100)
+        default_dpi = config.value('image','dpi')
+        dpi = kw.pop('dpi', default_dpi)
 
         epsname = tempfile.mktemp(suffix='.eps')
 
@@ -2772,16 +2774,35 @@ class _PlotContainer(_ConfAttributes):
         """
         from .libplot.renderer import ImageRenderer
 
-        antialias = kw.get('noaa', False)
-
         if len(args) == 4:
             type, width, height, outfile = args
         elif len(args) == 3:
             width, height, outfile = args
             type = outfile[-3:].lower()
+        elif len(args) == 1:
+            outfile = args[0]
+            type = outfile[-3:].lower()
+            width = config.value('image_noaa','width')
+            height = config.value('image_noaa','height')
+        else:
+            raise RuntimeError(
+                "expected args (type,width,height,file) "
+                " or (width,height,file) "
+                " or (file)"
+            )
 
-        with ImageRenderer(type, width, height, outfile) as device:
-            self.page_compose(device)
+        bgcolor    = config.value('default','bgcolor')
+        sc_bgcolor = config.value('image_noaa','bgcolor')
+        if sc_bgcolor is not None:
+            bgcolor = sc_bgcolor
+
+        extra_config={}
+        color = config.value('image_noaa','color')
+        if color is not None:
+            extra_config['color'] = color
+
+        with ImageRenderer(type, width, height, outfile, bgcolor=bgcolor) as device:
+            self.page_compose(device, extra_config=extra_config)
 
     save_as_eps = write_eps
     save_as_img = write_img
