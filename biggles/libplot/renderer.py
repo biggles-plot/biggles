@@ -98,36 +98,36 @@ def _hexcolor(hextriplet, scale=1):
 
 
 def _set_color(pl, color):
-    if type(color) == type(''):
-        pl.set_colorname_fg(color)
-    else:
+    try:
         r, g, b = _hexcolor(color)
         pl.set_color_fg(r, g, b)
+    except:
+        pl.set_colorname_fg(color)
 
 # this doesn't seem to do anything
 '''
 def _set_bgcolor(pl, color):
-    if type(color) == type(''):
-        print("setting bgcolor:",color)
-        pl.set_colorname_bg(color)
-    else:
+    try:
         r, g, b = _hexcolor(color)
         pl.set_color_bg(r, g, b)
+    except:
+        pl.set_colorname_bg(color)
 '''
+
 def _set_pen_color(pl, color):
-    if type(color) == type(''):
-        pl.set_colorname_pen(color)
-    else:
+    try:
         r, g, b = _hexcolor(color)
         pl.set_color_pen(r, g, b)
+    except:
+        pl.set_colorname_pen(color)
 
 
 def _set_fill_color(pl, color):
-    if type(color) == type(''):
-        pl.set_colorname_fill(color)
-    else:
+    try:
         r, g, b = _hexcolor(color)
         pl.set_color_fill(r, g, b)
+    except:
+        pl.set_colorname_fill(color)
 
 _pl_line_type = {
     "dot": "dotted",
