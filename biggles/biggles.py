@@ -2761,16 +2761,24 @@ class _PlotContainer(_ConfAttributes):
 
     def write_img(self, *args, **kw):
         """
-        Deprecated method to write an image file.  Use write() instead
+        Write non-antialiased image file.  Use write() for anti-aliased plots
 
-        can be called in one of two ways
+        parameters
+        ----------
+        filename: string
+            The file to write
+        width: int, optional
+            Width of image in pixels, default is set in the config
+        height: int, optional
+            Height of image in pixels, default is set in the config
+        type: string, optional
+            Image type; by default this is gotten from the extension
+            
+        alternate syntax
+        ----------------
 
-        write_imge(type, width, height, outfile )
-        write_imge(width, height, outfile )
-
-        In the second case, the type is inferred from the extension,
-        e.g. ".png"
-
+        write_img(type, width, height, filename)
+        write_img(width, height, filename)
         """
         from .libplot.renderer import ImageRenderer
 
@@ -2781,9 +2789,17 @@ class _PlotContainer(_ConfAttributes):
             type = outfile[-3:].lower()
         elif len(args) == 1:
             outfile = args[0]
-            type = outfile[-3:].lower()
-            width = config.value('image_noaa','width')
-            height = config.value('image_noaa','height')
+
+            type=kw.get('type',None)
+            if type is None:
+                type = outfile[-3:].lower()
+
+            default_width = config.value('image_noaa','width')
+            default_height = config.value('image_noaa','height')
+
+            width = kw.get('width',default_width)
+            height = kw.get('height',default_height)
+
         else:
             raise RuntimeError(
                 "expected args (type,width,height,file) "
