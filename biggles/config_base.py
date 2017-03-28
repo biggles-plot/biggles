@@ -53,6 +53,30 @@ height          = 640
 #bgcolor = black
 
 # --------------------------------------------------
+# antialiased images
+
+[image]
+
+# default dpi for anti-aliased plots
+# can be over-ridden through the dpi= keyword
+
+dpi = 100
+
+# --------------------------------------------------
+# non-antialiased images
+
+[image_noaa]
+
+# default width, height for non-antialiased plots
+
+width  = 640
+height = 640
+
+# can also set these images to use different bg/fg colors
+#color   = white
+#bgcolor = black
+
+# --------------------------------------------------
 [postscript]
 
 # paper size name; accepts ISO sizes ("a0",..,"a4"),
