@@ -104,7 +104,16 @@ def _set_color(pl, color):
         r, g, b = _hexcolor(color)
         pl.set_color_fg(r, g, b)
 
-
+# this doesn't seem to do anything
+'''
+def _set_bgcolor(pl, color):
+    if type(color) == type(''):
+        print("setting bgcolor:",color)
+        pl.set_colorname_bg(color)
+    else:
+        r, g, b = _hexcolor(color)
+        pl.set_color_bg(r, g, b)
+'''
 def _set_pen_color(pl, color):
     if type(color) == type(''):
         pl.set_colorname_pen(color)
@@ -164,6 +173,7 @@ class LibplotRenderer(Plotter):
 
     __pl_style_func = {
         "color": _set_color,
+        #"bgcolor": _set_bgcolor, # doesn't seem to work
         "linecolor": _set_pen_color,
         "fillcolor": _set_fill_color,
         "linetype": _set_line_type,
@@ -352,61 +362,26 @@ class LibplotRenderer(Plotter):
         return self.state.get("fontsize")  # XXX: kludge?
 
 
-class NonInteractiveScreenRenderer(LibplotRenderer):
+class ScreenRenderer(LibplotRenderer):
 
-    def __init__(self, width, height):
+    def __init__(self, width=640, height=640, bgcolor="white"):
         ll = 0, 0
         ur = width, height
         parameters = {
             "BITMAPSIZE": "%dx%d" % (width, height),
             "VANISH_ON_DELETE": "no",
+            "BG_COLOR":bgcolor,
         }
-        super(NonInteractiveScreenRenderer, self).__init__(ll,
-                                                           ur,
-                                                           "X",
-                                                           parameters)
+        super(ScreenRenderer, self).__init__(
+            ll,
+            ur,
+            "X",
+            parameters,
+        )
 
     def __exit__(self, exception_type, exception_value, traceback):
         self.flush()
         self.close()
-
-
-class InteractiveScreenRenderer(LibplotRenderer):
-
-    def __init__(self, width, height):
-        ll = 0, 0
-        ur = width, height
-        parameters = {
-            "BITMAPSIZE": "%dx%d" % (width, height),
-            "VANISH_ON_DELETE": "yes",
-        }
-        super(InteractiveScreenRenderer, self).__init__(ll,
-                                                        ur,
-                                                        "X",
-                                                        parameters)
-
-    def close(self):
-        self.flush()
-        super(InteractiveScreenRenderer,self).close()
-
-    def __exit__(self, exception_type, exception_value, traceback):
-        self.close()
-
-_saved_screen_renderer = None
-
-
-def ScreenRenderer(persistent=False, width=512, height=512):
-
-    if persistent:
-        global _saved_screen_renderer
-        if _saved_screen_renderer is None:
-            _saved_screen_renderer \
-                = InteractiveScreenRenderer(width, height)
-        _saved_screen_renderer.clear()
-        return _saved_screen_renderer
-    else:
-        return NonInteractiveScreenRenderer(width, height)
-
 
 def _str_size_to_pts(str):
     import re
