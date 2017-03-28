@@ -49,8 +49,8 @@ else:
     with io.StringIO(CONFIG_BASE) as fp:
         _config.readfp(fp)
 
-if os.environ.has_key("HOME"):
-    USERCONFIGFILE = os.path.join(os.environ["HOME"], ".biggles")
+if 'HOME' in os.environ:
+    USERCONFIGFILE = os.path.join(os.environ['HOME'], '.biggles')
     if os.path.exists(USERCONFIGFILE):
         _config.read(USERCONFIGFILE)
 
