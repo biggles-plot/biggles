@@ -2507,12 +2507,20 @@ class _PlotContainer(_ConfAttributes):
         interior = self.interior(device, exterior)
         self.compose_interior(device, interior)
 
-    def page_compose(self, device):
+    def page_compose(self, device, extra_config=None):
         device.open()
+
         bb = BoundingBox(device.lowerleft, device.upperright)
         device.bbox = bb.copy()
+
         for key, val in config.options('default').items():
             device.set(key, val)
+
+        if extra_config is not None:
+            for key in extra_config:
+                device.set(key, extra_config[key])
+
+
         bb.expand(-self.page_margin)
         self.compose(device, bb)
         device.close()
@@ -2551,6 +2559,11 @@ class _PlotContainer(_ConfAttributes):
         """
         from .libplot.renderer import ScreenRenderer
 
+        bgcolor    = config.value('default','bgcolor')
+        sc_bgcolor = config.value('screen','bgcolor')
+        if sc_bgcolor is not None:
+            bgcolor = sc_bgcolor
+
         # need to check each time.  An example is when
         # using screen, and reattaching a running session
         # without an existing display
@@ -2564,9 +2577,13 @@ class _PlotContainer(_ConfAttributes):
         if persistent:
             raise NotImplementedError("persistent window does not work")
 
-        with ScreenRenderer(persistent, width, height) as device:
+        extra_config={}
+        sc_color = config.value('screen','color')
+        if sc_color is not None:
+            extra_config['color'] = sc_color
+        with ScreenRenderer(width=width, height=height, bgcolor=bgcolor) as device:
             # note after leaving context, device is closed
-            self.page_compose(device)
+            self.page_compose(device, extra_config=extra_config)
 
     def show_win(self, width, height):
         """
