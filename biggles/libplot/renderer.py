@@ -408,8 +408,11 @@ class PSRenderer(LibplotRenderer):
 
 class ImageRenderer(LibplotRenderer):
 
-    def __init__(self, type, width, height, file):
+    def __init__(self, type, width, height, file, bgcolor="white"):
         ll = 0, 0
         ur = width, height
-        parameters = {"BITMAPSIZE": "%dx%d" % (width, height)}
+        parameters = {
+            "BITMAPSIZE": "%dx%d" % (width, height),
+            "BG_COLOR":bgcolor,
+        }
         super(ImageRenderer, self).__init__(ll, ur, type, parameters, file)
