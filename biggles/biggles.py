@@ -2581,28 +2581,6 @@ class _PlotContainer(_ConfAttributes):
         self.write_img(width, height, tf)
         os.startfile(tf)
 
-    '''
-    def psprint( self, printcmd=None, **kw ):
-        import os, copy
-        from .libplot.renderer import PSRenderer
-
-        if os.name != 'posix':
-            _message( "psprint: system type '%s' not supported" \
-                    % os.name )
-        if printcmd is None:
-            printcmd = config.value("printer","command")
-        opt = copy.copy( config.options("postscript") )
-        opt.update( kw )
-        _message( 'printing plot with "%s"' % printcmd )
-
-        printer = os.popen( printcmd, 'w' )
-
-        with PSRenderer(printer, **opt ) as device:
-            self.page_compose( device )
-
-        printer.close()
-    '''
-
     def write_eps(self, outfile, **kw):
         """
         write the plot to postscript. Extra keywords can be
@@ -2658,28 +2636,6 @@ class _PlotContainer(_ConfAttributes):
 
         if ret != 0:
             raise RuntimeError("failed to convert %s to %s" % (epsname, pdfname))
-
-    def _show_eps(self, epsname):
-        """
-        test using ghostscript with display device x11alpha
-
-        this would work in principle for an antialiased
-        x11 viewer, but ghostscript doesn't seem to want
-        to go into the background, it either wants to
-        be interactive or exit
-        """
-
-        cmd = """
-        gs \
-                -dSAFER \
-                -dBATCH \
-                -sDEVICE=x11alpha \
-		-r75 {eps}
-        """
-
-        cmd = cmd.format(eps=epsname)
-
-        ret = os.system(cmd)
 
     def write(self, outfile, **kw):
         """
@@ -2812,21 +2768,6 @@ class _PlotContainer(_ConfAttributes):
 
     save_as_eps = write_eps
     save_as_img = write_img
-
-    '''
-    def draw_piddle( self, canvastype=None, size=(500,500) ):
-        """
-        what is this?
-
-        There is file device from which to import, so I'm going
-        to comment this
-        """
-        from device.piddle import PiddleRenderer
-        device = PiddleRenderer( canvastype, size )
-        self.page_compose( device )
-        canvas = device.canvas
-        return canvas
-    '''
 
     def write_back_png(self, *args):
         """
