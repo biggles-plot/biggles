@@ -26,6 +26,9 @@
 CONFIG_BASE = """\
 [default]
 
+color           = black
+bgcolor         = white
+
 fillcolor       = 0xf0f0f0
 filltype        = 0x0
 fontface        = HersheySerif
@@ -41,20 +44,13 @@ textvalign      = center
 [screen]
 
 # dimensions of window (pixels)
-#
+
 width           = 640
 height          = 640
 
-# make window persistent when using interactively?
-#
-persistent      = no
-
-# --------------------------------------------------
-[printer]
-
-# command which postscript will be piped to
-#
-command         = lpr
+# can also set screen to use different bg/fg colors
+#color   = white
+#bgcolor = black
 
 # --------------------------------------------------
 [postscript]
@@ -62,12 +58,12 @@ command         = lpr
 # paper size name; accepts ISO sizes ("a0",..,"a4"),
 # ANSI sizes ("a",..,"e"), "letter", "ledger", "tabloid",
 # and "b5".
-#
+
 paper           = letter
 
 # size of output region on the page
 # valid units are in,pt,cm,mm
-#
+
 width           = 7.5in
 height          = 7.5in
 
