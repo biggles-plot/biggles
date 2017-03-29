@@ -11,10 +11,11 @@ Features
   can specifically be overridden in the `[screen]` section and the new section
   configuring non-anti-aliased plots `[image_noaa]`.
 * New config section for anti-aliased images `[image]` where currently you can
-  set the resolution `dpi = `
+  set the resolution, which defaults to `dpi = 100`. This can be overridden
+  in call to `write(..., dpi=)`
 * New config section for non-anti-aliased images `[image_noaa]` where currently you can
-  set the `width =`, `height=`, `bgcolor=` and `color = `.  Default `width,height`
-  is 640.
+  set the default `width =`, `height=`, `bgcolor=` and `color = `.  Default `width,height`
+  is 640.  The colors default to those set in the `[default]` section.
 * The `write_img` function can now be called with just the filename, since
   the default `width,height` can now be set in the `[image_noaa]` section.
   The other arguments can now be sent with keywords (old style still supported).
