@@ -28,11 +28,12 @@ Bug Fixes
   when the X11 device was open and an error occured, and the device was not
   then closed.  This was basically a mistake on my part thinking
   that close would close the window, so I had not deleted it.
+* Fixed keyword conflict in lightweight plotting routines.
 
 Removed Features
 ----------------
 
-* removed the `persistent = yes` "feature" for X11 windows.  This never
+* removed the `persistent = yes` feature for X11 windows.  This never
   worked.  It may be re-implemented in the future.
 
 
