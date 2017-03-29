@@ -5,6 +5,20 @@ Features
 --------
 * Plots now show inline in jupyter notebooks.
 * Added docs/examples for jupyter notebooks.
+* Can set the default background color for plots using `bgcolor = ` in the 
+  `[default]` section of the config.  This default effects plots shown on the 
+  screen and non-antialiased plots written with write_img.  The default
+  can specifically be overridden in the `[screen]` section and the new section
+  configuring non-anti-aliased plots `[image_noaa]`.
+* New config section for anti-aliased images `[image]` where currently you can
+  set the resolution, which defaults to `dpi = 100`. This can be overridden
+  in call to `write(..., dpi=)`
+* New config section for non-anti-aliased images `[image_noaa]` where currently you can
+  set the default `width =`, `height=`, `bgcolor=` and `color = `.  Default `width,height`
+  is 640.  The colors default to those set in the `[default]` section.
+* The `write_img` function can now be called with just the filename, since
+  the default `width,height` can now be set in the `[image_noaa]` section.
+  The other arguments can now be sent with keywords (old style still supported).
 
 Bug Fixes
 ----------
@@ -14,6 +28,13 @@ Bug Fixes
   when the X11 device was open and an error occured, and the device was not
   then closed.  This was basically a mistake on my part thinking
   that close would close the window, so I had not deleted it.
+
+Removed Features
+----------------
+
+* removed the `persistent = yes` "feature" for X11 windows.  This never
+  worked.  It may be re-implemented in the future.
+
 
 1.7.2 (14 Mar 2017)
 ===================

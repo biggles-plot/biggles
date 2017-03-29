@@ -2507,12 +2507,20 @@ class _PlotContainer(_ConfAttributes):
         interior = self.interior(device, exterior)
         self.compose_interior(device, interior)
 
-    def page_compose(self, device):
+    def page_compose(self, device, extra_config=None):
         device.open()
+
         bb = BoundingBox(device.lowerleft, device.upperright)
         device.bbox = bb.copy()
+
         for key, val in config.options('default').items():
             device.set(key, val)
+
+        if extra_config is not None:
+            for key in extra_config:
+                device.set(key, extra_config[key])
+
+
         bb.expand(-self.page_margin)
         self.compose(device, bb)
         device.close()
@@ -2564,9 +2572,19 @@ class _PlotContainer(_ConfAttributes):
         if persistent:
             raise NotImplementedError("persistent window does not work")
 
-        with ScreenRenderer(persistent, width, height) as device:
+        bgcolor    = config.value('default','bgcolor')
+        sc_bgcolor = config.value('screen','bgcolor')
+        if sc_bgcolor is not None:
+            bgcolor = sc_bgcolor
+
+        extra_config={}
+        sc_color = config.value('screen','color')
+        if sc_color is not None:
+            extra_config['color'] = sc_color
+
+        with ScreenRenderer(width=width, height=height, bgcolor=bgcolor) as device:
             # note after leaving context, device is closed
-            self.page_compose(device)
+            self.page_compose(device, extra_config=extra_config)
 
     def show_win(self, width, height):
         """
@@ -2668,7 +2686,8 @@ class _PlotContainer(_ConfAttributes):
 
     def _write_img_from_eps(self, type, outfile, **kw):
 
-        dpi = kw.pop('dpi', 100)
+        default_dpi = config.value('image','dpi')
+        dpi = kw.pop('dpi', default_dpi)
 
         epsname = tempfile.mktemp(suffix='.eps')
 
@@ -2742,29 +2761,64 @@ class _PlotContainer(_ConfAttributes):
 
     def write_img(self, *args, **kw):
         """
-        Deprecated method to write an image file.  Use write() instead
+        Write non-antialiased image file.  Use write() for anti-aliased plots
 
-        can be called in one of two ways
+        parameters
+        ----------
+        filename: string
+            The file to write
+        width: int, optional
+            Width of image in pixels, default is set in the config
+        height: int, optional
+            Height of image in pixels, default is set in the config
+        type: string, optional
+            Image type; by default this is gotten from the extension
+            
+        alternate syntax
+        ----------------
 
-        write_imge(type, width, height, outfile )
-        write_imge(width, height, outfile )
-
-        In the second case, the type is inferred from the extension,
-        e.g. ".png"
-
+        write_img(type, width, height, filename)
+        write_img(width, height, filename)
         """
         from .libplot.renderer import ImageRenderer
-
-        antialias = kw.get('noaa', False)
 
         if len(args) == 4:
             type, width, height, outfile = args
         elif len(args) == 3:
             width, height, outfile = args
             type = outfile[-3:].lower()
+        elif len(args) == 1:
+            outfile = args[0]
 
-        with ImageRenderer(type, width, height, outfile) as device:
-            self.page_compose(device)
+            type=kw.get('type',None)
+            if type is None:
+                type = outfile[-3:].lower()
+
+            default_width = config.value('image_noaa','width')
+            default_height = config.value('image_noaa','height')
+
+            width = kw.get('width',default_width)
+            height = kw.get('height',default_height)
+
+        else:
+            raise RuntimeError(
+                "expected args (type,width,height,file) "
+                " or (width,height,file) "
+                " or (file)"
+            )
+
+        bgcolor    = config.value('default','bgcolor')
+        sc_bgcolor = config.value('image_noaa','bgcolor')
+        if sc_bgcolor is not None:
+            bgcolor = sc_bgcolor
+
+        extra_config={}
+        color = config.value('image_noaa','color')
+        if color is not None:
+            extra_config['color'] = color
+
+        with ImageRenderer(type, width, height, outfile, bgcolor=bgcolor) as device:
+            self.page_compose(device, extra_config=extra_config)
 
     save_as_eps = write_eps
     save_as_img = write_img
