@@ -656,7 +656,11 @@ class _ArcObject(_DeviceObject):
 
 class _PlotComponent(_StyleKeywords, _ConfAttributes):
 
-    def __init__(self):
+    def __init__(self, **kw):
+        label=kw.get('label',None)
+        if label is not None:
+            self.label=label
+
         self.clear()
 
     def add(self, *args):
@@ -773,8 +777,8 @@ class Labels(_LabelsComponent):
 
 class _LineComponent(_PlotComponent):
 
-    def __init__(self):
-        _PlotComponent.__init__(self)
+    def __init__(self, **kw):
+        super(_LineComponent,self).__init__(**kw)
         self.conf_setattr("_LineComponent")
 
     kw_rename = {
@@ -810,7 +814,7 @@ class Curve(_LineComponent):
     """
 
     def __init__(self, x, y, **kw):
-        _LineComponent.__init__(self)
+        super(Curve,self).__init__(**kw)
         self.conf_setattr("Curve")
         self.kw_init(kw)
         self.x = x
@@ -831,7 +835,7 @@ class Curve(_LineComponent):
 class DataLine(_LineComponent):
 
     def __init__(self, p, q, **kw):
-        _LineComponent.__init__(self)
+        super(DataLine,self).__init__(**kw)
         self.conf_setattr("DataLine")
         self.kw_init(kw)
         self.p = p
@@ -849,7 +853,7 @@ class DataLine(_LineComponent):
 class Geodesic(_LineComponent):
 
     def __init__(self, p, q, **kw):
-        _LineComponent.__init__(self)
+        super(Geodesic,self).__init__(**kw)
         self.conf_setattr("Geodesic")
         self.kw_init(kw)
         self.p = p
@@ -896,7 +900,7 @@ class Histogram(_LineComponent):
     """
 
     def __init__(self, values, x0=0, binsize=1, smooth=False, **kw):
-        _LineComponent.__init__(self)
+        super(Histogram,self).__init__(**kw)
         self.conf_setattr("Histogram")
         self.kw_init(kw)
         self.values = values
@@ -962,7 +966,7 @@ class Histogram(_LineComponent):
 class LineX(_LineComponent):
 
     def __init__(self, x, **kw):
-        _LineComponent.__init__(self)
+        super(LineX,self).__init__(**kw)
         self.conf_setattr("LineX")
         self.kw_init(kw)
         self.x = x
@@ -982,7 +986,7 @@ class LineX(_LineComponent):
 class LineY(_LineComponent):
 
     def __init__(self, y, **kw):
-        _LineComponent.__init__(self)
+        super(LineY,self).__init__(**kw)
         self.conf_setattr("LineY")
         self.kw_init(kw)
         self.y = y
@@ -1002,7 +1006,7 @@ class LineY(_LineComponent):
 class PlotLine(_LineComponent):
 
     def __init__(self, p, q, **kw):
-        _LineComponent.__init__(self)
+        super(PlotLine,self).__init__(**kw)
         self.conf_setattr("PlotLine")
         self.kw_init(kw)
         self.p = p
@@ -1017,7 +1021,7 @@ class PlotLine(_LineComponent):
 class Slope(_LineComponent):
 
     def __init__(self, slope, intercept=None, **kw):
-        _LineComponent.__init__(self)
+        super(Slope,self).__init__(**kw)
         self.conf_setattr("Slope")
         self.kw_init(kw)
         self.slope = slope
@@ -1071,7 +1075,7 @@ class DataBox(_LineComponent):
     """
 
     def __init__(self, p, q, **kw):
-        _LineComponent.__init__(self)
+        super(DataBox,self).__init__(**kw)
         self.conf_setattr("DataBox")
         self.kw_init(kw)
         self.p = p
@@ -1089,7 +1093,7 @@ class DataBox(_LineComponent):
 class PlotBox(_LineComponent):
 
     def __init__(self, p, q, **kw):
-        _LineComponent.__init__(self)
+        super(PlotBox,self).__init__(**kw)
         self.conf_setattr("PlotBox")
         self.kw_init(kw)
         self.p = p
@@ -1104,7 +1108,7 @@ class PlotBox(_LineComponent):
 class PlotArc(_LineComponent):
 
     def __init__(self, pc, r, a0, a1, **kw):
-        _LineComponent.__init__(self)
+        super(PlotArc,self).__init__(**kw)
         self.conf_setattr("PlotArc")
         self.kw_init(kw)
         self.pc = pc
@@ -1121,7 +1125,7 @@ class PlotArc(_LineComponent):
 class DataArc(_LineComponent):
 
     def __init__(self, pc, r, a0, a1, **kw):
-        _LineComponent.__init__(self)
+        super(DataArc,self).__init__(**kw)
         self.conf_setattr("DataArc")
         self.kw_init(kw)
         self.pc = pc
@@ -1176,9 +1180,27 @@ class Points(_SymbolDataComponent):
     }
 
     def __init__(self, x, y, **kw):
-        _SymbolDataComponent.__init__(self)
+        super(Points,self).__init__(**kw)
         self.conf_setattr("Points")
         self.kw_init(kw)
+
+        self._set_xy(x, y)
+
+    def _set_xy(self, x, y):
+        """
+        set the x and y, ensuring they are finite
+        sequences
+        """
+
+        x = numpy.array(x, ndmin=1, copy=False)
+        y = numpy.array(y, ndmin=1, copy=False)
+
+        if x.size == 0 or y.size ==0:
+            raise ValueError("cannot use empty sequence for Points")
+
+        if x.size != y.size:
+            raise ValueError("x[%d] size differs from y[%d]" % (x.size, y.size))
+
         self.x = x
         self.y = y
 
@@ -1191,16 +1213,7 @@ class Points(_SymbolDataComponent):
         x, y = context.geom.call_vec(self.x, self.y)
         self.add(_SymbolsObject(x, y))
 
-
-def Point(x, y, **kw):
-    """
-    Create a Points object for a single point.
-
-    The parameters are the same as for the Points class,
-    except x and y are scalars.
-    """
-    return Points([x], [y], **kw)
-
+Point=Points
 
 class ColoredPoints(_SymbolDataComponent):
     """
@@ -1213,7 +1226,8 @@ class ColoredPoints(_SymbolDataComponent):
     y: array or sequence
             The "y" values of each point.
     c: array or sequence
-            Colors for each point.
+            Colors for each point. These must be floats, unlike
+            other colors
 
     **keywords
             Style and other keywords for the Points.
@@ -1228,9 +1242,37 @@ class ColoredPoints(_SymbolDataComponent):
     }
 
     def __init__(self, x, y, c=None, **kw):
-        _SymbolDataComponent.__init__(self)
+        super(ColoredPoints,self).__init__(**kw)
         self.conf_setattr("Points")
         self.kw_init(kw)
+
+        self._set_xyc(x, y, c)
+
+
+    def _set_xyc(self, x, y, c):
+        """
+        set the x, y, c, ensuring they are finite sequences
+        """
+
+        x = numpy.array(x, ndmin=1, copy=False)
+        y = numpy.array(y, ndmin=1, copy=False)
+        c = numpy.array(c, ndmin=1, copy=False)
+        
+        if c.shape[1] != 3:
+            raise RuntimeError("c must be an rgby array [npts, 3]")
+
+        lc=c.shape[0]
+
+        if x.size == 0 or y.size == 0 or lc == 0:
+            raise ValueError("cannot use empty sequences for ColoredPoints")
+
+        if x.size != y.size:
+            raise ValueError("x[%d] size differs "
+                             "from y[%d]" % (x.size, y.size))
+        if x.size != lc:
+            raise ValueError("color[%d] size differs "
+                             "from x[%d]" % (lc, y.size))
+
         self.x = x
         self.y = y
         self.c = c
@@ -1244,16 +1286,7 @@ class ColoredPoints(_SymbolDataComponent):
         x, y = context.geom.call_vec(self.x, self.y)
         self.add(_ColoredSymbolsObject(x, y, self.c))
 
-
-def ColoredPoint(x, y, **kw):
-    """
-    Create a ColoredPoints object for a single point.
-
-    The parameters are the same as for the ColoredPoints class,
-    except x and y are scalars.
-    """
-
-    return ColoredPoints([x], [y], **kw)
+ColoredPoint=ColoredPoints
 
 # _DensityComponent -----------------------------------------------------------
 
@@ -1285,7 +1318,7 @@ class Density(_PlotComponent):
         """
         extent has the form ((xmin,ymin), (xmax,ymax))
         """
-        _PlotComponent.__init__(self)
+        super(Density,self).__init__(**kw)
         self.conf_setattr("Density")
         self.kw_init(kw)
         self.densgrid = densgrid
@@ -1318,7 +1351,7 @@ class _FillComponent(_PlotComponent):
 class FillAbove(_FillComponent):
 
     def __init__(self, x, y, **kw):
-        _FillComponent.__init__(self)
+        super(FillAbove,self).__init__(**kw)
         self.conf_setattr("FillAbove")
         self.kw_init(kw)
         self.x = x
@@ -1340,7 +1373,7 @@ class FillAbove(_FillComponent):
 class FillBelow(_FillComponent):
 
     def __init__(self, x, y, **kw):
-        _FillComponent.__init__(self)
+        super(FillBelow,self).__init__(**kw)
         self.conf_setattr("FillBelow")
         self.kw_init(kw)
         self.x = x
@@ -1362,7 +1395,7 @@ class FillBelow(_FillComponent):
 class FillBetween(_FillComponent):
 
     def __init__(self, x1, y1, x2, y2, **kw):
-        _FillComponent.__init__(self)
+        super(FillBetween,self).__init__(**kw)
         self.conf_setattr("FillBetween")
         self.kw_init(kw)
         self.x1, self.y1 = x1, y1
@@ -1387,7 +1420,7 @@ class FillBetween(_FillComponent):
 class Polygon(_FillComponent):
 
     def __init__(self, x, y, **kw):
-        _FillComponent.__init__(self)
+        super(Polygon,self).__init__(**kw)
         self.conf_setattr("Polygon")
         self.kw_init(kw)
         self.x = x
@@ -1415,8 +1448,12 @@ class _ErrorBar(_PlotComponent):
         'type': 'linetype',
     }
 
-    def __init__(self):
-        _PlotComponent.__init__(self)
+    def __init__(self, **kw):
+
+        # can't do a label for the error bar, not sure why
+        # TODO fix this
+        label=kw.pop('label',None)
+        super(_ErrorBar,self).__init__(**kw)
         self.conf_setattr("_ErrorBar")
 
 
@@ -1445,7 +1482,7 @@ class ErrorBarsX(_ErrorBar):
     """
 
     def __init__(self, y, lo, hi, **kw):
-        _ErrorBar.__init__(self)
+        super(ErrorBarsX,self).__init__(**kw)
         self.conf_setattr("ErrorBarsX")
         self.kw_init(kw)
         self.y = y
@@ -1493,7 +1530,7 @@ class ErrorBarsY(_ErrorBar):
     """
 
     def __init__(self, x, lo, hi, **kw):
-        _ErrorBar.__init__(self)
+        super(ErrorBarsY,self).__init__(**kw)
         self.conf_setattr("ErrorBarsY")
         self.kw_init(kw)
         self.x = x
@@ -1583,6 +1620,12 @@ class _ErrorLimit(_PlotComponent):
     }
 
     def __init__(self):
+        # can't do a label for this
+        # TODO fix this
+
+        label=kw.pop('label',None)
+        super(_ErrorLimits,self).__init__(**kw)
+
         _PlotComponent.__init__(self)
         self.conf_setattr("_ErrorLimit")
 
@@ -1590,7 +1633,7 @@ class _ErrorLimit(_PlotComponent):
 class UpperLimits(_ErrorLimit):
 
     def __init__(self, x, ulimit, **kw):
-        _ErrorLimit.__init__(self)
+        super(UpperLimits,self).__init__(**kw)
         self.conf_setattr("UpperLimits")
         self.kw_init(kw)
         self.x = x
@@ -1615,7 +1658,7 @@ class UpperLimits(_ErrorLimit):
 class LowerLimits(_ErrorLimit):
 
     def __init__(self, x, llimit, **kw):
-        _ErrorLimit.__init__(self)
+        super(LowerLimits,self).__init__(**kw)
         self.conf_setattr("UpperLimits")
         self.kw_init(kw)
         self.x = x
@@ -1670,7 +1713,15 @@ class Ellipses(_PlotComponent):
     }
 
     def __init__(self, x, y, rx, ry, angle=None, **kw):
-        _PlotComponent.__init__(self)
+
+        # can't do a label for circles, not sure why
+        # TODO fix this
+        label=kw.pop('label',None)
+
+        super(Ellipses,self).__init__(**kw)
+
+        # TODO consistent size checking here, convert to array to work
+        # with scalar case
         self.kw_init(kw)
         self.x = x
         self.y = y
@@ -1814,7 +1865,11 @@ class PlotKey(_PlotComponent):
     }
 
     def __init__(self, x, y, components=None, **kw):
-        _PlotComponent.__init__(self)
+
+        # plot keys don't get labels
+        label = kw.pop('label',None)
+
+        super(PlotKey,self).__init__(**kw)
         self.conf_setattr("PlotKey")
         self.kw_init(kw)
         self.x = x
@@ -2035,7 +2090,11 @@ class _HalfAxis(_PlotComponent):
     }
 
     def __init__(self, **kw):
-        _PlotComponent.__init__(self)
+
+        # half axis doesn't get labels
+        label = kw.pop('label',None)
+        super(_HalfAxis,self).__init__(**kw)
+
         self.kw_init(kw)
         self.conf_setattr("_HalfAxis")
 
@@ -2281,7 +2340,11 @@ class _BoxLabel(_PlotComponent):
     }
 
     def __init__(self, obj, str, side, offset, **kw):
-        _PlotComponent.__init__(self)
+
+        # doesn't get label
+        label = kw.pop('label',None)
+        super(_BoxLabel,self).__init__(**kw)
+
         self.kw_init(kw)
         self.obj = obj
         self.str = str
