@@ -19,6 +19,7 @@ Features
 * The `write_img` function can now be called with just the filename, since
   the default `width,height` can now be set in the `[image_noaa]` section.
   The other arguments can now be sent with keywords (old style still supported).
+* Label for plot components like Points can be set at construction
 
 Bug Fixes
 ----------

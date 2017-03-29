@@ -16,9 +16,9 @@ def test():
         sys.exit(1)
 
 
-def _write_example(i, p):
+def _write_example(label, p):
     for ftail in IMTYPES:
-        fname = "example%d.%s" % (i, ftail)
+        fname = "example%s.%s" % (label, ftail)
         p.write(fname)
         assert os.path.exists(fname), "%s for %s did not write!" % (name, ftail)
         try:
@@ -373,3 +373,64 @@ class ExampleTests(unittest.TestCase):
         p.add(biggles.Polygon([0, 1, 0.5], [0, 0, 1]))
 
         _write_example(12, p)
+
+    def test_labels(self): 
+        import numpy
+        from numpy import linspace
+
+        key=biggles.PlotKey(0.1, 0.9, halign='left')
+
+        plt=biggles.FramedPlot(key=key, aspect_ratio=1)
+
+        err = 0.1
+        x=numpy.arange(10)
+        y=numpy.arange(10)**2
+
+        err = numpy.zeros(x.size) + 2
+        ydata=y + numpy.random.normal(size=x.size)*err
+
+        color='red'
+        pts = biggles.Points(x, ydata, color=color, type='filled diamond', label='data')
+        errpts = biggles.SymmetricErrorBarsY(x, ydata, err, color=color, label='data')
+
+        model = biggles.Curve(x, y, label='model')
+
+        plt += biggles.Polygon([0, 8, 4], [0, 0, 30],color='grey20', label='triangle')
+
+        plt += [model, pts, errpts]
+
+        plt += biggles.Point(4,4,type='filled circle', color='cyan', label='other')
+
+
+        # Go from light blue to intense red.
+        np = 30
+        xp = linspace(0.5, 4, np)
+        yp = 20 + 5*xp.copy()
+        minColor = [0.6, 0.9, 1.0]
+        maxColor = [1.0, 0.2, 0.2]
+
+        colors = numpy.zeros( (np, 3) )
+        colors[:,0] = numpy.interp(xp, xp, linspace(minColor[0], maxColor[0], np))
+        colors[:,1] = numpy.interp(xp, xp, linspace(minColor[1], maxColor[1], np))
+        colors[:,2] = numpy.interp(xp, xp, linspace(minColor[2], maxColor[2], np))
+
+
+
+        plt += biggles.ColoredPoints(
+            xp, yp, colors, type='cross', size=1, label='grad',
+        )
+
+        plt += biggles.LineX(5,color='green', label='lineY')
+        plt += biggles.LineY(5,color='magenta',type='dashed',label='lineX')
+
+        plt += biggles.Slope(-3, (0,40), color='Hot Pink', label='slope')
+
+        plt += biggles.DataBox([5.5, 70], [6.5,80], color='Dodger Blue', label='box')
+
+        # label doesn't work, nor does ellipses.  fundamental perhaps
+        #plt += Circle(6.0, 75.0, 1,  color='yellow', label='circle')
+
+        # not even sure how DataArc works
+        #plt += DataArc(6.0, 75.0, 1,  color='yellow', label='circle')
+
+        _write_example('labels', plt)
