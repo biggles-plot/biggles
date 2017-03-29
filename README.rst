@@ -24,7 +24,7 @@ Here's a simple biggles script::
 
 This produces an X window with a framed plot of the curve y(x).
 You can find more in the `examples <https://github.com/biggles-plot/biggles/tree/master/examples>`_
-directory included with the source distribution. Also, see the `gallery <http://biggles-plot.github.io/biggles>`_
+directory included with the source distribution. Also, see the `gallery <https://biggles-plot.github.io/#gallery>`_
 on the web.
 
 See the full `documentation <http://biggles.readthedocs.io/en/latest/>`_ for more details.
