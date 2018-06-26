@@ -25,6 +25,7 @@ import math
 import os
 import numpy
 import tempfile
+import warnings
 
 from . import config, _biggles
 from geometry import *
@@ -2540,7 +2541,8 @@ class _PlotContainer(_ConfAttributes):
                 pt_add(interior.lowerleft(), dll),
                 pt_add(interior.upperright(), dur))
 
-        raise BigglesError
+        warnings.warn("_PlotContainer: interior tolerances not met")
+        return interior
 
     def exterior(self, device, interior):
         return interior.copy()
