@@ -25,6 +25,7 @@ import math
 import os
 import numpy
 import tempfile
+import warnings
 
 from . import config, _biggles
 from geometry import *
@@ -2540,7 +2541,8 @@ class _PlotContainer(_ConfAttributes):
                 pt_add(interior.lowerleft(), dll),
                 pt_add(interior.upperright(), dur))
 
-        raise BigglesError
+        warnings.warn("_PlotContainer: interior tolerances not met")
+        return interior
 
     def exterior(self, device, interior):
         return interior.copy()
@@ -3303,6 +3305,8 @@ class Table(_PlotContainer):
 
     def __init__(self, rows, cols, **kw):
         super(Table, self).__init__()
+        self.row_fractions=kw.pop('row_fractions',None)
+        self.col_fractions=kw.pop('col_fractions',None)
         self.conf_setattr("Table", **kw)
         self.rows = rows
         self.cols = cols
@@ -3335,8 +3339,12 @@ class Table(_PlotContainer):
     def compose_interior(self, device, interior):
         _PlotContainer.compose_interior(self, device, interior)
 
-        g = _Grid(self.rows, self.cols, interior,
-                  self.cellpadding, self.cellspacing)
+        g = _Grid(
+            self.rows, self.cols, interior,
+            self.cellpadding, self.cellspacing,
+            row_fractions=self.row_fractions,
+            col_fractions=self.col_fractions,
+        )
 
         for key, obj in self.content.items():
             subregion = g.cell(*key)
