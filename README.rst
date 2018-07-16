@@ -46,7 +46,7 @@ Biggles requires `numpy <http://www.numpy.org/>`_ and GNU `plotutils <http://www
 
 **Debian/Ubuntu**::
 
-    $ sudo apt-get libplot-dev plotutils
+    $ sudo apt-get install libplot-dev plotutils
     $ pip install biggles
 
 **Windows**
