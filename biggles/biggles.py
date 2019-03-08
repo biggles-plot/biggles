@@ -2801,7 +2801,7 @@ class _PlotContainer(_ConfAttributes):
         ret = os.system(cmd)
 
         if ret != 0:
-            raise RuntimeError("failed to convert %s to %s" % (epsname, pdfname))
+            raise RuntimeError("failed to convert %s to %s" % (epsname, epsname))
 
     def _repr_png_(self):
         """
