@@ -108,7 +108,7 @@ else:
     candidate_dirs.append('/usr/local')
     candidate_dirs.append('/opt/local')
 
-    candidate_lib_dirs = []
+    candidate_lib_dirs = ['/usr/lib/x86_64-linux-gnu']
     for dir in candidate_dirs:
         candidate_lib_dirs.append(os.path.join(dir, 'lib'))
         candidate_lib_dirs.append(os.path.join(dir, 'lib64'))
