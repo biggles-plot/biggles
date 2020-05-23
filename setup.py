@@ -28,7 +28,7 @@
 # by Berthold Hollmann.
 #
 
-from setuptools import setup, Extension, find_packages
+from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
 
 import os
@@ -165,6 +165,7 @@ class build_ext_subclass(build_ext):
             # Makefile already there
             return
 
+        """
         args = ''
         args += ' CC="%s"' % ' '.join(CC[:1])
         args += ' CFLAGS="%s"' % ' '.join(CC[1:])
@@ -173,12 +174,9 @@ class build_ext_subclass(build_ext):
             args += ' ARCHIVE="%s"' % ' '.join(ARCHIVE)
         if RANLIB:
             args += ' RANLIB="%s"' % ' '.join(RANLIB)
-
-        # print("sh ./configure --enable-shared=no --with-pic " + args)
-        #     "sh ./configure --enable-shared=no --with-pic " + args,
-        # stop
+        """
         p = Popen(
-             "sh ./configure --enable-shared=no --with-pic",
+            "sh ./configure --enable-shared=no --with-pic",
             shell=True,
             cwd=self.plotutils_build_dir,
         )
@@ -294,7 +292,6 @@ setup(
     license="GPL-2",
     description="simple, elegant python plotting",
     long_description=long_description,
-    #packages=find_packages(),
     packages=["biggles", "biggles.libplot", "biggles.tests"],
     classifiers=classifiers,
     setup_requires=['numpy'],
