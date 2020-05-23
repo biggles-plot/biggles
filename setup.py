@@ -176,7 +176,7 @@ class build_ext_subclass(build_ext):
             args += ' RANLIB="%s"' % ' '.join(RANLIB)
         """
         p = Popen(
-            "LDFLAGS='-L/usr/X11' sh ./configure --enable-shared=no --with-pic",
+            "sh ./configure --enable-shared=no --with-pic",
             shell=True,
             cwd=self.plotutils_build_dir,
         )
@@ -208,6 +208,7 @@ biggles_libplot_ext = Extension(
     "libplot._libplot_pywrap",
     ["biggles/libplot/_libplot_pywrap.c"],
     include_dirs=['numpy'],
+    library_dirs=['/usr/X11/lib'],
 )
 ext_modules = [biggles_ext, biggles_libplot_ext]
 
