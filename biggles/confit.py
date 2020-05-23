@@ -19,7 +19,10 @@
 # Boston, MA  02111-1307, USA.
 #
 
-import ConfigParser
+try:
+    from ConfigParser import ConfigParser
+except ImportError:
+    from configparser import ConfigParser
 
 
 def _atox(x):
@@ -64,7 +67,7 @@ class Confit(object):
         return self._sections[section][option]
 
     def _set(self, section, option, value):
-        if not self._sections.has_key(section):
+        if section not in self._sections:
             self._sections[section] = {}
         self._sections[section][option] = value
 
@@ -82,19 +85,20 @@ class Confit(object):
         return rval
 
     def get_section(self, section):
-        if not self._sections.has_key(section):
+        if section not in self._sections:
             return None
         return self._sections[section]
 
     def set(self, section, option, value):
-        if self._deprecated.has_key((section, option)):
-            sect, opt = self._deprecated[(section, option)]
+        key = (section, option)
+        if key in self._deprecated:
+            sect, opt = self._deprecated[key]
             self._set(sect, opt, value)
         else:
             self._set(section, option, value)
 
     def read(self, filename):
-        cp = ConfigParser.ConfigParser()
+        cp = ConfigParser()
         cp.read(filename)
 
         for section in cp.sections():
@@ -105,7 +109,7 @@ class Confit(object):
                 self.set(section, option, _atox(a))
 
     def readfp(self, fp):
-        cp = ConfigParser.ConfigParser()
+        cp = ConfigParser()
         cp.readfp(fp)
 
         for section in cp.sections():
