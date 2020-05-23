@@ -1,0 +1,675 @@
+The table below lists the Kanji (Japanese ideographic characters) that are
+built into the GNU libplot library and the GNU plotting utilities based on
+it, such as `graph'.  For each Kanji, the table lists its index according
+to three different numbering schemes, and one or more possible meanings.
+
+In all, 603 Kanji are available.  They include 596 of the 2965 Level 1
+(i.e., frequently used) Kanji, and seven additional Level 2 Kanji.  The
+603 Kanji were digitized by Dr. Allen V. Hershey of the U.S. Naval Surface
+Weapons Center (Dahlgren, VA) in the mid-1960s.  They include many Kanji
+used in scientific writing.  For an explanation of how the 603 were chosen,
+see his technical report "Calligraphy for Computers".  (Available from the
+U.S. National Technical Information Service at +1 703 487 4650; ask for
+item number AD662398.)
+
+These Kanji are part of the HersheyEUC font, which is employed for drawing
+multibyte Japanese text strings.  But you may also use these Kanji while
+drawing text strings in any other Hershey font, by inserting the
+appropriate escape sequences.  For example, you may use Kanji to label the
+axes of a graph prepared with `graph'.
+
+The first column of the table lists the hexadecimal index of each Kanji in
+the 2-byte encoding specified by the JIS X0208 standard, and the second
+column lists its index in the 2-byte Unicode encoding.  For information on
+the JIS X0208 standard, see Ken Lunde's "Understanding Japanese Information
+Processing" (O'Reilly, 1993), or his on-line supplement,
+http://www.ora.com/people/authors/lunde/cjk_inf.html .
+
+Once you know the hexadecimal JIS code for a Kanji, you may use it when
+drawing a text string in any of the non-Japanese Hershey fonts built into
+GNU libplot and GNU `graph'.  For example, Kanji J3021 would be specified,
+when drawing a text string in any non-Japanese Hershey font, by the escape
+sequence "\#J3021".  Four hexadecimal digits are needed after the "\#J".
+They may be in upper or lower case; e.g. "\#J6D55" is equivalent to
+"\#J6d55".  If you are using the HersheyEUC font for multibyte encoding of
+Japanese, you would encode Kanji J3021 as, instead, the pair of successive
+bytes `0xb0' and `0xa1'.  That is because 0x80 + 0x30 = 0xb0 
+and 0x80 + 0x21 = 0xa1.
+
+The third column lists the index of each Kanji, in decimal, as specified in
+the "Modern Reader's Japanese-English Character Dictionary", edited by
+A. N. Nelson. (C. E. Tuttle and Co., 1962, available as ISBN 0-8048-0408-7
+for approximately US$50; a revised edition [ISBN 0-8048-2036-8] appeared in
+1997, but uses a different numbering.)  GNU libplot supports the
+specification of Kanji by decimal `Nelson index', as well as by hexadecimal
+JIS code.  As you can see from the table, Kanji N0001 is equivalent to
+Kanji J306c.  This Kanji could be specified, when drawing a text string in
+any non-Japanese Hershey font, by the escape sequence "\#N0001", as well as
+by the escape sequence "\#J306c".  Four decimal digits are required.
+
+The table was constructed with the aid of the KANJIDIC file prepared by Jim
+Breen <jwb@dgs.monash.edu.au>.  The KANJIDIC file is a text file that
+contains comprehensive information about each Japanese Kanji, with one line
+for each Kanji listed in the JIS X0208 standard.  Correspondences to other
+numberings (Unicode, Nelson, etc.) are given.  The KANJIDIC file is
+available at ftp://ftp.monash.edu.au/pub/nihongo/kanjidic.gz , and
+documentation on its format is available at
+ftp://ftp.monash.edu.au/pub/nihongo/kanjidic.doc .
+
+
+Level 1 Kanji (total number: 596)
+---------------------------------
+
+JIS	Unicode	Nelson		Meaning(s)
+---	------	------		----------
+
+J3021	U4e9c	N0043	 {Asia} {rank next} {come after} {-ous}
+J3026	U611b	N2829	 {love} {affection} {favourite}
+J302d	U60aa	N0062	 {bad} {vice} {rascal} {false} {evil} {wrong}
+J3035	U5727	N0818	 {pressure} {push} {overwhelm} {oppress} {dominate}
+J303f	U6216	N1802	 {some} {one} {or} {possibly} {a certain}
+J3045	U6697	N2154	 {darkness} {disappear} {shade} {informal} {grow dark} {be blinded}
+J304c	U4f4d	N0401	 {rank} {grade} {throne} {crown} {about} {some}
+J3057	U6613	N2107	 {easy} {fortune-telling} {ready to} {simple} {divination}
+J3059	U70ba	N0138	 {do} {change} {make} {benefit} {welfare} {be of use} {reach to} {try} {practice} {cost} {serve as} {good} {advantage} {as a result of}
+J305b	U7570	N3008	 {uncommon} {queerness} {strangeness} {wonderful} {curious} {unusual}
+J305e	U7def	N3579	 {horizontal} {woof} {left & right} {latitude}
+J3061	U8863	N4214	 {garment} {clothes} {dressing}
+J306c	U4e00	N0001	 {one}
+J3070	U7a32	N3294	 {rice plant}
+J3078	U56e0	N1026	 {cause} {factor} {be associated with} {depend on} {be limited to}
+J307a	U5f15	N1562	 {pull} {tug} {jerk} {admit} {install} {quote} {refer to}
+J3122	U9670	N5006	 {shade} {yin} {negative} {sex organs} {secret} {shadow}
+J3126	U53f3	N0878	 {right}
+J3127	U5b87	N1280	 {eaves} {roof} {house} {heaven}
+J3129	U7fbd	N3673	 {feathers}
+J312b	U96e8	N5042	 {rain}
+J3132	U6e26	N2629	 {whirlpool} {eddy} {vortex}
+J313b	U74dc	N2973	 {melon}
+J313f	U904b	N4725	 {carry} {luck} {destiny} {fate} {lot} {transport} {progress} {advance}
+J3140	U96f2	N5046	 {cloud}
+J314a	U6c38	N0130	 {eternity} {long} {lengthy}
+J3155	U6db2	N2599	 {fluid} {liquid} {juice} {sap} {secretion}
+J315f	U5186	N0617	 {circle} {yen} {round}
+J3173	U9060	N4733	 {distant} {far}
+J3176	U5869	N1125	 {salt}
+J3177	U65bc	N2083	 {at} {in} {on} {as for}
+J317e	U5fdc	N1504	 {apply} {answer} {yes} {OK} {reply} {accept}
+J3221	U62bc	N1885	 {push} {stop} {check} {subdue} {attach} {seize} {weight} {shove} {press} {seal} {do in spite of}
+J3223	U6a2a	N2361	 {sideways} {side} {horizontal} {width} {woof}
+J3226	U738b	N2922	 {king} {rule} {magnate}
+J322b	U9ec4	N5399	 {yellow}
+J322f	U5104	N0551	 {hundred million} {10**8}
+J3235	U4e59	N0260	 {the latter} {duplicate} {strange} {witty}
+J3239	U6e29	N2634	 {warm}
+J323b	U97f3	N5110	 {sound} {noise}
+J323c	U4e0b	N0009	 {below} {down} {descend} {give} {low} {inferior}
+J323d	U5316	N0350	 {change} {take the form of} {influence} {enchant} {delude} {-ization}
+J323f	U4f55	N0409	 {what}
+J3241	U4fa1	N0422	 {value} {price}
+J3243	U52a0	N0716	 {add} {addition} {increase} {join} {include} {Canada}
+J3244	U53ef	N0024	 {can} {passable} {mustn't} {should not} {do not}
+J3246	U590f	N0058	 {summer}
+J3248	U5bb6	N1311	 {house} {home}
+J324a	U79d1	N3272	 {department} {course} {section}
+J324c	U679c	N0107	 {fruit} {reward} {carry out} {achieve} {complete} {end} {finish} {succeed}
+J324f	U6cb3	N2530	 {river}
+J3250	U706b	N2743	 {fire}
+J3256	U82b1	N3909	 {flower}
+J3259	U8377	N3956	 {baggage} {shoulder-pole load} {bear (a burden)} {shoulder (a gun)} {load} {cargo} {freight}
+J3261	U904e	N4723	 {overdo} {exceed} {go beyond} {error}
+J3267	U7259	N2848	 {tusk} {fang}
+J3268	U753b	N0050	 {brush-stroke} {picture}
+J3272	U89e3	N4306	 {unravel} {notes} {key} {explanation} {understanding} {untie} {undo} {solve} {answer} {cancel} {absolve} {explain} {minute}
+J3273	U56de	N1028	 {-times} {round} {game} {revolve}
+J3323	U68b0	N2264	 {contraption} {fetter} {machine} {instrument}
+J3324	U6d77	N2553	 {sea} {ocean}
+J3326	U754c	N2998	 {world}
+J3328	U7d75	N3537	 {picture} {drawing} {painting} {sketch}
+J332b	U958b	N4950	 {open} {unfold} {unseal}
+J332d	U8c9d	N4486	 {shellfish}
+J3330	U5916	N1168	 {outside}
+J3346	U5404	N1163	 {each} {every} {either}
+J334b	U6838	N2254	 {nucleus} {core} {kernel}
+J3351	U89d2	N4301	 {angle} {corner} {square}
+J3353	U8f03	N4623	 {contrast} {compare}
+J3357	U9769	N5088	 {leather} {become serious} {skin} {hide} {pelt}
+J3358	U5b66	N1271	 {study} {learning} {science}
+J335a	U697d	N2324	 {music} {comfort} {ease}
+J3364	U5272	N0703	 {proportion} {comparatively} {divide} {cut} {separate} {split}
+J3424	U74e6	N2977	 {tile} {gram}
+J3428	U5bd2	N1322	 {cold}
+J342c	U5dfb	N1466	 {scroll} {volume} {book} {part} {roll up} {wind up} {tie} {coil}
+J3433	U5e72	N1492	 {dry} {parch}
+J3434	U5e79	N0790	 {tree-trunk}
+J3436	U611f	N1731	 {emotion} {feeling} {sensation}
+J3437	U6163	N1756	 {accustomed} {get used to} {become experienced}
+J3445	U7518	N2988	 {sweet} {coax} {pamper} {be content} {sugary}
+J3449	U7ba1	N3416	 {pipe} {tube} {wind instrument} {drunken talk}
+J3454	U9084	N4750	 {send back} {return}
+J3456	U9593	N4949	 {interval} {space}
+J3458	U95a2	N4958	 {connection} {barrier} {gateway} {involve} {concerning}
+J346f	U5668	N0994	 {utensil} {vessel} {receptacle} {implement} {instrument} {ability} {container} {tool} {set}
+J3470	U57fa	N1098	 {fundamentals} {radical (chem)} {counter for machines} {foundation}
+J3476	U5e7e	N1496	 {how many} {how much} {how far} {how long}
+J347c	U671f	N3785	 {period} {time} {date} {term}
+J3521	U6a5f	N2379	 {mechanism} {opportunity} {occasion} {machine} {airplane}
+J3522	U5e30	N1582	 {homecoming} {arrive at} {lead to} {result in}
+J3524	U6c17	N2480	 {spirit} {mind}
+J3525	U6c7d	N2507	 {vapor} {steam}
+J352d	U8a18	N4318	 {scribe} {account} {narrative}
+J3530	U8ecc	N4610	 {rut} {wheel} {track} {model} {way of doing}
+J3534	U9b3c	N5276	 {ghost} {devil}
+J3535	U4e80	N5445	 {tortoise} {turtle}
+J3546	U83ca	N3981	 {chrysanthemum}
+J3555	U9006	N4685	 {inverted} {reverse} {opposite} {wicked}
+J355a	U53ca	N0154	 {reach out} {exert} {exercise} {cause}
+J355b	U5438	N0885	 {suck} {imbibe} {inhale} {sip}
+J355d	U5f13	N1560	 {bow} {bow (archery, violin)}
+J3565	U7403	N2941	 {ball} {sphere}
+J3566	U7a76	N3314	 {research} {study}
+J3569	U7d1a	N3496	 {class} {rank} {grade}
+J356d	U725b	N2852	 {cow}
+J356e	U53bb	N1051	 {gone} {past} {quit} {leave} {elapse} {eliminate} {divorce}
+J356f	U5c45	N1387	 {reside} {to be} {exist} {live with}
+J3575	U865a	N4109	 {void} {emptiness} {unpreparedness} {crack} {fissure} {untruth}
+J3577	U8ddd	N4548	 {long-distance}
+J357b	U9b5a	N5281	 {fish}
+J357e	U4eac	N0295	 {capital} {10**16}
+J3621	U4f9b	N0431	 {submit} {offer} {present} {serve (meal)} {accompany}
+J3626	U5171	N0581	 {together} {both} {neither} {all} {and} {alike} {with}
+J362d	U5883	N1135	 {boundary} {border} {region}
+J362f	U5f37	N1571	 {strong}
+J3635	U6559	N2052	 {teach} {faith} {doctrine}
+J3636	U6a4b	N2378	 {bridge}
+J364a	U66f2	N0103	 {bend} {music} {melody} {composition} {pleasure} {injustice} {fault} {curve} {crooked} {perverse} {lean}
+J364b	U6975	N2305	 {poles} {settlement} {conclusion} {end} {highest rank} {electric poles} {very} {extremely} {most} {highly} {10**48}
+J364c	U7389	N2923	 {jewel} {ball}
+J3651	U5747	N1065	 {level} {average}
+J3661	U8fd1	N4671	 {near} {early} {akin} {tantamount}
+J3662	U91d1	N4815	 {gold}
+J3664	U9280	N4855	 {silver}
+J3665	U4e5d	N0146	 {nine}
+J3671	U5177	N3128	 {tool} {utensil} {means} {possess} {ingredients}
+J3675	U7a7a	N3317	 {empty} {sky} {void} {vacant} {vacuum}
+J367e	U5c48	N1386	 {yield} {bend} {flinch} {submit}
+J3738	U4fc2	N0449	 {person in charge} {connection} {duty} {concern oneself}
+J3739	U50be	N0534	 {lean} {incline} {tilt} {trend} {wane} {sink} {ruin} {bias}
+J373e	U73ea	N2937	 {jade scepter or tablet (authority symbol)}
+J373f	U578b	N1077	 {mould} {type} {model}
+J3741	U5f62	N1589	 {shape} {form} {style}
+J3742	U5f84	N1602	 {diameter} {path} {method}
+J374f	U7cfb	N0195	 {lineage} {system}
+J3750	U7d4c	N3523	 {sutra} {longitude} {pass thru} {expire} {warp}
+J3757	U8a08	N4312	 {plot} {plan} {scheme} {measure}
+J375a	U8efd	N4620	 {lightly} {trifling} {unimportant}
+J3767	U6b20	N2412	 {lack} {gap} {fail}
+J3768	U6c7a	N2509	 {decide} {fix} {agree upon} {appoint}
+J376a	U7a74	N3313	 {hole} {aperture} {slit} {cave} {den}
+J376b	U7d50	N3540	 {tie} {bind} {contract} {join} {organize} {do up hair} {fasten}
+J376c	U8840	N4205	 {blood}
+J376e	U6708	N2169	 {month} {moon}
+J3777	U570f	N1045	 {sphere} {circle} {radius} {range}
+J3824	U72ac	N2868	 {dog}
+J3826	U7814	N3180	 {polish} {study of} {sharpen}
+J3828	U7d79	N3543	 {silk}
+J382b	U898b	N4284	 {see} {hopes} {chances} {idea} {opinion} {look at} {visible}
+J3833	U9a13	N5220	 {verification} {effect} {testing}
+J3835	U5143	N0275	 {beginning} {former time} {origin}
+J3836	U539f	N0825	 {meadow} {original} {primitive} {field} {plain} {prairie} {tundra} {wilderness}
+J3839	U5f26	N1568	 {bowstring} {chord} {hypotenuse}
+J383a	U6e1b	N2637	 {dwindle} {decrease} {reduce} {decline} {curtail} {get hungry}
+J383b	U6e90	N2656	 {source} {origin}
+J383d	U73fe	N2943	 {present} {existing} {actual}
+J3840	U8a00	N4309	 {say}
+J3842	U9650	N4987	 {limit} {restrict} {to best of ability}
+J3845	U53e4	N0770	 {old}
+J3847	U56fa	N1036	 {harden} {set} {clot} {curdle}
+J384c	U5f27	N1567	 {arc} {arch} {bow}
+J384d	U6238	N1817	 {door}
+J384e	U6545	N2044	 {happenstance} {especially} {intentionally} {reason} {cause} {circumstances} {the late} {therefore} {consequently}
+J385d	U9f13	N5415	 {drum} {beat} {rouse} {muster}
+J385e	U4e94	N0015	 {five}
+J3861	U5348	N0162	 {noon}
+J3865	U5f8c	N1610	 {behind} {back} {later}
+J3866	U5fa1	N1628	 {honorable} {manipulate} {govern}
+J386c	U8a9e	N4374	 {word} {speech} {language}
+J3872	U4ea4	N0290	 {mingle} {mixing} {association} {coming & going}
+J3877	U5149	N1358	 {ray} {light}
+J3878	U516c	N0579	 {public} {prince} {official} {governmental}
+J387d	U53e3	N0868	 {mouth}
+J387e	U5411	N0101	 {yonder} {facing} {beyond} {confront} {defy} {tend toward} {approach}
+J3929	U5de5	N1451	 {craft} {construction}
+J3931	U6052	N1683	 {constancy} {always}
+J393d	U69cb	N2343	 {posture} {build} {pretend}
+J3943	U7532	N0092	 {armor} {high (voice)} {A grade} {1st class} {former} {instep} {carapace}
+J394d	U8003	N3684	 {consider} {think over}
+J3954	U884c	N4213	 {going} {journey}
+J3955	U8861	N1641	 {equilibrium} {measuring rod} {scale}
+J395b	U9271	N4843	 {mineral} {ore}
+J395d	U92fc	N4883	 {steel}
+J395f	U964d	N4994	 {descend} {precipitate} {fall} {surrender}
+J3960	U9805	N1459	 {paragraph} {nape of neck} {clause} {item} {term (expression)}
+J3961	U9999	N5188	 {incense} {smell} {perfume}
+J3962	U9ad8	N5248	 {tall} {high} {expensive}
+J3966	U53f7	N0882	 {nickname} {number} {item} {title} {pseudonym} {name} {call}
+J3967	U5408	N0383	 {fit} {suit} {join} {0.1}
+J3971	U56fd	N1037	 {country}
+J3975	U9ed2	N5403	 {black}
+J397c	U9aa8	N5236	 {skeleton} {bone} {remains} {frame}
+J397e	U8fbc	N4660	 {crowded} {mixture} {in bulk} {included} {(kokuji)}
+J3a21	U6b64	N2430	 {this} {current} {next} {coming} {last} {past}
+J3a23	U4eca	N0352	 {now}
+J3a2c	U6839	N2261	 {root} {radical} {head (pimple)}
+J3a38	U5de6	N1455	 {left}
+J3a39	U5dee	N3662	 {distinction} {difference} {variation} {discrepancy} {margin} {balance}
+J3a42	U5ea7	N1515	 {squat} {seat} {cushion} {gathering} {sit}
+J3a46	U518d	N0035	 {again} {twice} {second time}
+J3a47	U6700	N2146	 {utmost} {most} {extreme}
+J3a59	U7d30	N3522	 {dainty} {get thin} {taper} {slender} {narrow}
+J3a5f	U5728	N1055	 {exist} {outskirts} {suburbs} {located in}
+J3a6e	U4f5c	N0407	 {make} {production} {prepare} {build}
+J3a72	U6628	N2119	 {yesterday} {previous}
+J3a79	U685c	N2256	 {cherry tree}
+J3b2e	U76bf	N3113	 {dish} {a helping} {plate}
+J3b30	U4e09	N0008	 {three}
+J3b33	U5c71	N1407	 {mountain}
+J3b36	U6563	N2056	 {scatter} {disperse} {spend} {squander}
+J3b3b	U7b97	N3415	 {calculate} {divining} {number} {abacus} {probability}
+J3b40	U9178	N4789	 {acid} {bitterness} {sour} {tart}
+J3b45	U4ed5	N0362	 {attend} {doing} {official} {serve}
+J3b4d	U56db	N1025	 {four}
+J3b4e	U58eb	N1160	 {gentleman} {samurai}
+J3b4f	U59cb	N1208	 {commence} {begin}
+J3b52	U5b50	N1264	 {child}
+J3b54	U5e02	N0284	 {market} {city} {town}
+J3b57	U601d	N3001	 {think}
+J3b58	U6307	N1904	 {finger} {point to} {indicate} {put into} {play (chess)} {measure (ruler)}
+J3b59	U652f	N2039	 {branch} {support} {sustain}
+J3b5e	U679d	N2211	 {bough} {branch} {twig} {limb}
+J3b5f	U6b62	N2429	 {stop} {halt}
+J3b60	U6b7b	N2439	 {death} {die}
+J3b61	U6c0f	N2478	 {family name} {surname} {clan}
+J3b64	U79c1	N3265	 {private} {I} {me}
+J3b65	U7cf8	N3492	 {thread}
+J3b66	U7d19	N3510	 {paper}
+J3b6a	U81f3	N3845	 {climax} {arrive} {proceed} {reach} {attain} {result in}
+J3b73	U96cc	N2435	 {feminine} {female}
+J3b75	U6b6f	N5428	 {tooth} {cog}
+J3b76	U4e8b	N0272	 {matter} {thing} {fact} {business} {reason} {possibly}
+J3b7a	U5b57	N1281	 {character} {letter} {word} {section of village}
+J3b7d	U6301	N1903	 {hold} {have}
+J3b7e	U6642	N2126	 {time} {hour}
+J3c21	U6b21	N0638	 {next} {order} {sequence}
+J3c27	U78c1	N3209	 {magnet} {porcelain}
+J3c28	U793a	N3228	 {show} {indicate} {point out} {express} {display}
+J3c2a	U8033	N3697	 {ear}
+J3c2b	U81ea	N3841	 {oneself}
+J3c2d	U8f9e	N3860	 {resign} {word} {term} {expression}
+J3c2f	U9e7f	N5375	 {deer}
+J3c30	U5f0f	N1556	 {style} {ceremony} {rite} {fn} {method} {system} {form} {expr}
+J3c34	U8ef8	N4619	 {axis} {pivot} {stem} {stalk}
+J3c37	U4e03	N0261	 {seven}
+J3c3c	U5ba4	N1300	 {room} {apartment} {chamber} {greenhouse} {cellar}
+J3c3e	U6e7f	N2631	 {damp} {wet} {moist}
+J3c41	U8cea	N4518	 {substance} {quality} {matter} {temperament}
+J3c42	U5b9f	N1297	 {reality} {truth}
+J3c4d	U5c04	N4603	 {shoot} {shine into} {onto} {archery}
+J3c50	U659c	N2074	 {diagonal} {slanting} {oblique}
+J3c54	U8005	N3685	 {someone} {person}
+J3c56	U8eca	N4608	 {car}
+J3c5c	U5c3a	N1377	 {shaku} {Japanese foot} {measure} {scale} {rule}
+J3c61	U91c8	N4809	 {explanation}
+J3c63	U82e5	N3926	 {young} {if} {perhaps} {possibly} {low number} {immature}
+J3c67	U4e3b	N0285	 {lord} {chief} {master} {main thing} {principal}
+J3c68	U53d6	N3699	 {take} {fetch} {take up}
+J3c6a	U624b	N1827	 {hand}
+J3c6f	U7a2e	N3295	 {species} {kind} {class} {variety} {seed}
+J3c72	U9152	N2573	 {sake} {alcohol}
+J3c73	U9996	N5186	 {neck}
+J3c7e	U5468	N0622	 {circumference} {circuit} {lap}
+J3d29	U79cb	N3273	 {autumn}
+J3d2a	U7d42	N3521	 {end} {finish}
+J3d2e	U821f	N3863	 {boat} {ship}
+J3d39	U919c	N4798	 {ugly} {unclean} {shame} {bad looking}
+J3d3d	U5341	N0768	 {ten}
+J3d3e	U5f93	N1613	 {accompany} {obey} {submit to} {comply} {follow} {secondary} {incidental} {subordinate}
+J3d44	U7e26	N3597	 {vertical} {length} {height} {self-indulgent} {wayward}
+J3d45	U91cd	N0224	 {heavy} {heap up} {pile up} {nest of boxes} {-fold}
+J3d50	U51fa	N0097	 {exit} {leave}
+J3d51	U8853	N1621	 {art} {technique} {skill} {means} {trick} {resources} {magic}
+J3d55	U6625	N2122	 {springtime} {spring (season)}
+J3d60	U6e96	N0791	 {semi-} {correspond to} {proportionate to} {conform} {imitate}
+J3d63	U7d14	N3509	 {genuine} {purity} {innocence} {net (profit)}
+J3d68	U51e6	N1162	 {dispose} {manage} {deal with} {sentence} {condemn} {act} {behave}
+J3d6b	U6691	N2138	 {sultry} {hot} {summer heat}
+J3d71	U66f8	N3719	 {write}
+J3d77	U5973	N1185	 {woman} {female}
+J3d7c	U9664	N4993	 {exclude} {division (x/3)} {remove} {abolish} {cancel} {except}
+J3e26	U5546	N0321	 {make a deal} {selling} {dealing in} {merchant}
+J3e2e	U5c0f	N1355	 {little} {small}
+J3e2f	U5c11	N0166	 {few} {little}
+J3e3d	U6676	N2137	 {sparkle} {clear} {crystal}
+J3e3e	U677e	N2212	 {pine tree}
+J3e46	U713c	N2772	 {bake} {burning}
+J3e4b	U785d	N3192	 {nitrate} {saltpeter}
+J3e4e	U79f0	N3280	 {appellation} {praise} {admire} {name} {title} {fame}
+J3e57	U885d	N1638	 {collide} {brunt} {highway} {opposition (astronomy)} {thrust} {pierce} {stab} {prick}
+J3e5a	U8a3c	N4341	 {evidence} {proof} {certificate}
+J3e5d	U8c61	N4472	 {elephant} {pattern after} {imitate} {image} {shape} {sign (of the times)}
+J3e65	U4e0a	N0798	 {above} {up}
+J3e68	U4e57	N0223	 {ride} {power} {multiplication} {record} {no. of vehicles} {board} {mount} {join}
+J3e6c	U5834	N1113	 {location} {place}
+J3e6f	U5e38	N1364	 {usual} {ordinary} {normal} {regular}
+J3e75	U72b6	N2839	 {status quo} {conditions} {circumstances} {form} {appearance}
+J3e78	U84b8	N4002	 {steam} {heat} {sultry} {foment} {get musty}
+J3f22	U690d	N2303	 {plant}
+J3f27	U8272	N3889	 {color}
+J3f29	U98df	N5154	 {eat} {food}
+J3f2d	U4f38	N0403	 {expand} {stretch} {extend} {lengthen} {increase}
+J3f34	U5fc3	N1645	 {heart} {mind} {spirit}
+J3f36	U632f	N1920	 {shake} {wave} {wag} {swing}
+J3f37	U65b0	N2080	 {new}
+J3f39	U68ee	N2301	 {forest} {woods}
+J3f3f	U771f	N0783	 {true} {reality} {Buddhist sect}
+J3f43	U81e3	N3837	 {retainer} {subject}
+J3f48	U8eab	N4601	 {somebody} {person} {one's station in life}
+J3f49	U8f9b	N4646	 {spicy} {bitter} {hot} {acrid}
+J3f4a	U9032	N4709	 {advance} {proceed} {progress} {promote}
+J3f4c	U9707	N5055	 {quake} {shake} {tremble} {quiver} {shiver}
+J3f4d	U4eba	N0339	 {person}
+J3f5e	U56f3	N1034	 {map} {drawing} {plan} {unexpected} {accidentally}
+J3f62	U5782	N0211	 {droop} {suspend} {hang} {slouch}
+J3f65	U6c34	N2482	 {water}
+J3f69	U7fe0	N3676	 {green}
+J3f74	U6570	N2057	 {number} {strength} {fate} {law} {figures}
+J402d	U6027	N1666	 {sex} {gender} {nature}
+J402e	U6210	N1799	 {turn into} {become} {get} {grow} {elapse} {reach}
+J4030	U6574	N2436	 {organize} {arranging} {tune} {tone} {meter} {key (music)}
+J4031	U661f	N2121	 {star} {spot} {dot} {mark}
+J4032	U6674	N2143	 {clear up}
+J4035	U6b63	N0027	 {correct} {justice} {righteous} {10**40}
+J4038	U751f	N2991	 {life} {genuine} {birth}
+J403e	U897f	N4273	 {west} {Spain}
+J4044	U9752	N5076	 {blue} {green}
+J4045	U9759	N5077	 {quiet}
+J404e	U6614	N2108	 {once upon a time} {antiquity} {old times}
+J404f	U6790	N2194	 {chop} {divide} {tear} {analyze}
+J4050	U77f3	N3176	 {stone}
+J4051	U7a4d	N3306	 {volume} {product (x*y)} {acreage} {contents} {pile up} {stack} {load} {amass}
+J4056	U8d64	N4534	 {red}
+J405a	U5207	N0667	 {cut} {cutoff} {be sharp}
+J405c	U63a5	N1951	 {touch} {contact} {adjoin} {piece together}
+J405e	U6298	N1855	 {fold} {break} {fracture} {bend} {yield} {submit}
+J4063	U96ea	N5044	 {snow}
+J4064	U7d76	N3539	 {discontinue} {beyond} {sever} {cut off} {abstain} {interrupt} {suppress}
+J4065	U820c	N3855	 {tongue} {reed} {clapper}
+J4068	U5148	N0571	 {before} {ahead} {previous} {future} {precedence}
+J4069	U5343	N0156	 {thousand}
+J406e	U5ddd	N1447	 {stream} {river}
+J4070	U6247	N1823	 {fan} {folding fan}
+J407e	U7dda	N3580	 {line} {track}
+J4125	U8239	N3873	 {ship} {boat}
+J4130	U524d	N0595	 {in front} {before}
+J4133	U7136	N2770	 {sort of thing} {so} {if so} {in that case} {well}
+J4134	U5168	N0384	 {whole} {entire} {all} {complete} {fulfill}
+J4147	U7d20	N3511	 {elementary} {principle} {naked} {uncovered}
+J4148	U7d44	N3520	 {association} {braid} {plait} {construct} {assemble} {unite} {cooperate} {grapple}
+J4150	U53cc	N0859	 {pair} {set} {comparison} {no. of pairs}
+J4158	U5c64	N1402	 {stratum} {social class} {layer} {story} {floor}
+J415b	U60f3	N1728	 {concept} {think} {idea} {thought}
+J4161	U65e9	N2100	 {early} {fast}
+J416a	U76f8	N2241	 {inter-} {mutual} {together} {each other} {minister of state} {councillor} {aspect} {phase} {physiognomy}
+J416d	U7dcf	N3567	 {general} {whole} {all} {full} {total}
+J4170	U8349	N3939	 {grass} {weeds} {herbs} {pasture} {write} {draft}
+J4175	U88c5	N4234	 {attire} {dress} {pretend} {disguise} {profess}
+J4176	U8d70	N4539	 {run}
+J417c	U50cf	N0540	 {statue} {picture} {image} {figure} {portrait}
+J417d	U5897	N1137	 {increase} {add} {augment} {gain} {promote}
+J4224	U9020	N4701	 {create} {make} {structure} {physique}
+J4226	U5074	N0509	 {side} {lean} {oppose} {regret}
+J422b	U675f	N0196	 {bundle} {sheaf} {ream} {tie in bundles} {govern} {manage} {control}
+J422c	U6e2c	N2632	 {fathom} {plan} {scheme} {measure}
+J422d	U8db3	N4546	 {leg} {foot} {be sufficient}
+J422e	U901f	N4700	 {quick} {fast}
+J4233	U7d9a	N3544	 {continue} {series} {sequel}
+J4236	U5176	N0590	 {that}
+J4238	U5b58	N1267	 {suppose} {be aware of} {believe} {feel}
+J423e	U4ed6	N0361	 {other} {another} {the others}
+J423f	U591a	N1169	 {many} {frequent} {much}
+J4240	U592a	N1172	 {plump} {thick} {big around}
+J424a	U6955	N2313	 {ellipse}
+J424e	U4f53	N0405	 {body} {substance} {object} {reality}
+J4250	U5bfe	N2067	 {vis-a-vis} {opposite} {even} {equal} {versus} {anti-} {compare}
+J4256	U614b	N1743	 {attitude} {condition} {figure} {appearance} {voice (of verbs)}
+J4265	U4ee3	N0364	 {substitute} {change} {convert} {replace} {period} {age} {generation} {charge} {rate} {fee}
+J4267	U5927	N1171	 {large} {big}
+J4268	U7b2c	N3385	 {No.} {residence}
+J426a	U984c	N2164	 {topic} {subject}
+J426c	U6edd	N2655	 {waterfall} {rapids} {cascade}
+J4274	U6ca2	N2503	 {swamp}
+J4323	U9054	N4721	 {accomplished} {reach} {arrive} {attain}
+J432b	U8c37	N4458	 {valley}
+J432f	U8ab0	N4384	 {who} {someone} {somebody}
+J4331	U5358	N0139	 {simple} {one} {single} {merely}
+J433a	U70ad	N1418	 {charcoal} {coal}
+J433b	U77ed	N3172	 {short} {brevity} {fault} {defect} {weak point}
+J4346	U5f3e	N1575	 {bullet} {twang} {flip} {snap}
+J434b	U7537	N2996	 {male}
+J434d	U5024	N0488	 {price} {cost} {value}
+J434e	U77e5	N3169	 {know} {wisdom}
+J434f	U5730	N1056	 {ground} {earth}
+J4356	U7f6e	N3644	 {placement} {put} {set} {deposit} {leave behind} {keep} {employ} {pawn}
+J4359	U9045	N4722	 {slow} {late} {back} {later}
+J435d	U7af9	N3366	 {bamboo}
+J4362	U7a92	N3325	 {plug up} {obstruct}
+J4363	U8336	N3940	 {tea}
+J4365	U7740	N3665	 {don} {arrive} {wear} {counter for suits of clothing}
+J4366	U4e2d	N0081	 {in} {inside} {middle} {mean} {center}
+J4368	U5b99	N1291	 {mid-air} {air} {space} {sky} {memorization} {interval of time}
+J436b	U663c	N0053	 {daytime} {noon}
+J436c	U67f1	N2236	 {pillar} {post} {cylinder} {support}
+J436e	U866b	N4115	 {insect} {bug} {temper}
+J442b	U671d	N3788	 {morning} {dynasty} {regime} {epoch} {period} {(North) Korea}
+J442c	U6f6e	N2702	 {tide} {salt water} {opportunity}
+J4436	U8d85	N4543	 {transcend} {super-} {ultra-}
+J4439	U9577	N4938	 {long} {leader}
+J443b	U9ce5	N5340	 {bird} {chicken}
+J443e	U76f4	N0775	 {straightaway} {honesty} {frankness} {fix} {repair}
+J444c	U901a	N4703	 {traffic} {pass through} {avenue} {commute}
+J4463	U4f4e	N0406	 {lower} {short} {humble}
+J446a	U5b9a	N1296	 {determine} {fix} {establish} {decide}
+J446c	U5e95	N1508	 {bottom} {sole} {depth} {bottom price} {base} {kind} {sort}
+J446d	U5ead	N1514	 {courtyard} {garden} {yard}
+J4472	U633a	N1914	 {no. of guns} {tools} {candles} {oars} {palanquins} {rickshaws} {bravely volunteer}
+J4478	U7a0b	N3285	 {extent} {degree} {law} {formula} {distance} {limits} {amount}
+J4479	U7de0	N3581	 {tighten} {tie} {shut} {lock} {fasten}
+J4526	U6458	N1987	 {pinch} {pick} {pluck} {trim} {clip} {summarize}
+J452a	U7684	N3097	 {bull's eye} {mark} {target} {object} {adjective ending}
+J452f	U54f2	N0931	 {philosophy} {clear}
+J4534	U9244	N4844	 {iron}
+J4535	U5178	N0588	 {code} {ceremony} {law} {rule}
+J4537	U5929	N0016	 {heavens} {sky} {imperial}
+J453e	U8ee2	N4615	 {revolve} {turn around} {change}
+J4540	U70b9	N0804	 {spot} {point} {mark} {speck} {decimal point}
+J4544	U7530	N2994	 {rice field} {rice paddy}
+J4545	U96fb	N5050	 {electricity}
+J454c	U5f92	N1614	 {junior} {emptiness} {vanity} {futility} {uselessness} {ephemeral thing} {gang} {set} {party} {people}
+J4559	U5ea6	N1511	 {degrees} {occurrence} {time}
+J455a	U571f	N1050	 {soil} {earth} {ground} {Turkey}
+J455f	U51ac	N1161	 {winter}
+J4561	U5200	N0665	 {sword} {saber} {knife}
+J4563	U5854	N1109	 {pagoda} {tower} {steeple}
+J4567	U5cf6	N0230	 {island}
+J456c	U6771	N0213	 {east}
+J4574	U706f	N2745	 {lamp} {a light} {light} {no. of lights}
+J4576	U5f53	N1359	 {hit} {right} {appropriate} {himself}
+J4579	U7b49	N3396	 {etc.} {and so forth} {class (1st)} {quality} {equal} {similar}
+J4626	U8c46	N4465	 {beans} {pea} {midget}
+J4630	U52d5	N0730	 {move} {motion} {change} {confusion} {shift} {shake}
+J4631	U540c	N0619	 {same} {agree} {equal}
+J4633	U5c0e	N1354	 {guidance} {leading} {conduct} {usher}
+J463b	U9053	N4724	 {road-way} {street} {district} {journey} {course} {moral} {teachings}
+J463c	U9285	N4853	 {copper}
+J4643	U7279	N2860	 {special}
+J4649	U8aad	N4375	 {read}
+J465e	U66c7	N2160	 {cloudy weather} {cloud up}
+J4662	U5185	N0082	 {inside} {within} {between} {among} {house} {home}
+J466e	U5357	N0778	 {south}
+J4671	U96e3	N5038	 {difficult} {impossible} {trouble} {accident} {defect}
+J4673	U4e8c	N0273	 {two}
+J4679	U8089	N3724	 {meat}
+J467c	U65e5	N2097	 {day} {sun} {Japan}
+J467e	U5165	N0574	 {enter} {insert}
+J4721	U5982	N1189	 {likeness} {like} {such as} {as if} {better} {best} {equal}
+J472e	U71b1	N2797	 {heat} {temperature} {fever} {mania} {passion}
+J472f	U5e74	N0188	 {year}
+J4733	U71c3	N2808	 {burn} {blaze} {glow}
+J4734	U7c98	N3472	 {sticky} {glutinous} {greasy} {persevere}
+J4748	U6ce2	N2529	 {waves} {billows} {Poland}
+J474f	U99ac	N5191	 {horse}
+J4769	U79e4	N3275	 {balances} {scales} {steelyard}
+J4772	U767d	N3095	 {white}
+J477e	U9ea6	N5385	 {barley} {wheat}
+J4821	U51fd	N0049	 {box (archaic)}
+J482c	U516b	N0577	 {eight}
+J482f	U767a	N3092	 {discharge} {departure} {publish} {emit} {start from} {disclose}
+J483e	U534a	N0132	 {half} {middle} {odd number} {semi-} {part-}
+J483f	U53cd	N0817	 {anti-}
+J4841	U5e06	N1469	 {sail}
+J484c	U822c	N3865	 {carrier} {carry} {all}
+J4856	U756a	N4811	 {turn} {number in a series}
+J4860	U5f7c	N1604	 {he} {that} {the}
+J4866	U6bd4	N2470	 {compare} {race} {ratio} {Phillipines}
+J4869	U76ae	N3109	 {pelt} {skin} {hide} {leather}
+J4873	U975e	N5080	 {un-} {mistake} {negative} {injustice} {non-}
+J4874	U98db	N5152	 {fly} {skip (pages} {scatter}
+J4878	U5c3e	N1383	 {tail} {end} {no. of fish} {lower slope of mtn}
+J4879	U5fae	N1631	 {delicate} {minuteness} {insignificance}
+J487e	U7f8e	N3658	 {beauty} {beautiful}
+J4921	U9f3b	N5421	 {nose} {snout}
+J492e	U7b46	N3397	 {writing brush} {writing} {painting brush} {handwriting}
+J4934	U767e	N0033	 {hundred}
+J4938	U6a19	N2359	 {signpost} {seal} {mark} {stamp} {imprint} {symbol} {emblem} {trademark} {evidence} {souvenir} {target}
+J4939	U6c37	N0131	 {icicle} {ice} {hail} {freeze} {congeal}
+J493d	U8868	N0108	 {surface} {table} {chart} {diagram}
+J4942	U75c5	N3042	 {ill} {sick}
+J4943	U79d2	N3271	 {second (1/60 minute)}
+J494a	U54c1	N0923	 {goods} {refinement} {dignity} {article}
+J4954	U4e0d	N0017	 {negative} {non-} {bad} {ugly} {clumsy}
+J495b	U5e03	N1468	 {linen} {cloth}
+J4963	U7236	N2832	 {father}
+J4969	U8ca0	N4488	 {defeat} {negative} {-} {minus} {bear} {owe} {assume a responsibility}
+J4977	U98a8	N5148	 {wind} {air} {style} {manner}
+J497d	U5e45	N1484	 {hanging scroll} {width}
+J4a23	U8907	N4255	 {duplicate} {double} {compound} {multiple}
+J4a26	U5f17	N0173	 {dollar}
+J4a2a	U7269	N2857	 {thing} {object} {matter}
+J4a2c	U5206	N0578	 {part} {minute of time} {segment} {share} {degree} {one's lot} {duty} {understand} {know} {rate} {1%} {chances} {shaku/10}
+J4a38	U6587	N2064	 {sentence} {literature} {style} {art} {decoration} {figures} {plan}
+J4a39	U805e	N4959	 {hear} {ask} {listen}
+J4a3f	U5e73	N0026	 {even} {flat} {peace}
+J4a42	U4e26	N0589	 {row} {and} {besides} {as well as} {line up} {rank with} {rival} {equal}
+J4a44	U9589	N4945	 {closed} {shut}
+J4a46	U7c73	N3461	 {rice} {USA}
+J4a50	U504f	N0511	 {partial} {side} {left-side radical} {inclining} {biased}
+J4a51	U5909	N0306	 {unusual} {change} {strange}
+J4a52	U7247	N2842	 {one-sided} {leaf} {sheet}
+J4a55	U8fba	N4661	 {environs} {boundary} {border} {vicinity} {(kokuji)}
+J4a6c	U6bcd	N2466	 {mama} {mother}
+J4a7c	U653e	N2084	 {set free} {release} {fire} {shoot} {emit} {banish} {liberate}
+J4a7d	U65b9	N2082	 {direction} {person} {alternative}
+J4b21	U6cd5	N2535	 {method} {law} {rule} {principle} {model} {system}
+J4b26	U80de	N3749	 {placenta} {sac} {sheath}
+J4b4c	U5317	N0751	 {north}
+J4b4f	U58a8	N5404	 {black ink} {India ink} {ink stick} {Mexico}
+J4b5c	U672c	N0096	 {book} {present} {main} {true} {real} {no. of long things}
+J4b63	U9ebb	N5390	 {hemp} {flax}
+J4b68	U6bce	N2467	 {every}
+J4b74	U53c8	N0855	 {or again} {furthermore} {on the other hand}
+J4b7c	U4e07	N0007	 {ten thousand}
+J4c23	U5473	N0913	 {flavor} {taste}
+J4c24	U672a	N0179	 {un-} {not yet} {hitherto} {still} {even now}
+J4c29	U5bc6	N1316	 {secrecy} {density (pop)} {minuteness} {carefulness}
+J4c35	U7121	N2773	 {nothingness} {none} {ain't} {nothing} {nil} {not}
+J4c37	U77db	N3164	 {halberd} {arms} {festival float}
+J4c3e	U540d	N1170	 {name} {noted} {distinguished} {reputation}
+J4c40	U660e	N2110	 {bright} {light}
+J4c4c	U9762	N5087	 {mask} {face} {features} {surface}
+J4c53	U6bdb	N2473	 {fur} {hair} {feather} {down}
+J4c5a	U6728	N2170	 {tree} {wood}
+J4c5c	U76ee	N3127	 {eye} {class} {look} {insight} {experience} {care} {favor}
+J4c64	U554f	N4944	 {question} {ask} {problem}
+J4c67	U9580	N4940	 {gates}
+J4c6b	U591c	N0298	 {night} {evening}
+J4c70	U77e2	N3168	 {dart} {arrow}
+J4c72	U5f79	N1598	 {duty} {war} {campaign} {drafted labor} {office} {service} {role}
+J4c74	U85ac	N4074	 {medicine} {chemical} {enamel} {gunpowder} {benefit}
+J4c78	U67f3	N2233	 {willow}
+J4c7d	U6cb9	N2534	 {oil} {fat}
+J4d2d	U6709	N3727	 {possess} {have} {exist} {happen} {occur} {approx}
+J4d30	U6d8c	N2565	 {boil} {ferment} {seethe} {uproar} {breed}
+J4d3a	U96c4	N5030	 {masculine} {male} {hero} {leader} {superiority} {excellence}
+J4d3c	U5915	N1167	 {evening}
+J4d3e	U4f59	N0408	 {too much} {myself} {surplus} {other} {remainder}
+J4d4f	U6eb6	N2659	 {melt} {dissolve} {thaw}
+J4d51	U7528	N2993	 {utilize} {business} {service} {use} {employ}
+J4d53	U7f8a	N3656	 {sheep}
+J4d55	U8449	N4001	 {leaf} {plane} {lobe} {needle} {blade} {spear} {no. of flat things}
+J4d57	U8981	N4274	 {need} {main point} {essence} {pivot} {key to}
+J4d5b	U967d	N5012	 {sunshine} {yang principle} {positive} {male} {heaven} {daytime}
+J4d63	U7ffc	N3680	 {wing} {plane} {flank}
+J4d68	U6765	N0202	 {come} {due} {next} {cause} {become}
+J4d6b	U96f7	N5049	 {thunder} {lightening bolt}
+J4d70	U4e71	N3856	 {riot} {war} {disorder} {disturb}
+J4d71	U5375	N0199	 {egg} {ovum} {spawn} {roe}
+J4d72	U5d50	N1431	 {storm} {tempest}
+J4d78	U5229	N3264	 {profit} {advantage} {benefit}
+J4d7d	U7406	N2942	 {logic} {arrangement} {reason} {justice} {truth}
+J4e24	U91cc	N4813	 {ri} {village} {parent's home} {league}
+J4e25	U96e2	N5040	 {detach} {separation} {disjoin} {digress}
+J4e26	U9678	N5005	 {land}
+J4e28	U7387	N0319	 {ratio} {rate} {proportion} {%} {coefficient} {factor}
+J4e29	U7acb	N3343	 {stand up}
+J4e2e	U6d41	N2576	 {current} {a sink} {flow} {forfeit}
+J4e32	U786b	N3191	 {sulphur}
+J4e33	U7c92	N3471	 {grains} {drop} {counter for tiny particles}
+J4e35	U7adc	N5440	 {dragon} {imperial}
+J4e3e	U4e21	N0034	 {both} {old Japanese coin} {no. of vehicles} {two}
+J4e41	U6599	N3468	 {fee} {materials}
+J4e49	U826f	N3885	 {good} {pleasing} {skilled}
+J4e4c	U91cf	N2141	 {quantity} {measure} {weight} {amount}
+J4e4f	U529b	N0715	 {power} {strong} {strain} {bear up} {exert}
+J4e53	U6797	N2210	 {grove} {forest}
+J4e55	U71d0	N2807	 {phosphorus}
+J4e58	U8f2a	N4630	 {wheel} {ring} {circle} {link} {loop}
+J4e60	U985e	N5138	 {sort} {kind} {variety} {class} {genus}
+J4e63	U4f8b	N0428	 {example} {custom} {usage} {precedent}
+J4e64	U51b7	N0642	 {cool} {cold (beer, person)} {chill}
+J4e6d	U96f6	N5048	 {zero} {spill} {overflow} {nothing} {cipher}
+J4e6e	U970a	N5056	 {spirits} {soul}
+J4e73	U5217	N2438	 {file} {row} {rank} {tier} {column}
+J4f22	U9023	N4702	 {take along} {lead} {join} {connect} {party} {gang} {clique}
+J4f27	U7089	N2750	 {hearth} {furnace} {kiln} {reactor}
+J4f29	U8def	N4561	 {path} {route} {road} {distance}
+J4f37	U8001	N3683	 {old man} {old age} {grow old}
+J4f3b	U516d	N0283	 {six}
+J4f40	U8ad6	N4391	 {argument} {discourse}
+J4f42	U548c	N3268	 {harmony} {Japanese style} {peace} {soften} {Japan}
+J4f43	U8a71	N4358	 {tale} {talk}
+J4f44	U6b6a	N0054	 {warp} {bend} {strained} {distort}
+J4f47	U60d1	N1710	 {beguile} {delusion} {perplexity}
+
+Level 2 Kanji (total number: 7)
+-------------------------------
+
+JIS	Unicode	Nelson		Meaning(s)
+---	------	------		----------
+
+J534c	U55c5	N0973	 {smell} {sniff} {scent}
+J5879	U6208	N1794	 {halberd} {arms} {festival car} {float}
+J5960	U6369	N1942	 {screw} {twist} {wrench} {distort}
+J626f	U787c	N3200	 {sound of stones struck together} {boron}
+J6446	U7c60	N3458	 {basket} {devote onself} {seclude oneself} {cage} {coop} {implied}
+J6647	U7fe1	N5083	 {kingfisher}
+J6d55	U8f3b	N4633	 {spoke (wheel)}

@@ -1,0 +1,13 @@
+libxmi originated with the vector graphics code in the X11 sample server,
+which was written in the mid-to-late 1980's by Brian Kelleher, Joel
+McCormack, Todd Newman, Keith Packard, Robert Scheifler and Ken Whaley, who
+worked for Digital Equipment Corp., MIT, and/or the X Consortium.
+
+In 1998-99, Robert S. Maier <rsm@math.arizona.edu> extracted the vector
+graphics code and merged it into the GNU plotutils package.  He later broke
+it out again, as libxmi.  The code needed to be ANSI-ized, rearranged, and
+extensively commented.  Also, basic data structures were changed, so that a
+two-stage graphics pipeline could be set up.  All painting of pixels was
+changed to go through a miPaintedSet object, and a single method
+(miAddSpansToPaintedSet).  That eliminated all double-painting of pixels.
+Also, some rendering extensions were added (e.g., multicolored dashes).

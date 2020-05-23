@@ -1,0 +1,893 @@
+.PS
+# 02Mar97: Cleaned up this file.  Removed a bunch of the tcpipiv2-only
+#	   macros, and deleted those that were never used.
+#
+# This file defines the handy macros used in the document.
+#
+arrowwid = 0.0625	# This divisible by 2 (0.03125) has to be a "perfect"
+			# size for ditroff.  This value is OK for TranScript on
+			# on the LaserWriter (576 units/inch).
+#arrowht = 0.125
+arrowht = 0.09375
+#arrowht = 0.0625
+dash_off = 0.2		# default
+gap_down = 0.12		# default downward distance in timeline gap
+gap_side = 0.04		# default sidewards distance in timeline gap
+basef = .375
+maxwid = 5.416666
+unusedfill = .1		# unused portions of structures
+cbase = .256
+cindent = .275
+v6_hash	= 0.06
+
+# Just remove "invis" to see the boxes
+define	ibox { box invis }
+
+# Client double arrow (left to right on top, right to left below)
+define	Carrow	{
+	arrow -> right 0.15 from $1 + (-0.15/2,  0.04) wid 0.03 ht 0.05
+	arrow <- right 0.15 from $1 + (-0.15/2, -0.04) wid 0.03 ht 0.05
+}
+
+# Server double arrow (right to left on top, left to right below)
+define	Sarrow	{
+	arrow <- right 0.15 from $1 + (-0.15/2,  0.04) wid 0.03 ht 0.05
+	arrow -> right 0.15 from $1 + (-0.15/2, -0.04) wid 0.03 ht 0.05
+}
+
+# Right arrow
+define	Rarrow	{
+	arrow -> right 0.15 from $1 + (-0.15/2,  0.00) wid 0.03 ht 0.05
+}
+
+# Left arrow
+define	Larrow	{
+	arrow <- right 0.15 from $1 + (-0.15/2,  0.00) wid 0.03 ht 0.05
+}
+
+#
+# flowdef( <scale> )
+# set up default for data flow pictures
+define	flowdef X
+	boxht = 0.2*$1
+	boxwid = 0.8*$1
+	ellipsewid = boxwid
+	ellipseht = boxht*1.5
+.ps 8
+.vs 10
+X
+
+#
+# memdef( <maxbytes>, <x-scale>, <y-scale>)
+# set up default for memory layout pictures
+define	memdef X
+	boxht = .3*$3
+	boxwid = (.95*maxwid)/$1*$2
+	boff = boxwid/(2*$1)
+	poff = boxht*.25
+	arrowht = .09375*.8
+	arrowwid = 0.0625*.8
+	labelspace=.4		# used in by field2_a functions
+.ps 8
+.vs 10
+X
+
+#
+# dsdef
+# setup defaults for data structure pictures
+define	dsdef X
+	boxht = 0.15
+	boxwid = boxht*6
+	myboxrad = boxht/4
+	ellipsewid = boxwid
+	ellipseht = boxht*1.5
+	arrowwid = 0.0625*.75
+	arrowht = 0.09375*.75
+	poff = .5*boxht
+	# ellipse offset
+	eoff = .5*poff
+.ps 8
+.vs 9
+X
+
+#
+# text_span ( <left-corner>, <right-corner>, <text>, <text-wid>,
+#					<height-of-text-above-corners> )
+#
+# For normal text, <height...> should be 0.15.
+#
+define	text_span X
+Lab001:	$3 at 1/2 <$1, $2> + (0, $5)
+	arrow from Lab001.c + (- $4/2, 0) to $1 + (0, $5)
+	arrow from Lab001.c + (  $4/2, 0) to $2 + (0, $5)
+X
+
+#
+# solid_box ( <sw-posn>, <ne-posn> )
+#
+# Draw a solid box, given 2 opposite corner positions.
+# Note - unlike the dash_box macro below, we draw the box exactly from
+# from the points specified - we don't offset the box by 0.2i from
+# the given coordinates.
+# The box is drawn in the order of the arguments, so that the command
+# "... at last line.c below" will be positioned at the line from the
+# se-posn to the sw-posn.
+#
+define	solid_box X
+S0001: $1
+S0002: $2
+	line from S0001 to (S0001.x, S0002.y)
+	line from last line.end to S0002
+	line from last line.end to (S0002.x, S0001.y)
+	line from last line.end to S0001
+X
+
+#
+# dash_box ( <sw-posn>, <ne-posn> [ , <optional-dash-length> ] )
+#
+# Draw a dashed box, given the 2 opposite corner positions.
+# The box is drawn in the order of the arguments, so that the command
+# "... at last line.c below" will be positioned at the line from the
+# se-posn to the sw-posn.
+#
+# Caller can set "dash_off = <value>" to change the default of 0.2 inches
+# from all sides.  This has to be done before each call to the macro,
+# as we reset it after each call.
+#
+# The <optional-dash-length> specifies the length of each dash and the
+# length of the space between each dash.  The default is 0.05.
+# Note this feature uses pic's substitution of the null string for any
+# missing arguments in a macro call.
+#
+define	dash_box X
+S001:	$1
+S002:	$2
+	line dashed $3 from S001 + (-dash_off, -dash_off) to \
+		(S001.x, S002.y) + (-dash_off, dash_off)
+	line dashed $3 from last line.end to \
+		S002 + (dash_off, dash_off)
+	line dashed $3 from last line.end to \
+		(S002.x, S001.y) + (dash_off, -dash_off)
+	line dashed $3 from last line.end to \
+		S001 + (-dash_off, -dash_off)
+dash_off = 0.2		# reset default
+X
+
+#
+# left_brace ( <top>, <bottom> )
+#
+define	left_brace X
+LB1:	$1
+LB2:	$2
+	arc from LB1 + (-0.09375, 0.00) to LB1 + (-0.15625, -0.0625) rad 0.0625
+	line down (((LB1.y - LB2.y) - 0.125) / 2) - 0.03125
+	line down  0.03125 left 0.03125
+Bracept:line right 0.03125 down 0.03125
+	line to LB2 + (-0.15625, 0.0625)
+	arc from last line.end to LB2 + (-0.09375, 0.00) rad 0.0625
+X
+
+#
+# right_brace ( <top>, <bottom> )
+#
+define	right_brace X
+RB1:	$1
+RB2:	$2
+	arc cw from RB1 + (0.09375, 0.00) to RB1 + (0.15625, -0.0625) rad 0.0625
+	line down (((RB1.y - RB2.y) - 0.125) / 2) - 0.03125
+	line down 0.03125 right 0.03125
+Bracept:line left 0.03125 down 0.03125
+	line to RB2 + (0.15625, 0.0625)
+	arc cw from last line.end to RB2 + (0.09375, 0.00) rad 0.0625
+X
+
+#
+# bottom_brace ( <left>, <right> )
+#
+define	bottom_brace X
+BB1:	$1
+BB2:	$2
+	arc from BB1 + (0.00, -0.09375) to BB1 + (0.0625, - 0.15625) rad 0.0625
+	line right (((BB2.x - BB1.x) - 0.125) / 2) - 0.03125
+	line right 0.03125 down 0.03125
+Bracept:line up 0.03125 right 0.03125
+	line to BB2 + (-0.0625, -0.15625)
+	arc from last line.end to BB2 + (0, -0.09375) rad 0.0625
+X
+
+#
+# top_brace ( <left>, <right> )
+#
+define	top_brace X
+TB1:	$1
+TB2:	$2
+	arc cw from TB1 + (0.00, 0.09375) to TB1 + (0.0625, 0.15625) rad 0.0625
+	line right (((TB2.x - TB1.x) - 0.125) / 2) - 0.03125
+	line right 0.03125 up 0.03125
+Bracept:line down 0.03125 right 0.03125
+	line to TB2 + (-0.0625, 0.15625)
+	arc cw from last line.end to TB2 + (0, 0.09375) rad 0.0625
+X
+
+#
+# line_gap_down ( <top>, <bottom> )
+#
+define	line_gap_down X
+Start:	$1
+End:	$2
+
+	line down ((Start.y - End.y) - gap_down)/2 from Start
+	line right gap_side
+	line left gap_side*2 down gap_down
+	line right gap_side
+	line to End
+gap_down = 0.12		# reset default
+gap_side = 0.04		# reset default
+X
+
+#
+# line_gap_right ( <left>, <right> )
+#
+define	line_gap_right X
+Start:	$1
+End:	$2
+
+	line right ((End.x - Start.x) - gap_down)/2 from Start
+	line up gap_side
+	line down gap_side*2 right gap_down
+	line up gap_side
+	line to End
+gap_down = 0.12		# reset default
+gap_side = 0.04		# reset default
+X
+
+#
+# label_above( <sw-posn>, <se-posn>, <arrow-length>, <text> )
+#
+define	label_above X
+P001:	$1 + (0, 0.1)
+P002:	$2 + (0, 0.1)
+	line up 0.2 from P001
+	line up 0.2 from P002
+	arrow <- right $3 from P001 + (0, 0.1)
+	arrow <- left  $3 from P002 + (0, 0.1)
+	$4 at 1/2 <2nd last arrow.start, last arrow.start>
+X
+
+#
+# label_below( <sw-posn>, <se-posn>, <arrow-length>, <text> )
+#
+define	label_below X
+P001:	$1 + (0, -0.1)
+P002:	$2 + (0, -0.1)
+	line down 0.2 from P001
+	line down 0.2 from P002
+	arrow <- right $3 from P001 + (0, -0.1)
+	arrow <- left  $3 from P002 + (0, -0.1)
+	$4 at 1/2 <2nd last arrow.start, last arrow.start>
+X
+
+#
+# text_spanv ( <left-corner>, <right-corner>, <text>, <text-wid>,
+#					<height-of-text-above-corners> )
+# end points are in line with text
+#
+define	text_spanv X
+Lab001:	$3 at 1/2 <$1, $2> 
+	arrow from Lab001.c + (0, - $4/2) to $1
+	arrow from Lab001.c + (0,  $4/2) to $2
+X
+
+#
+# text_spanc ( <left-corner>, <right-corner>, <text>, <text-wid>,
+#					<height-of-text-above-corners> )
+# end points are in line with text
+#
+define	text_spanc X
+Lab001:	$3 at 1/2 <$1, $2> 
+	arrow from Lab001.c + (- $4/2, 0) to $1
+	arrow from Lab001.c + (  $4/2, 0) to $2
+X
+
+
+#
+# measureb ( sw-corner, se-corner, text, <text-wid>, <height>)
+# Show the measurement below the object
+define	measureb X
+	Mleft: line from $1 + (0, -0.05) to $1 + (0, -($5 * 1.5) )
+	Mright: line from $2 + (0, -0.05) to $2 + (0, -($5 * 1.5) )
+	text_spanc( Mleft.c, Mright.c, $3, $4, $5)
+X
+
+#
+# measurea ( sw-corner, se-corner, text, <text-wid>, <height>)
+# Show the measurement above the object
+define	measurea X
+	Mleft: line from $1 + (0, 0.05) to $1 + (0, ($5 * 1.5) )
+	Mright: line from $2 + (0, 0.05) to $2 + (0, ($5 * 1.5) )
+	text_spanc( Mleft.c, Mright.c, $3, $4, $5)
+X
+
+#
+# measurel ( nw-corner, sw-corner, text, <text-wid>, <height>)
+# Show the measurement above the object
+define	measurel X
+	Mtop: line from $1 - (0.05, 0) to $1 - (($5 * 1.5),0 )
+	Mbot: line from $2 - (0.05, 0) to $2 - (($5 * 1.5),0 )
+	text_spanv( Mtop.c, Mbot.c, $3, $4, $5)
+X
+
+#
+# measurer ( nw-corner, sw-corner, text, <text-wid>, <height>)
+# Show the measurement above the object
+define	measurer X
+	Mtop: line from $1 + (0.05, 0) to $1 + (($5 * 1.5),0 )
+	Mbot: line from $2 + (0.05, 0) to $2 + (($5 * 1.5),0 )
+	text_spanv( Mtop.c, Mbot.c, $3, $4, $5)
+X
+
+#
+# queue ( <start> )
+#
+define	queue X
+$2: $1 - (.1,0)
+$2exit: $1 + (0,.1)
+	box wid 0.20 ht 0.05 with .nw at $2
+	box wid 0.20 ht 0.05 with .nw at last box.sw
+	box wid 0.20 ht 0.05 with .nw at last box.sw
+	box wid 0.20 ht 0.05 with .nw at last box.sw
+	line from last box.sw down 0.20
+	line from last box.se down 0.20
+$2entry: last box.s - 0,0.1
+	move to $2
+X
+
+#
+# pointer (from, to, sx, sy)
+#
+define	pointer X
+# We want a 10% curve
+Start: $1
+End: $2
+	dx = End.x - Start.x
+	dy = End.y - Start.y
+	incx = dx * $3; incy = dy * $4
+
+	spline -> from $1 \
+		to $1 + ( -incx, incy ) \
+		to $2 + ( incx, -incy ) \
+		to $2
+X
+
+#
+# field_a( text, bytes, label, other)
+# draw a box but label it above the field 
+# leave room for other labels that may be there
+define	field_a X
+	$3: box wid (boxwid*$2)
+		sprintf("%.0f", $2) below at last box.s
+		spline <- from $3.n up (2+$4)*.4*boxht then right .1
+		$1 at last spline.end ljust
+		move to $3.e
+X
+
+#
+# field_s(text, bytes, label)
+# Draw a field with a slanted label
+# leave room for other labels that may be there
+define	field_s X
+	$3: box wid (boxwid*$2)
+		sprintf("%.0f", $2) below at last box.s
+		line invis $1 ljust above aligned \
+			from $3.ne + (-.75*boxwid,-.5*boxht) up boxht right boxwid 
+		move to $3.e
+X
+
+#
+# field2_ai( opts, text, sizetext, bytes, label, other)
+# draw an box with options but label it above the field 
+# leave room for other labels that may be there
+# any text for the bottom is provided by sizetext
+# additional box options can be provided in opts
+
+define	field2_ai X
+	$5: box $1 wid (boxwid*$4)
+		spline <- from $5.n up (1.25+$6)*labelspace*boxht then right .1
+		$2 at last spline.end ljust
+		$3 below at $5.s
+		move to $5.e
+X
+
+#
+# field2_al( text, sizetext, bytes, label, other)
+# draw a box but label it above the field but to the left
+# leave room for other labels that may be there
+# any text for the bottom is provided by sizetext
+
+define	field2_al X
+	$4: box wid (boxwid*$3)
+		spline <- from $4.n up (1.25+$5)*labelspace*boxht then left .1
+		right
+		$1 at last spline.end rjust
+		$2 below at $4.s
+		move to $4.e
+X
+
+#
+# field2_a( text, sizetext, bytes, label, other)
+# draw a box but label it above the field 
+# leave room for other labels that may be there
+# any text for the bottom is provided by sizetext
+
+define	field2_a X
+	$4: box wid (boxwid*$3)
+		spline <- from $4.n up (1.25+$5)*labelspace*boxht then right .1
+		$1 at last spline.end ljust
+		$2 below at $4.s
+		move to $4.e
+X
+
+# draw a box and label it as a field within a packet
+# field( boxtext, units, label )
+define	field X
+	$3: box $1 wid (boxwid*$2)
+		move to $3.e
+X
+
+# draw a box and label it as a field within a packet
+# the size in bytes appears below the box
+# field2( boxtext, sizetext, units, boxlabel)
+define	field2 X
+	$4: box $1 wid (boxwid*$3)
+		$2 below at last box.s
+		move to $4.e
+X
+
+# Show field with internal tick marks
+# fieldt( scale, text, units, label )
+define	fieldt X
+	fw = basef * $1
+	fh = basef
+	$4: box $2 wid (fw*$3) ht fh
+	for t = fw to fw * ($3 - 1) by fw do {
+		line from $4.nw + (t,0) to $4.sw + (t,0) dotted
+	}
+	move to $4.e
+#	[ "$3" at $4.s below ]
+X
+
+define	inetsw X
+Inetsw: box "-" with .c at $1; "0 " rjust at last box.w
+"\fCinetsw[]\fP" above at last box.n
+Iudp: box "UDP" with .n at last box.s; "1 " rjust at last box.w
+Itcp: box "TCP" with .n at last box.s; "2 " rjust at last box.w
+Iicmp: box "ICMP" with .n at last box.s; "3 " rjust at last box.w
+Irip: box "raw IP" with .n at last box.s; "4 " rjust at last box.w
+box "raw IP" with .n at last box.s; "5 " rjust at last box.w
+X
+
+#
+# array( count, text, center0)
+define	array X
+A0: box with .nw at $3 ; $2 above at last box.n
+for i = 2 to $1 do {
+	Al: box with .n at last box.s;
+}
+X
+
+#
+# lnullp( start )
+# draw the grounding end of a null pointer but on the left
+define	lnullp X
+	spline from $1+(poff,0) left 2*poff+boxht/2 then down boxht
+	Mid: Here
+	line from Mid - (boxht/2, 0) right boxht
+	line from Mid - (boxht/4,.02) right boxht/2
+	line from Mid - (boxht/8,.04) right boxht/4
+	line from Mid - (boxht/16,.06) right boxht/8
+	#pstart($1 + (poff,0))
+X
+
+#
+# dnullp(start)
+# draw the grounding end of a null pointer
+define	dnullp X
+	line from $1 down boxht
+	Mid: Here
+	line from Mid - (boxht/2, 0) right boxht
+	line from Mid - (boxht/4,.02) right boxht/2
+	line from Mid - (boxht/8,.04) right boxht/4
+	line from Mid - (boxht/16,.06) right boxht/8
+X
+
+#
+# nullp( start, horiz )
+# draw the grounding end of a null pointer
+define	nullp X
+	if ($2 == 0) then {horiz=boxht/2} else { horiz=$2 }
+	#horiz=$2
+	spline from $1-(poff,0) right 2*poff+horiz then down boxht
+	Mid: Here
+	line from Mid - (boxht/2, 0) right boxht
+	line from Mid - (boxht/4,.02) right boxht/2
+	line from Mid - (boxht/8,.04) right boxht/4
+	line from Mid - (boxht/16,.06) right boxht/8
+	#pstart($1-(poff,0))
+X
+
+#
+# vv_spline(top, bottom, offset, gap, arrow )
+# Draw a V shaped spline from top to bottom.
+define	vv_spline X
+	initspline($1, $2, .5, .5, .25)
+	line from Spline1 right $3
+	spline from Spline1 then right $4 then to Spline2 $5
+X
+	
+#
+# vu_spline(top, bottom, off, off, gap, arrow, text)
+# Connect top and bottom on the left
+define	vu_spline X
+	initspline($1, $2+($5,0), .5, .5, .25)
+#		then up yrad then up dy-2*yrad then up yrad 
+	spline from Spline1 then right dx-xrad then right xrad \
+		then up dy \
+		then left xrad then left dx-xrad $6
+	if ($3 != 0 ) then { 
+		line from Spline1 right $3 
+		#circle fill 1 rad .015 with .c at last line.end
+	}
+	if ($4 != 0 ) then { 
+		line from Spline2 right $4 
+		#circle fill 1 rad .015 with .c at last line.end
+	}
+	line invis from $1 + ($5,0) then up dy $7
+X
+
+#
+# hu_spline(left, right, off, off, gap, arrow, text)
+# Connect left and right horizontally
+define	hu_spline X
+	Spline1: $1
+	Spline2: $2
+	dx = Spline2.x - Spline1.x
+	spline from Spline1 then up $5 then right dx/2 \
+		then to Spline2 + (0,$5) then to Spline2 $6
+	if ($3 != 0 ) then { line from Spline1 up $3 }
+	if ($4 != 0 ) then { line from Spline2 up $4 }
+	line invis from $1 + (0,$5) then right dx $7
+X
+
+#
+# initspline(p1, p2, scalex, scaley, scale_radius)
+define	initspline X
+	Spline1: $1
+	Spline2: $2
+	dx = Spline2.x - Spline1.x
+	dy = Spline2.y - Spline1.y
+	if (dx < 0 ) then { adx = -dx} else { adx = dx}
+	if (dy < 0 ) then { ady = -dy} else { ady = dy }
+	srad = max(min(adx*$3, ady*$4), boxht*$5)
+	#srad = boxht/4
+	xrad = srad
+	yrad = srad
+	#xrad = adx*$3
+	#yrad = ady*$4
+	#sprintf("dx %f dy %f srad %fxrad %f yrad %f", dx, dy, srad, xrad, yrad) \
+	#	above at Spline1
+	if (dx < 0 ) then { xrad = -srad }
+	if (dy < 0 ) then { yrad = -srad }
+	#if (dx < 0 ) then { xrad = -xrad }
+	#if (dy < 0 ) then { yrad = -yrad }
+X
+
+#
+# lr_spline(start, end, off, off, arrow, text, rad)
+# Connect start and end in an l shape
+define	lr_spline X
+	initspline($1, $2, .2, .2, $7)
+	spline from Spline1 \
+		then up dy-yrad \
+		then up yrad \
+		then right xrad \
+		then right dx-xrad $5
+	if ($3 != 0 ) then { line from Spline1 up $3 }
+	if ($4 != 0 ) then { line from Spline2 right $4 }
+	line invis from $1 + (0,dy) then right dx $6
+X
+
+#
+# l_spline(start, end, off, off, arrow, text)
+# Connect start and end in an l shape
+define	l_spline X
+	initspline($1, $2, .2, .2, 1.25)
+	spline from Spline1 \
+		then up dy-yrad \
+		then up yrad \
+		then right xrad \
+		then right dx-xrad $5
+	if ($3 != 0 ) then { line from Spline1 up $3 }
+	if ($4 != 0 ) then { line from Spline2 right $4 }
+	line invis from $1 + (0,dy) then right dx $6
+X
+
+#
+# vertical spline
+# v_spline(p1, p2, off1, off2, arrow, turn)
+#
+define	v_spline X
+	vz_spline($1, $2, $3, $4, $5, $6, .05)
+#	initspline($1, $2, .2, .2)
+#	spline from Spline1 \
+#		then up (dy*$6)-yrad then up yrad \
+#		then right dx then up yrad \
+#		then up (dy*(1-$6))-yrad $5
+#	if ($3 != 0 ) then { line from Spline1 down $3 }
+#	if ($4 != 0 ) then { line from Spline2 up $4 }
+X
+
+#
+# vertical Z spline
+# vz2_spline(p1, p2, off1, off2, arrow, turn, overrun)
+# same as hz_spline but with absolute measurement for turn
+# instead of a percentage
+#
+define	vz2_spline X
+	initspline($1, $2, .2, .2, .25)
+	d1=$6
+	d2=dy-$6
+	overrun=$7
+	span=min(min(.9*max(d1, -d1), .9*max(d2, -d2)), max($7, -$7))
+	sign=dy/(max(dy,-dy))
+	if (overrun < 0 ) then {
+		overrun = -.5*span
+	}
+	spline from Spline1 \
+		then up $6 - span*sign \
+		then up span*sign + overrun*sign \
+		then right dx up 2*overrun*sign \
+		then up overrun*sign + span*sign \
+		then to Spline2 $5
+	if ($3 != 0 ) then { line from Spline1 down $3 }
+	if ($4 != 0 ) then { line from Spline2 up $4 }
+X
+
+#
+# vertical Z spline
+# vz_spline(p1, p2, off1, off2, arrow, turn, overrun)
+#
+define	vz_spline X
+	overrun=$7
+	if (overrun == 0 ) then { overrun = .2 }
+	initspline($1, $2, .2, .05, .25)
+	spline from Spline1 \
+		then up yrad then (dy*$6)+dy*overrun-yrad \
+		then right dx down 2*dy*overrun \
+		then up (dy*(1-$6))+dy*overrun-yrad then up yrad $5
+	if ($3 != 0 ) then { line from Spline1 down $3 }
+	if ($4 != 0 ) then { line from Spline2 up $4 }
+X
+
+#
+# horizontal Z spline
+# hz_spline(p1, p2, off1, off2, arrow, turn, overrun)
+#
+define	hz_spline X
+	overrun=$7
+	if (overrun == 0 ) then { overrun = .2 }
+	initspline($1, $2, .2, .2, .25)
+	spline from Spline1 \
+		then right (dx*$6)+dx*overrun \
+		then up dy left 2*dx*overrun \
+		then right dx*(1-$6)+dx*overrun $5
+	if ($3 != 0 ) then { line from Spline1 left $3 }
+	if ($4 != 0 ) then { line from Spline2 right $4 }
+X
+
+#
+# erase(center, fill, rad)
+#
+define	erase X
+	if ( $3 == 0 ) then { erad = boxht/8 } else { erad = $3 }
+	circle invis rad erad fill $2 with .c at $1
+X
+
+#
+# target(center)
+#
+define	target X
+	circle rad boxht/2 with .c at $1
+X
+
+# spline down and on the left
+define	spline_dl {
+Start:  $1
+Dest:   $2
+	line from Start to Start + ($3, 0)
+        spline $5 from Start \
+                then left $4 \
+                then down $4 \
+                then to Dest + (-$4, $4) \
+                then to Dest + (-$4, 0) \
+                then to Dest
+}
+
+# spline down and on the right
+define	spline_dr {
+Start:  $1
+Dest:   $2
+	line from Start to Start + ($3, 0)
+        spline $5 from Start \
+                then right $4 \
+                then down $4 \
+                then to Dest + ( $4, $4) \
+                then to Dest + ( $4, 0) \
+                then to Dest
+}
+ 
+# spline up and on the left
+define	spline_ul {
+Start:  $1
+Dest:   $2
+	line from Start to Start + ($3, 0)
+        spline $5 from Start \
+                then left $4 \
+                then up $4 \
+                then to Dest + (-$4, -$4) \
+                then to Dest + (-$4, 0) \
+                then to Dest
+}
+ 
+# spline up and on the right
+define	spline_ur {
+Start:  $1
+Dest:   $2
+	line from Start to Start + ($3, 0)
+        spline $5 from Start \
+                then right $4 \
+                then up $4 \
+                then to Dest + ( $4, -$4) \
+                then to Dest + ( $4, 0) \
+                then to Dest
+}
+
+# Spline right/up/right
+define	spline_rur {
+Start:	$1
+End:	$2
+	if ($4 == 0) then { dx = (End.x - Start.x) / 2 } else { dx = $4 }
+	if ("$6" != "") then { turn1rad = $6 } else { turn1rad = 0.2 }
+	if ("$7" != "") then { turn2rad = $7 } else { turn2rad = 0.2 }
+Turn1:	(Start.x + dx, Start.y)
+Turn2:	(Start.x + dx, End.y)
+	line from Start to Start + ($3, 0)
+	spline $5 from Start \
+		to Turn1 + (-turn1rad, 0) \
+		to Turn1 \
+		to Turn1 + (0,  turn1rad) \
+		to Turn2 + (0, -turn2rad) \
+		to Turn2 \
+		to Turn2 + ( turn2rad, 0) \
+		to End
+}
+
+# Spline right/down/right
+define	spline_rdr {
+Start:	$1
+End:	$2
+	if ($4 == 0) then { dx = (End.x - Start.x) / 2 } else { dx = $4 }
+	if ("$6" != "") then { turn1rad = $6 } else { turn1rad = 0.2 }
+	if ("$7" != "") then { turn2rad = $7 } else { turn2rad = 0.2 }
+Turn1:	(Start.x + dx, Start.y)
+Turn2:	(Start.x + dx, End.y)
+	line from Start to Start + ($3, 0)
+	spline $5 from Start \
+		to Turn1 + (-turn1rad, 0) \
+		to Turn1 \
+		to Turn1 + (0, -turn1rad) \
+		to Turn2 + (0,  turn2rad) \
+		to Turn2 \
+		to Turn2 + ( turn2rad, 0) \
+		to End
+}
+
+# Spline left/up/left
+define	spline_lul {
+Start:	$1
+End:	$2
+	if ($4 == 0) then { dx = (Start.x - End.x) / 2 } else { dx = $4 }
+	if ("$6" != "") then { turn1rad = $6 } else { turn1rad = 0.2 }
+	if ("$7" != "") then { turn2rad = $7 } else { turn2rad = 0.2 }
+Turn1:	(Start.x - dx, Start.y)
+Turn2:	(Start.x - dx, End.y)
+	line from Start to Start + ($3, 0)
+	spline $5 from Start \
+		to Turn1 + ( turn1rad, 0) \
+		to Turn1 \
+		to Turn1 + (0,  turn1rad) \
+		to Turn2 + (0, -turn2rad) \
+		to Turn2 \
+		to Turn2 + (-turn2rad, 0) \
+		to End $5
+}
+
+# Spline left/down/left
+define	spline_ldl {
+Start:	$1
+End:	$2
+	if ($4 == 0) then { dx = (Start.x - End.x) / 2 } else { dx = $4 }
+	if ("$6" != "") then { turn1rad = $6 } else { turn1rad = 0.2 }
+	if ("$7" != "") then { turn2rad = $7 } else { turn2rad = 0.2 }
+Turn1:	(Start.x - dx, Start.y)
+Turn2:	(Start.x - dx, End.y)
+	line from Start to Start + ($3, 0)
+	spline $5 from Start \
+		to Turn1 + ( turn1rad, 0) \
+		to Turn1 \
+		to Turn1 + (0, -turn1rad) \
+		to Turn2 + (0,  turn2rad) \
+		to Turn2 \
+		to Turn2 + (-turn2rad, 0) \
+		to End $5
+}
+
+# Place hash marks at the 32-bit boundaries of an IPv6 16-byte address.
+
+define	ipv6_hash {
+NW:	$1.nw
+SE:	$1.se
+mywid	= SE.x - NW.x
+myht	= NW.y - SE.y
+	line right v6_hash from NW + (0, -1*myht/4)
+	line right v6_hash from NW + (0, -2*myht/4)
+	line right v6_hash from NW + (0, -3*myht/4)
+	line left  v6_hash from SE + (0,  1*myht/4)
+	line left  v6_hash from SE + (0,  2*myht/4)
+	line left  v6_hash from SE + (0,  3*myht/4)
+v6_hash	= 0.06		# reset default
+}
+
+# Draw routers with rounded corners.
+# Problem with boxes with rounded corners: .ne, .ne, .se, .sw now refer to
+# the rounded portion, which screws things up.  Make invisible box without
+# rounded corners for compass positions.
+ 
+define  router {
+	box invis $1 $2
+	box rad 0.1 with .n at last box.n
+}
+
+# small15_text2(box_name, top_string, bottom_string)
+#
+# Text within a box is often "too big".  For example: box "top" "bottom"
+# can have the string "top" too high in the box (with ascenders
+# touching the top of the box) and the string "bottom" can be too low
+# (with descenders touching the bottom of the box.
+# But placing .ps and .vs commands within a picture is asking for trouble.
+# The "right" way to do this is to make the string smaller with an inline
+# \s-1 or \s-2, with a vertical motion before and after, then \s0.
+#
+# The "15" means the vertical motion is 0.15m and the "2" means two arguments.
+#
+# Note that when invoking this macro, do *not* put the arguments
+# top_string and bottom_string in double quotes.  These two arguments
+# may contain spaces (but not commas).
+
+define	small15_text2 {
+	box invis ht $1.ht wid $1.wid with .n at $1.n \
+		"\v'0.15m'\s-1$2\s0\v'-0.15m'" "\v'-0.15m'\s-1$3\s0\v'0.15m'"
+}
+
+# Add invisible space to the right, normally to center picture.
+ 
+define  right_space {
+	box invis wid $2 with .w at $1
+}
+
+# Add invisible space to the right, normally to center picture.
+ 
+define  left_space {
+	box invis wid $2 with .e at $1
+}
+
+.PE

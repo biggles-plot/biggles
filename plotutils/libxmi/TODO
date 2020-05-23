@@ -1,0 +1,17 @@
+Add miDrawPolylines and miFillPolylines.
+
+Need a new Boolean attribute in the graphics context, indicating whether
+polylines and polyarcs that repeat the initial point as the final point
+should be regarded as closed.  The default value should be `true', which is
+the way we now do it (and X11 does it).  But there should be support for
+`false' too, since a modern Postscript-style path that repeats the initial
+point as the final point is not necessarily closed.
+
+Add support for computation of a bounding box?
+
+Add support for clipping; to user-specified rectangular regions at least,
+or perhaps to a user-specified union of rectangles?  Or clipping path /
+polygon?
+
+Add support for triangular line caps to miDrawLines().  Right now,
+triangular line caps are supported for arcs only.

@@ -1,0 +1,707 @@
+.TH PLOT 1 "Jun 2000" "FSF" "GNU Plotting Utilities"
+.SH NAME
+plot \- translate GNU metafiles to other graphics formats
+.\" Not all man macros define SB
+.de SB
+\&\fB\s-1\&\\$1 \\$2\s0\fR
+..
+.SH SYNOPSIS
+.B plot 
+[ 
+.I options 
+] [ 
+.I files 
+]
+.SH DESCRIPTION
+.LP
+.B plot
+translates files in GNU metafile format to other graphics formats, or
+displays them on an X Window System display.
+GNU metafile format is a device-independent format for the storage of
+graphic data.
+It is the default output format of the programs
+.BR graph (1),
+.BR pic2plot (1),
+.BR tek2plot (1),
+and
+.BR plotfont (1),
+and is further documented in
+.BR plot (5),
+since it is an enhanced version of the traditional
+.BR plot (5)
+format found on non-GNU systems.
+It can also be produced by the GNU libplot 2-D graphics export library (see
+.BR plot (3)).
+.LP
+The output format is specified with the 
+.BR \-T " option."
+The possible output formats and display types are the same as those 
+supported by
+.BR graph (1),
+.BR plotfont (1),
+.BR pic2plot (1),
+and
+.BR tek2plot (1).
+If an output file is produced, it is written to standard output.
+.LP
+Options and file names may be interspersed on the command line, but
+the options are processed before the file names are read.
+If 
+.B \-\- 
+is seen, it is interpreted as the end of the options.
+If no file names are specified, or the file name 
+.B \- 
+is encountered, the standard input is read.
+.SH OPTIONS
+.SS General Options
+.TP
+.BI \-T " type"
+.br
+.ns
+.TP
+.BI \-\-output\-format " type"
+Select 
+.I type
+as the output format.
+It may be "X", "png", "pnm", "gif", "svg", "ai", "ps", "cgm", "fig",
+"pcl", "hpgl", "regis", "tek", or "meta" (the default).
+These refer respectively
+to the X Window System, 
+PNG (Portable Network Graphics) format,
+portable anymap format (PBM/PGM/PPM), 
+a pseudo-GIF format that
+does not use LZW encoding,
+the new XML-based Scalable Vector Graphics format,
+the format used by Adobe Illustrator, Postscript or
+Encapsulated Postscript (EPS) that can be edited with
+.BR idraw (1),
+CGM format (by default, confirming to the WebCGM profile),
+the format used by the 
+.BR xfig (1) 
+drawing editor, the Hewlett\-Packard PCL 5 printer
+language, the Hewlett\-Packard Graphics Language, 
+ReGIS graphics format (which can be displayed 
+by the
+.BR dxterm (1)
+terminal emulator or by a VT330 or VT340 terminal),
+Tektronix format (which can be displayed by the
+.BR xterm (1)
+terminal emulator),
+and device-independent GNU metafile format itself.
+Unless \fItype\fP\^ is "X", an output file is produced and written
+to standard output.
+.IP ""
+Omitting the 
+.B \-T
+option is equivalent to specifying
+.BR "\-T meta" .
+Translating from metafile format to itself is occasionally useful, since
+there are two versions of metafile format (see the
+.B \-O
+option below).
+.IP ""
+A listing of the fonts available in any specified output format may be
+obtained with the
+.B \-\-help\-fonts
+option (see below).
+If a requested font is unavailable, a default font will be substituted.
+The default font
+is "Helvetica" for "X", "svg", "ai", "ps", "cgm", and "fig",
+"Univers" for "pcl",
+and "HersheySerif" for "png", "pnm", "gif", "hpgl", "regis", "tek", and "meta".
+.TP
+.BI \-p " n"
+.br
+.ns
+.TP
+.BI \-\-page\-number " n"
+Output only page number 
+.IR n ,
+within the metafile or sequence of metafiles that is being translated.
+.IP ""
+Metafiles may consist of one or more pages, numbered beginning with 1.
+Also, each page may contain multiple `frames'.
+.BR "plot \-T X" ,
+.BR "plot \-T regis" ,
+and
+.BR "plot \-T tek" ,
+which plot in real time, will separate
+successive frames by screen erasures.
+.BR "plot \-T png" ,
+.BR "plot \-T pnm" ,
+.BR "plot \-T gif" ,
+.BR "plot \-T svg" ,
+.BR "plot \-T ai" ,
+.BR "plot \-T ps" ,
+.BR "plot \-T cgm" ,
+.BR "plot \-T fig" ,
+.BR "plot \-T pcl" ,
+and
+.BR "plot \-T hpgl" ,
+which do not plot in real time, will output only the last frame of any
+multi-frame page.
+.IP ""
+The default behavior, if \fB\-p\fP is not used, is to output all pages.
+For example, \fBplot \-T X\fP displays each page in its own X window.
+If the 
+.BR "\-T png" ,
+.BR "\-T pnm" ,
+.BR "\-T gif" ,
+.BR "\-T ai" ,
+or
+.B \-T fig
+option is used, the default behavior is to output only the first nonempty
+page, since files in those output formats contain only a single page of
+graphics.
+.IP ""
+Metafiles produced by
+.BR graph (1)
+and
+.BR plotfont (1)
+contain only a single page (page #1), which consists of two frames: an
+empty frame to clear the display, and a second frame that contains the
+graphics.
+.TP
+.B \-s
+.br
+.ns
+.TP
+.B \-\-merge\-pages
+Merge all displayed pages into a single page, and also merge all `frames'.
+.IP ""
+This option is useful when merging together single-page plots from
+different sources.
+For example, it can be used to merge together plots obtained from separate
+invocations of
+.BR graph (1).
+.TP
+.BI \-\-bitmap\-size " bitmap_size"
+Set the size of the graphics display in which the plot will be drawn,
+in terms of pixels, to be
+.IR bitmap_size .
+The default is "570x570".
+This is relevant only to 
+.BR "plot \-T X" , 
+.BR "plot \-T png" , 
+.BR "plot \-T pnm" , 
+and
+.BR "plot \-T gif" ,
+all of which produce bitmaps.
+If you choose a rectangular (non-square) window size, the fonts in the 
+plot will be scaled anisotropically, i.e., by different factors in the 
+horizontal and vertical directions.
+For 
+.BR "plot \-T X" , 
+this requires an X11R6 display.
+Any font that cannot be scaled in this way will be replaced by a default
+scalable font, such as the vector font "HersheySerif".
+.IP ""
+The environment variable 
+.SB BITMAPSIZE
+can equally well be used to specify the window size.
+For backward compatibility, the X resource 
+.B Xplot.geometry
+may be used instead.
+.TP
+.BI \-\-emulate\-color " option"
+If 
+.I option
+is 
+.IR yes ,
+replace each color in the output by an appropriate shade of gray.  This is
+seldom useful, except when using
+.B plot \-T pcl
+to prepare output for a PCL 5 device.
+(Many monochrome PCL 5 devices, such as monochrome LaserJets, do a poor job
+of emulating color on their own.)
+You may equally well request color emulation by setting the environment
+variable
+.SB EMULATE_COLOR
+to "yes".
+.TP
+.BI \-\-max\-line\-length " max_line_length"
+Set the maximum number of points that a
+polygonal line may contain, before it is flushed out, to be 
+.IR max_line_length .
+If this flushing occurs, the polygonal line will be split into two or more
+sub-lines, though the splitting should not be noticeable.
+The default value of \fImax_line_length\fP\^ is 500.
+.IP ""
+The reason for splitting long polygonal lines is that some display devices
+(e.g., old Postscript printers and pen HP-GL plotters) have limited buffer
+sizes.
+The environment variable 
+.SB MAX_LINE_LENGTH
+can also be used to specify the maximum line length.
+.TP
+.BI \-\-page\-size " pagesize"
+Set the size of the page on which the plot will be positioned.
+This is relevant only to
+.BR "plot \-T svg" ,
+.BR "plot \-T ai" ,
+.BR "plot \-T ps" ,
+.BR "plot \-T cgm" ,
+.BR "plot \-T fig" ,
+.BR "plot \-T pcl" ,
+and
+.BR "plot \-T hpgl" .
+The default is "letter", which means an 8.5 inch by 11 inch page.
+Any ISO page size in the range "a0".\|.\|."a4" or ANSI page size in the
+range "a".\|.\|."e" may be specified ("letter" is an alias for "a" and
+"tabloid" is an alias for "b").
+"legal" and "ledger" are recognized page sizes also.
+The environment variable
+.SB PAGESIZE 
+can equally well be used to specify the page size.
+.IP ""
+The graphics display in which the plot is drawn will, by default, be a square
+region that occupies nearly the full width of the specified page.
+An alternative size for the graphics display can be specified.
+For example, the page size could be specified as
+"letter,xsize=4in,ysize=6in", or "a4,xsize=5.0cm,ysize=100mm".
+For all of the above except
+.BR "plot \-T hpgl" , 
+the graphics display will, by default, be centered on the page.  
+For all of the above except
+.B "plot \-T svg"
+and
+.BR "plot \-T cgm" ,
+the graphics display may be repositioned manually, by specifying the
+location of its lower left corner, relative to the lower left corner of the
+page.
+For example, the page size could be specified as
+"letter,xorigin=2in,yorigin=3in", or "a4,xorigin=0.5cm,yorigin=0.5cm".
+It is also possible to specify an offset vector.
+For example, the page size could be specified as "letter,xoffset=1in",
+or "letter,xoffset=1in,yoffset=1.2in", or "a4,yoffset=\-1cm".
+In SVG format and WebCGM format it is possible to specify the size
+of the graphics display, but not its position.
+.TP
+.BI \-\-rotation " angle"
+Rotate the graphics display by
+.IR angle " degrees."
+Recognized values are "0", "90", "180", and "270".
+"no" and "yes" are equivalent to "0" and "90", respectively.
+The environment variable 
+.SB ROTATION
+can also be used to specify a rotation angle.
+.SS "Parameter Initialization Options"
+The following options set the initial values of drawing parameters.
+However, all of these may be overridden by directives in a metafile.
+In fact, these options are useful primarily when plotting old metafiles in
+the traditional (pre-GNU)
+.BR plot (5)
+format, which did not support such directives.
+.TP
+.BI \-\-bg\-color " name"
+Set the color initially used for the background to be
+.IR name .
+This is relevant only to 
+.BR "plot \-T X" ,
+.BR "plot \-T png" ,
+.BR "plot \-T pnm" ,
+.BR "plot \-T gif" ,
+.BR "plot \-T svg" ,
+.BR "plot \-T cgm" ,
+and
+.BR "plot \-T regis" .
+An unrecognized name sets the color to the default, which is "white".
+The environment variable
+.SB BG_COLOR
+can equally well be used to specify the background color.
+.IP ""
+If the 
+.B \-T png
+or
+.B \-T gif
+option is used, a transparent PNG file
+or a transparent pseudo-GIF, respectively, may be produced by
+setting the 
+.SB TRANSPARENT_COLOR
+environment variable to the name of the background color.
+If the 
+.B \-T svg
+or
+.B \-T cgm
+option is used, an output file without a background may be produced
+by setting the background color to "none".
+.TP
+.BI \-f " size"
+.br
+.ns
+.TP
+.BI \-\-font\-size " size"
+Set the size of the font initially used for rendering text, as a fraction
+of the width of the graphics display, to be
+.IR size .
+The default is 0.0525.
+.TP
+.BI \-F " name"
+.br
+.ns
+.TP
+.BI \-\-font\-name " name"
+Set the font initially used for text to be
+.IR name .
+Font names are case-insensitive.
+If the specified font is not available, the default font will be used.
+Which fonts are available, and the default font, depend on which \fB\-T\fP
+option is specified (see above).
+A list of available fonts can be obtained with the
+.B \-\-help\-fonts
+option (see below).
+.TP
+.BI \-W " line_width"
+.br
+.ns
+.TP
+.BI \-\-line\-width " line_width"
+Set the initial width of lines, as a fraction of the width of the display,
+to be
+.IR line_width .
+A negative value means that a default value should be used.
+This value is format-dependent.
+The interpretation of zero line width is also format-dependent (in some
+output formats, a zero-width line is the thinnest line that can be drawn;
+in others, a zero-width line is invisible).
+.TP
+.BI \-\-pen\-color " name"
+Set the initial pen color to be
+.IR name .
+An unrecognized name sets the pen color to the default, which is "black".
+.SS Options for Metafile Output
+.LP
+The following option is relevant only if the
+.B \-T
+option is omitted or if 
+.B "\-T meta"
+is used.
+In this case the output of
+.BR plot ,
+like the input, will be in GNU graphics metafile format.
+.TP
+.B \-O
+.br
+.ns
+.TP
+.B \-\-portable\-output
+Output the portable (human-readable) version of GNU metafile
+format, rather than the binary version (the default).
+The format of the binary version is machine-dependent.
+.SS Options for Backward Compatibility
+By default, \fBplot\fP assumes that its input file(s) are in
+either the binary version or the portable version of GNU metafile format.
+You may specify that the input is, instead, in the traditional Unix (pre-GNU)
+graphics metafile format, which is documented in
+.BR plot (5).
+The traditional graphics metafile format was produced by 
+pre-GNU versions of
+.BR graph (1).
+.TP
+.B \-h
+.br
+.ns
+.TP
+.B \-\-high\-byte\-first\-input
+Input file(s) are assumed to be in the binary, `high byte first' version
+of traditional metafile format.
+This variant is uncommon.
+.TP
+.B \-l
+.br
+.ns
+.TP
+.B \-\-low\-byte\-first\-input
+Input file(s) are assumed to be in the binary, `low byte first' version 
+of traditional metafile format.
+This variant is the most common.
+.TP
+.B \-A
+.br
+.ns
+.TP
+.B \-\-ascii\-input
+Input file(s) are assumed to be in the 
+.SM ASCII
+(human-readable) variant of traditional metafile format.
+On some older Unix systems, this variant was produced by
+.BR plottoa (1).
+.SS Informational Options
+.TP 
+.B \-\-help
+Print a list of command-line options, and exit.
+.TP
+.B \-\-help\-fonts
+Print a table of available fonts, and exit.
+The table will depend on which output format
+is specified with the 
+.B \-T 
+option.
+.BR "plot \-T X" ,
+.BR "plot \-T svg" ,
+.BR "plot \-T ai" ,
+.BR "plot \-T ps" ,
+.BR "plot \-T cgm" ,
+and 
+.B plot \-T fig
+each support the 35 standard Postscript fonts.
+.BR "plot \-T svg" ,
+.BR "plot \-T pcl" ,
+and 
+.B plot \-T hpgl
+support the 45 standard PCL 5 fonts,
+and the latter two support a number of Hewlett\-Packard vector fonts.
+All seven support a set of 22 Hershey vector fonts, as do
+.BR "plot \-T png" ,
+.BR "plot \-T pnm" ,
+.BR "plot \-T gif" ,
+.BR "plot \-T regis" ,
+and
+.BR "plot \-T tek" .
+.B plot
+without a
+.B \-T
+option in principle
+supports any of these fonts, since its output must be translated
+to other formats by a further invocation of
+.BR plot .
+.IP ""
+The
+.BR plotfont (1)
+utility may be used to obtain a character map of any supported font.
+.TP
+.B \-\-list\-fonts
+Like 
+.BR \-\-help\-fonts , 
+but lists the fonts in a single column to facilitate piping to other
+programs.
+If no output format is specified with the
+.B \-T
+option, the full set of supported fonts is listed.
+.TP
+.B \-\-version
+Print the version number of 
+.B plot
+and the plotting utilities package, and exit.
+.SH "ENVIRONMENT"
+The environment variables 
+.SB BITMAPSIZE,
+.SB PAGESIZE,
+.SB BG_COLOR,
+.SB EMULATE_COLOR,
+.SB MAX_LINE_LENGTH
+and
+.SB ROTATION
+serve as backups for the options 
+.BR \-\-bitmap\-size , 
+.BR \-\-page\-size ,
+.BR \-\-bg\-color , 
+.BR \-\-emulate\-color , 
+.BR \-\-max\-line\-length ,
+and
+.BR \-\-rotation ,
+respectively.
+The remaining environment variables are specific to individual output formats.
+.LP
+.BR "plot \-T X" ,
+which pops up a window on an X Window System
+display and draws graphics in it, checks the 
+.SB DISPLAY
+environment variable.
+Its value determines the display that will be used.
+.LP
+.BR "plot \-T png"
+and
+.BR "plot \-T gif" ,
+which produce output in PNG format and pseudo-GIF format respectively,
+are affected by the 
+.SB INTERLACE
+environment variable.
+If its value is "yes", the output will be interlaced.
+Also, if the 
+.SB TRANSPARENT_COLOR
+environment variable is set to the name of a color, that color will
+be treated as transparent in the output.
+.LP
+.BR "plot \-T pnm" ,
+which produces output in portable anymap (PBM/PGM/PPM) format,
+is affected by the 
+.SB PNM_PORTABLE
+environment variable.
+If its value is "yes", the output will be in a human-readable format
+rather than binary (the default).
+.LP
+.BR "plot \-T cgm" ,
+which produces output in CGM (Computer Graphics Metafile) format,
+is affected by the 
+.SB CGM_MAX_VERSION
+and
+.SB CGM_ENCODING
+environment variables.
+By default, it produces a binary-encoded version of CGM version 3 format.
+For backward compatibility, the version number may be reduced by setting
+.SB CGM_MAX_VERSION
+to "2" or "1".
+Irrespective of version, the output CGM file will use the human-readable
+clear text encoding if 
+.SB CGM_ENCODING
+is set to "clear_text".
+However, only binary-encoded CGM files conform to the WebCGM profile.
+.LP
+.BR "plot \-T pcl" ,
+which produces PCL 5 output for Hewlett\-Packard
+printers and plotters, is affected by the environment variable
+.SB PCL_ASSIGN_COLORS.
+It should be set to "yes" when producing PCL 5 output for a color printer 
+or other color device.
+This will ensure accurate color reproduction by giving the output device
+complete freedom in assigning colors, internally, to its "logical pens".
+If it is "no" then the device will use a fixed set
+of colored pens, and will emulate other colors by shading.
+The default is "no" because monochrome PCL 5 devices, which are much more
+common than colored ones, must use shading to emulate color.
+.LP
+.BR "plot \-T hpgl" ,
+which produces Hewlett\-Packard Graphics Language
+output, is affected by several environment variables.
+The most important is 
+.SB HPGL_VERSION,
+which may be set to "1", "1.5", or "2" (the default).
+"1" means that the output should be generic HP-GL, "1.5" means that the
+output should be suitable for the HP7550A graphics plotter and the HP758x,
+HP7595A and HP7596A drafting plotters (HP-GL with some HP-GL/2 extensions),
+and "2" means that the output should be modern HP-GL/2.
+If the version is "1" or "1.5" then the only available fonts will be vector
+fonts, and all lines will be drawn with a default width (the
+.B \-W
+option will not work).
+Additionally, if the version is "1" then the filling of arbitrary curves
+with solid color will not be supported (circles and rectangles aligned with
+the coordinate axes may be filled, though).
+.LP
+The position of the 
+.B plot \-T hpgl
+graphics display on the page
+can be rotated 90 degrees counterclockwise by setting the
+.SB HPGL_ROTATE
+environment variable to "yes".
+This is not the same as the rotation obtained with the 
+.B \-\-rotation
+option, since it both rotates the graphics display and repositions its
+lower left corner toward another corner of the page.  Besides "no" and
+"yes", recognized values for 
+.SB HPGL_ROTATE
+are "0", "90", "180", and "270".  
+"no" and "yes" are equivalent to "0" and
+"90", respectively.
+"180" and "270" are supported only if 
+.SB HPGL_VERSION
+is "2" (the default).
+.LP
+By default, 
+.B plot \-T hpgl
+will draw with a fixed set of pens.
+Which pens are present may be specified by setting the
+.SB HPGL_PENS
+environment variable.
+If
+.SB HPGL_VERSION
+is "1", the default value of
+.SB HPGL_PENS
+is "1=black"; if
+.SB HPGL_VERSION
+is "1.5" or "2", the default value of 
+.SB HPGL_PENS
+is "1=black:2=red:3=green:4=yellow:5=blue:6=magenta:7=cyan".
+The format should be self-explanatory.
+By setting
+.SB HPGL_PENS
+you may specify a color for any pen in the range #1.\|.\|.#31.
+All color names recognized by the X Window System may be used.
+Pen #1 must always be present, though it need not be black.
+Any other pen in the range #1.\|.\|.#31 may be omitted.
+.LP
+If
+.SB HPGL_VERSION
+is "2" then 
+.B plot \-T hpgl
+will also be
+affected by the environment variable 
+.SB HPGL_ASSIGN_COLORS.
+If its value is "yes", then 
+.B plot \-T hpgl
+will not be restricted to the palette specified in 
+.SB HPGL_PENS: 
+it will assign colors to "logical pens" in the range #1.\|.\|.#31, as needed.
+The default value is "no" because other than color LaserJet printers and
+DesignJet plotters, not many HP-GL/2 devices allow the assignment of colors
+to logical pens.
+.LP
+Opaque filling and the drawing of visible white lines are supported
+only if
+.SB HPGL_VERSION
+is "2" and the environment variable 
+.SB HPGL_OPAQUE_MODE
+is "yes" (the default).
+If its value is "no" then white lines (if any), which are normally drawn
+with pen #0, will not be drawn.
+This feature is to accommodate older HP-GL/2 devices.
+HP-GL/2 pen plotters, for example, do not support opacity or the use
+of pen #0 to draw visible white lines.
+Some older HP-GL/2 devices may, in fact, malfunction if asked to draw
+opaque objects.
+.LP
+.BR "plot \-T tek" ,
+which produces output for a Tektronix terminal or emulator, checks the
+.SB TERM
+environment variable.
+If the value of
+.SB TERM
+is a string beginning with "xterm", "nxterm", or "kterm", it is taken as a
+sign that
+.B plot
+is running in an X Window System VT100 terminal emulator: a copy of
+.BR xterm (1),
+.BR nxterm (1),
+or
+.BR kterm (1).
+Before drawing graphics,
+.B plot \-T tek
+will emit an escape sequence that causes the terminal emulator's auxiliary
+Tektronix window, which is normally hidden, to pop up.
+After the graphics are drawn, an escape sequence that returns control to
+the original VT100 window will be emitted.
+The Tektronix window will remain on the screen.
+.LP
+If the value of
+.SB TERM
+is a string beginning with
+"kermit", "ansi.sys", or "nansi.sys", it is
+taken as a sign that 
+.B plot
+is running in the VT100 terminal emulator provided by the MS-DOS version of
+.BR kermit (1).
+Before drawing graphics, \fBplot \-T tek\fP will emit an escape sequence
+that switches the terminal emulator to Tektronix mode.
+Also, some of the Tektronix control codes emitted by 
+\fBplot \-T tek\fP will be \fBkermit\fP-specific.
+There will be a limited amount of color support, which is not normally the
+case (the 16 `ansi.sys' colors will be supported).
+After drawing graphics, \fBplot \-T tek\fP will emit an escape sequence
+that returns the emulator to VT100 mode.
+The key sequence `ALT minus' can be employed manually within \fBkermit\fP
+to switch between the two modes.
+.SH "SEE ALSO"
+.BR graph (1),
+.BR pic2plot (1),
+.BR tek2plot (1),
+.BR plotfont (1),
+.BR plot (3),
+.BR plot (5),
+and "The GNU Plotting Utilities Manual".
+.SH AUTHORS
+.B plot
+was written by Robert S. Maier (\fBrsm@math.arizona.edu\fP).
+.SH BUGS
+Email bug reports to
+.BR bug\-gnu\-utils@gnu.org .

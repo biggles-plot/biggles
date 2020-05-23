@@ -1,0 +1,18 @@
+#!/bin/sh
+
+../graph/graph -g 2 -I a -C -m -1 -S 23 .02 --tick-size -.015 \
+	-f .06 --title-font-size 0.09 \
+	--title-font-name Times-Roman --font-name HersheyGothic-English \
+	-L 'A Sample Plot' \
+	-X 'independent (x\sb1\eb) variable' \
+	-Y 'dependent (x\sb2\eb) variable' \
+	-u .25 -r .25 -w .5 -h .5 \
+	--portable-output \
+	<$SRCDIR/spline.xout >graph.out
+
+if cmp -s $SRCDIR/graph.xout graph.out
+	then retval=0;
+	else retval=1;
+	fi;
+
+exit $retval

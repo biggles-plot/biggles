@@ -1,0 +1,45 @@
+This directory contains the source code for GNU ode.  Original version
+copyright (C) 1982-1994 Nicholas B. Tufillaro <nbt@reed.edu>.
+GNU enhancements by Robert S. Maier <rsm@math.arizona.edu>, copyright 
+(C) 1996, 1997, 1998, 1999, 2005 Free Software Foundation, Inc.
+
+----------------------------------------------------------------------
+
+ode - numerical solution of differential equations
+
+Source Files:
+
+Makefile.in	Template for Makefile
+alloca.c	alloca() for machines that don't have it
+am.c            Adams-Moulton with fixed step size
+ama.c           Same with adaptive step size
+eu.c            Euler quick-and-dirty method
+expr.c          Expression evaluator
+extern.h	External function and variable declarations
+float.c         FPP setup and trap handler
+global.c        Global variable definitions
+gram.y          Bison parser grammar
+lex.l           Flex scanner rules
+main.c		Mainline
+misc.c          I/O, etc.
+num.h           Constants for the numerical routines
+ode.h           Miscellaneous declarations and constants
+prt.c           Print queue management
+rk.c            Runge-Kutta with fixed step size
+rka.c           Same with adaptive step size
+stperr.c        Error handling for adaptive step routines
+sym.c           Symbol table manager
+xmalloc.c	Memory management wrappers
+yywrap.c	Wrapper for our scanner
+
+Other Files:
+
+In this directory:
+
+README		This file
+INTERNALS	A discussion of ode internals
+
+In ../ode-examples:
+
+README		A discussion of the example input files
+example.x	Numerous example ode input files

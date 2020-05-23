@@ -1,0 +1,24 @@
+This directory contains X Windows fonts and related files.  Users of the
+plotutils package may wish to install these fonts, in full or in part.
+Installation instructions are in the file ../INSTALL.fonts.
+
+The fonts in ./pfb were contributed by URW GmbH for distribution under the
+GNU License.  Copyright (c) 1992 URW GmbH, Hamburg, Germany.  The
+corresponding AFM files, for those who need them, are available in the
+Ghostscript distribution.  The successor firm to URW GmbH is:
+
+	URW++ Design & Development GmbH
+	Poppenbuetteler Bogen 29A
+	D-22399 Hamburg
+	Germany
+	Tel: +49 (40) 60 60 50
+	Fax: +49 (40) 60 60 51 11
+
+	Managing Director: Peter Rosenfeld
+	Date of Inception: January 1, 1996
+
+The directory ./pcf contains four bitmapped fonts which are believed to be
+the fonts used in the 1970's by the Tektronix 4010/4014 graphics terminal.
+They have been widely distributed as fonts for Tektronix emulators.  The
+fonts are in PCF (portable compiled format).  The directory ./bdf contains
+human-readable versions, in Adobe's BDF (Binary Distribution Format).

@@ -1,0 +1,11 @@
+#!/bin/sh
+
+../tek2plot/tek2plot -O \
+    <$SRCDIR/../tek2plot/teksamples/ocpred.tek >tek2plot.out
+
+if cmp -s $SRCDIR/tek2plot.xout tek2plot.out
+	then retval=0;
+	else retval=1;
+	fi;
+
+exit $retval

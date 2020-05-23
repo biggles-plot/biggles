@@ -1,0 +1,140 @@
+The table below displays the encodings for the Japanese Kana (syllabic
+characters) that are built into the GNU libplot library and the GNU
+plotting utilities based on it, such as `graph'.  They were digitized by
+Dr. Allen V. Hershey of the U.S. Naval Surface Weapons Center (Dahlgren,
+VA) in the mid-1960s.  For details, see his technical report "Calligraphy
+for Computers".  (Available from the U.S. National Technical Information
+Service at +1 703 487 4650; ask for item number AD662398.)
+
+These Kana are part of the HersheyEUC font, which is employed for drawing
+multibyte Japanese text strings.  But you may also use these Kana while
+drawing text strings in any other Hershey font, by inserting the
+appropriate escape sequences.  For example, you may label in Kana the axes
+of a graph prepared with `graph'.
+
+There are 83 Hiragana (cursive characters) and 86 Katakana (block
+characters).  The indexing of the Kana is specified in the JIS X0208
+standard.  In that standard the Hiragana appear as 0x2421..0x2473 and the
+Katakana as 0x2521..0x2576.  Here `0x' means that the number that follows
+is in base 16, or hexadecimal.  For full information on the JIS standard,
+see "Understanding Japanese Information Processing", by Ken Lunde
+(O'Reilly, 1993).
+
+The Hiragana and Katakana are indexed in the table below as 0x21..0x73 and
+0x21..0x76, respectively.  A transliteration of each Kana is included,
+according to the Hepburn system.  For example, the Kana `ka' is listed as
+0x2b.  The corresponding Hiragana would be 0x242b, and the corresponding
+Katakana would be 0x252b.
+
+To draw Hiragana `ka', you would use the escape sequence "\#J242b".  To
+draw Katakana `ka', you would use the escape sequence "\#J252b".  These
+escape sequences would be valid whenever the current font is a Hershey font
+other than HersheyEUC.  By using the table below, you should find it easy
+to draw a phonetic representation of most Japanese words, syllable by
+syllable.
+
+You should be aware that in Japanese, many words are normally written with
+ideographic characters (Kanji) rather than Kana.  However, any Japanese
+word may be rendered (possibly inelegantly) in terms of Kana.  For example,
+"Mitsubishi" would be mi-tsu-bi-shi, i.e., "\#J245f\#J2444\#J2453\#J2437"
+in terms of Hiragana.
+
+You are cautioned that there are some special rules for combinations of
+sounds, e.g. consonant + diphthong.  The `small' Kana are used for such
+combinations.  Also, the `small tsu' Kana before a Kana beginning with the
+consonant k, s, t, or p is interpreted not as a syllable, but as a sign
+that that consonant should be doubled.
+
+
+Code 	Kana transliteration
+---- 	--------------------
+     
+0x21 	a [small]
+0x22 	a
+0x23 	i [small]
+0x24 	i
+0x25 	u [small]
+0x26 	u
+0x27 	e [small]
+0x28 	e
+0x29 	o [small]
+0x2a 	o
+0x2b 	ka
+0x2c 	ga
+0x2d 	ki
+0x2e 	gi
+0x2f 	ku
+0x30 	gu
+0x31 	ke
+0x32 	ge
+0x33 	ko
+0x34 	go
+0x35 	sa
+0x36 	za
+0x37 	shi
+0x38 	ji
+0x39 	su
+0x3a 	zu
+0x3b 	se
+0x3c 	ze
+0x3d 	so
+0x3e 	zo
+0x3f 	ta
+0x40 	da
+0x41 	chi
+0x42 	dji
+0x43 	tsu [small]
+0x44 	tsu
+0x45 	dzu
+0x46 	te
+0x47 	de
+0x48 	to
+0x49 	do
+0x4a 	na
+0x4b 	ni
+0x4c 	nu
+0x4d 	ne
+0x4e 	no
+0x4f 	ha
+0x50 	ba
+0x51 	pa
+0x52 	hi
+0x53 	bi
+0x54 	pi
+0x55 	fu
+0x56 	bu
+0x57 	pu
+0x58 	he
+0x59 	be
+0x5a 	pe
+0x5b 	ho
+0x5c 	bo
+0x5d 	po
+0x5e 	ma
+0x5f 	mi
+0x60 	mu
+0x61 	me
+0x62 	mo
+0x63 	ya [small]
+0x64 	ya
+0x65 	yu [small]
+0x66 	yu
+0x67 	yo [small]
+0x68 	yo
+0x69 	ra
+0x6a 	ri
+0x6b 	ru
+0x6c 	re
+0x6d 	ro
+0x6e 	wa [small]
+0x6f 	wa
+0x70 	wi
+0x71 	we
+0x72 	wo
+0x73 	n
+
+KATAKANA only:
+
+0x74	vu
+0x75	ka [small]
+0x76	ke [small]

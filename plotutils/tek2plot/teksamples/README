@@ -1,0 +1,31 @@
+This directory includes a few files in Tektronix format.  You may use them
+to test the `tek2plot' utility, which translates Tektronix files to other
+formats, or displays them on an X Window System display.  Another source of
+Tektronix files is the SKYMAP astronomical display program (see
+http://tdc-www.harvard.edu/software/skymap ).
+
+In this directory, the file ocpred.tek contains a chart showing an
+astronomical event of 1986, prepared in 1985 at the Harvard-Smithsonian
+Center for Astrophysics.  You may do:
+
+    tek2plot -Tps --font-name HersheyGothicEnglish ocpred.tek > ocpred.ps
+
+to translate it to Postscript.  The text will be rendered in
+HersheyGothicEnglish, which is an Old English font.
+
+HersheyGothicEnglish is not a fixed-width font, unlike the original
+Tektronix font.  But if you add the `--position-chars' option on the
+command line, each character will be positioned individually, so as to
+match the position of the corresponding character in the original font.
+
+Similarly, you may do:
+
+    tek2plot -Tps usmap.tek > usmap.ps
+
+to prepare a Postscript version of the USA map.
+
+You would use the `-T X' option, instead of `-T ps', to display the
+specified Tektronix file in a popped-up X window.  
+
+To get a list of additional output formats that are supported by
+`tek2plot', type `tek2plot --help'.

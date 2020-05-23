@@ -1,0 +1,416 @@
+These release notes list minor problems with the GNU libplot graphics
+library, and with the sample command-line utilities `graph', `plot',
+`tek2plot', `plotfont', and `pic2plot', which are built on it.  We classify
+them as problems rather than bugs.
+
+Most of them are due to idiosyncrasies of (or bugs in) the display devices
+and application software that libplot must produce output for.
+
+See also the file ./COMPAT, for some changes in this release that are
+relevant to the below problems.
+
+======================================================================
+
+The libplot SVG driver and `graph -T svg'
+-----------------------------------------
+
+The SVG specification is to some extent a moving target; consult the W3
+Consortium's Web pages on SVG ( http://www.w3.org/Graphics/SVG ) for more
+information.  In this release, the SVG produced by libplot's SVG driver
+complies with the SVG 1.1 specification.
+
+However, as of this writing, some SVG viewers fail to implement crucial
+parts of the specification (especially, those dealing with text).  So, the
+following sorts of problem may be encountered when viewing SVG output.
+
+1. The font used for a text string may not be the one you have selected.
+libplot's SVG driver attempts to give the SVG viewer enough information to
+select an appropriate font.  For example, `graph -T svg' by default uses a
+Helvetica font.  Its SVG output contains the font specification
+
+      font-family:'Helvetica',sans-serif;
+
+Similarly, if a Times-Bold font is to be used, the SVG output contains the
+font specification
+
+     font-family:Times-Bold,'Times Roman',serif; font-weight:bold
+
+In all cases, both the font's family name and its Postscript name, if
+different, will be supplied in the SVG output.  In nearly all cases, a
+`generic name' such as `serif' will be supplied too. However, some SVG
+viewers have been observed to fail to retrieve a matching font, or any font
+at all (!), even when they are helped out in this way.
+
+One workaround for this problem is to use a builtin Hershey (stroked) font,
+such as HersheySerif or HersheySans.  (For more information on this, see
+the file ./COMPAT.)  Type `graph -Tsvg --help-fonts' to get a complete list
+of fonts available to you, when producing SVG output.
+
+2. If you switch fonts in the middle of a text string, the substrings may
+not line up properly.  If this occurs, it is because your SVG viewer is
+using fonts whose metrics are different from what libplot's SVG driver
+expects.  SVG supports the creation of compound (multi-font) text strings,
+via <tspan>..</tspan> constructs.  However, libplot's SVG driver does not
+currently use these constructs.  Support for them may be added to later
+releases of the driver.
+
+Again, the fix is to use one of the builtin Hershey fonts, such as
+HersheySerif.
+
+----------------------------------------------------------------------
+
+The libplot X driver and `graph -T X'
+-------------------------------------
+
+1. The Symbol and ZapfDingbats fonts distributed with some X Window System
+displays, such as recent releases of XFree86, are incorrectly encoded.  In
+consequence, text strings that contain Greek characters or mathematical
+symbols may not be displayed correctly.
+
+To check the encoding of the Symbol font, do both
+
+   plotfont -T X Symbol
+   plotfont -T ps Symbol | gv -
+
+to display respectively the layout of the Symbol font in your X display,
+and the standard Postscript symbol font build into the `gv' application.
+(To see the latter, you could alternatively send the output of 
+`plotfont -T ps Symbol' to a Postscript printer.)  If the two character 
+tables look different, complain to the people who supplied your X Window
+System software.
+
+----------------------------------------------------------------------
+
+The libplot PS driver and `graph -T ps'
+---------------------------------------
+
+1. There are a lot of buggy Postscript interpreters out there.  If you
+switch fonts in the middle of drawing a label with `graph -T ps', or when
+drawing a multi-font string with libplot's PS driver, and the sub-strings
+don't match up properly when you view the result, it may very well be the
+fault of your interpreter.  Even for the 35 standard Postscript fonts, some
+vendors don't agree with Adobe as to the width of the printable `8-bit'
+(non-ASCII) characters.  Sun SparcPrinters in particular have been observed
+to space such characters incorrectly.
+
+2. It has been reported that the freeware `bbfig' program, which is
+sometimes used for computing the bounding boxes of Postscript files, does
+not necessarily compute the correct bounding box when it is applied to the
+output of libplot's PS driver; for example, to a graph produced by 
+`graph -T ps'.
+
+The bug here is in bbfig, not in libplot.  You should never need to run
+`bbfig' on Postscript files produced by this package, since they already
+contain accurate bounding boxes.
+
+3. As seen by the idraw drawing editor, a Postscript file produced by
+`graph -T ps' or libplot's PS driver will have its colors quantized.  Both
+pen color and fill color will be quantized.  
+
+These quantizations are due to limitations of idraw.  Line widths will be
+quantized too, since the width of a line in idraw must be an integer number
+of printer's points.
+
+No such quantizations will take place if the Postscript file is viewed with
+a Postscript interpreter such as Ghostscript, sent directly to a printer,
+or included in another document.
+
+4. If you use the Postscript Plotter support in libplot/libplotter to draw
+a self-intersecting filled path, and you specify that the `nonzero winding
+number rule' should be employed to determine which regions are inside and
+which are outside the path, the resulting Postscript file will look all
+right when previewed or printed.  But if you use `idraw' to view it
+or edit it, the other rule (the `odd winding number rule') will be used.
+
+The problem is due to `idraw', which does not currently understand the
+nonzero winding number rule.
+
+5. [Relevant only if configuration used the --enable-lj-fonts option.]
+If you use `idraw' to edit a Postscript file prepared with `graph -T ps'
+or libplot's PS driver that contains text in the Wingdings font, some of
+the Wingdings characters will be incorrectly interchanged.
+
+This problem is due to idraw, which does not know that Wingdings is not an
+ISO-Latin-1 font.  The fix is to use a text editor to remove the line
+
+	/Tidbits reencodeISO def
+
+from the edited Postscript file.  (The plotting utilities refer to
+Wingdings internally as `Tidbits'.)
+
+----------------------------------------------------------------------
+
+The libplot CGM driver and `graph -T cgm'
+----------------------------------------
+
+1. There are many older CGM viewers and interpreters, such as the free but
+unsupported(?) RALCGM and GPLOT viewers, and the CGM import filter used by
+Microsoft Office, that can only handle version 1 CGM files.  To produce
+output for such CGM viewers and interpreters, you should set the
+environment variable (i.e., libplot parameter) CGM_MAX_VERSION to "1".
+
+The default is to use version 3.  (Versions are more or less upward
+compatible, so any version-1 CGM file is effectively also a version-3 file,
+but not vice versa.)  However, no free (open-source) version-3 CGM viewer
+is currently available.  A high-quality browser plug-in for version-3 CGM
+files, without source, is available from http://www.sysdev.com .
+
+You should be aware that version 1 was much less powerful than later
+versions, such as version 3.  In particular, font handling was not good.
+Any text string in a CGM file produced by libplot is accompanied by an
+`extent box' which the string is automatically adjusted to fit, by any CGM
+viewer or interpreter.  That is the case for all versions of the CGM
+format, including version 1.  Unfortunately, in version 1, what it meant
+for the string to `fit' was not properly specified.  Another problem with
+version 1 format was that there was no way of specifying font properties,
+such as oblique-vs.-upright, boldface-vs.-regular, etc.  So when a font is
+unavailable, the substituted font is often inappropriate.
+
+When producing a version-1 CGM file with the plotting utilities or libplot,
+Hershey fonts may be the best fonts to use.  Any text string in a Hershey
+font is drawn into a CGM output file not as a CGM text string, but as a
+collection of polygonal lines, which should be rendered acceptably.  To use
+a Hershey font, you could specify the `-F HersheySerif' option, for
+example, when you run `graph -T cgm'.
+
+2. If a binary-encoded CGM output file produced by libplot's CGM driver
+contains any single text string that is longer than about 2000 characters,
+the RALCGM viewer will not be able to parse the CGM file correctly.  In
+fact, RALCGM may crash.  The problem is in RALCGM, not in libplot.  This
+bug is not a major problem, since such extraordinarily long text strings
+almost never occur.
+
+3. If a CGM output file produced by libplot's CGM driver contains any text
+string for which the font size is effectively zero, the RALCGM viewer will
+not be able to display the CGM file correctly.  In fact, RALCGM may crash.
+You can verify this by doing
+
+echo 0 0 1 1 2 0 | \
+     CGM_MAX_VERSION=1 graph -T cgm --font-size 0.000000001 | ralcgm -dx
+
+When you attempt to view the output file, you will probably get a
+segmentation fault.  But the bug is in RALCGM, not in libplot.
+
+4. There are some commercial viewers and interpreters which are advertised
+as able to handle version-3 CGM files, but which in fact cannot do so.  The
+CGM import filter used by Adobe Illustrator (as of version 7.0, at least)
+is in this category.  It does not recognize the so-called custom line
+styles (i.e., dashing patterns) that version-3 CGM files may include.  In
+fact, if it sees a definition of a custom line style in a CGM file that it
+is importing, it may stop functioning or crash!  Fortunately, CGM files
+produced by `graph -T cgm' use only CGM's default line styles; not custom
+ones.  `pic2plot -T cgm' and the libplot functions `linedash()' and
+`flinedash()' do generate custom line styles.
+
+Actually, even if CGM_MAX_VERSION is set equal to "1", so that custom CGM
+line styles are not used, there is still a problem with importing CGM files
+into Illustrator.  When it imports a CGM file, of whatever version,
+Illustrator-7.0 maps all default CGM line styles to "solid".  That is,
+dotted lines, dashed lines, etc., all appear as solid lines.  So the output
+of `graph -T cgm -m 0', `graph -T cgm -m 1', `graph -T cgm -m 2', etc.,
+will look alike.  There seems to be no way around this.
+
+Since Illustrator's CGM import filter is so buggy, it is recommended that
+when generating a graphics file for import into Illustrator, rather than
+generating a CGM file, you use the `-T ai' option to generate Illustrator's
+native format.  Whether this is necessary for the most recent versions of
+Illustrator (8.0 and 9.0) has not been checked.
+
+5. As noted, some CGM viewers provide only partial support for the modern
+version-3 CGM file format.  When dealing with such a viewer, it may be
+useful for you to know which CGM primitives are output by libplot's CGM
+driver.  A list appears in the file libplot/README-cgm.  If you have full
+documentation on the CGM primitives supported by your viewer, the list
+should help you decide whether it is necessary to reduce the CGM version
+number from 3 to 2, or to 1.
+
+----------------------------------------------------------------------
+
+The libplot xfig driver and `graph -T fig'
+----------------------------------------
+
+1. At least in some versions of xfig release 3.2, the `fig2dev' program
+that `xfig' uses to export figures in Postscript format has a bug.  It
+incorrectly transforms minus signs to hyphens, and hyphens to en-dashes.
+
+For example, if you do `plotfont -Tfig --box Helvetica' and 
+`plotfont -Tfig --box -2 Helvetica' to produce character maps of the two
+halves of the Helvetica font, and then use xfig 3.2 to export the two
+character maps in Postscript format, you will notice that in the exported
+character maps, the minus sign and hyphen do not fit properly within their
+boxes.  That is because they have been replaced by a hyphen and an en-dash,
+respectively.
+
+This is a problem with `fig2dev', not libplot.  If you encounter this
+problem, a possible workaround is to change, with a text editor, the string
+"8#255 /endash" in the exported PS file to "8#255 /hyphen 8#055 /minus".
+The problem has been reported to the xfig maintainer, and may now have been
+fixed.
+
+2. xfig supports rotation and uniform scaling of the 35 standard Postscript
+fonts, but not non-uniform scaling or shearing.  So libplot's xfig driver
+automatically replaces anisotropically transformed Postscript fonts by a
+default Hershey font (HersheySerif).  Hershey fonts may always be
+anisotropically transformed.
+
+This affects `graph -T fig', `plotfont -T fig', etc., and in general the
+output of libplot's xfig driver, if you specify a rectangular (rather than
+square) viewport.  For example, if you do
+
+  echo 0 0 1 1 2 0 | graph -T fig --page-size letter,xsize=8in,ysize=4in
+
+then in the .fig file which is written to standard output, the usual
+Helvetica font for graph labels will be replaced by HersheySerif.  You will
+get a warning message about that.
+
+----------------------------------------------------------------------
+
+libplot's PCL 5 and HP-GL/2 drivers, and `graph -T pcl' and `graph -T hpgl' 
+-----------------------------------------------------------------------
+
+The following remarks apply when producing either PCL 5 or HP-GL/2 output.
+That's because PCL 5 output produced by libplot and the plotting utilities
+is really HP-GL/2 output, preceded by an escape sequence that switches the
+printer into HP-GL/2 mode.  (It's followed by an escape sequence that
+switches the printer back to PCL 5 mode.)
+
+1. The default treatment of colors in PCL 5 and HP-GL/2 output is not
+optimal, because the basic HP-GL/2 drawing model is not very powerful.
+HP-GL/2 supports a set of seven `logical pens', whose colors are black,
+red, green, yellow, blue, magenta, and cyan.  Any line or curve can be
+drawn by any of the pens, and any region bounded by a curve can be filled,
+to any specified intensity (quantized in units of 10% or so) by any pen
+color.  And that's just about it: in the basic drawing model, those are the
+only pen colors and fill colors that can be produced.
+
+The situation is even worse than it sounds, because when PCL 5 or HP-GL/2
+output is directed to a monochrome display device such as an HP LaserJet,
+every pen (even the yellow pen) is drawn as black!
+
+Fortunately, color PCL 5 and HP-GL/2 devices, such as color LaserJets and
+DesignJet plotters, support an enhanced drawing model.  They can assign
+arbitrary colors to the logical pens.  When producing PCL 5 or HP-GL/2
+output for such devices, you should set the environment variable
+PCL_ASSIGN_COLORS (or HPGL_ASSIGN_COLORS, as the case may be) to "yes".
+That will significantly improve the rendering of colored plots.
+
+2. Internally, the LaserJet 4L and 5L use a number for the Wingdings font
+that is different from the number used by other LaserJets.  (That's because
+they use an Intellifont version of the font, rather than a TrueType
+version.)  So if any PCL 5 output that uses the Wingdings font is sent to a
+4L or a 5L from `graph -T pcl' or any other of the plotting utilities, it
+won't print correctly.
+
+If you need to work around this problem, you can search for the number
+`31402' in the file libplot/g_fontd2.c, change it to `6826', and recompile.
+PCL 5 output will then use the typeface ID that is appropriate for the 4L
+and 5L.
+
+A less drastic remedy is to do a search-and-replace on the PCL 5 output
+with a text editor, replacing each occurrence of the string "31402" by
+"6826".
+
+The above advice probably applies to the LaserJet 6L as well as the 4L and
+5L, but that hasn't been checked.
+
+3. There are some small errors in the positioning of text strings when
+producing PCL 5 or HP-GL/2 output that uses the Symbol font.  For example,
+if you do `plotfont -Tpcl --box Symbol > symbol.pcl' to get a PCL 5 file
+that is a character map of the Symbol font, you will notice that in the
+character map, some of the characters do not quite line up with their boxes.
+
+This problem is due to problems in HP's documentation.  HP has released
+useful information on its 45 LaserJet fonts.  (This includes font metrics,
+etc.; see ./INSTALL.fonts.)  However, their information on the Symbol font
+appears to be incorrect.  As a consequence, horizontal positioning of text
+strings in the Symbol font is slightly in error.  This problem does not
+affect the 44 other LaserJet fonts.
+
+----------------------------------------------------------------------
+
+libplot's ReGIS driver and `graph -T regis' 
+-------------------------------------------
+
+`graph -T regis' (along with libplot's ReGIS driver, which it uses)
+currently contains incomplete support for the filling of regions.  If the
+region to be filled extends beyond the edge of the ReGIS display, ideally
+it should be clipped, then filled.  At present, filling is not performed at
+all (since the clipping code has not yet been written).
+
+In normal operation, this problem should not affect the output of `graph -T
+regis' at all.  But it is really a bug, not just a problem.
+
+`graph -T regis' also does not support the 35 standard Postscript fonts;
+the Hershey fonts must be used instead.  (The default font is HersheySerif
+rather than Helvetica.)  The fact that the ZapfDingbats font is not
+supported means that `graph -T regis' does not support marker symbols
+greater than or equal to 32, or more accurately it does not select them
+from the font (ZapfDingbats) that one would expect.
+
+----------------------------------------------------------------------
+
+libplot's Tektronix driver and `graph -T tek'
+---------------------------------------------
+
+`graph -T tek' (along with libplot's Tektronix driver, which it uses) does
+not support the filling of regions, so the -q option does not work; also,
+multiplotting, which normally `blanks out' regions by filling them with
+white, may result in messy-looking plots.  `graph -T tek' also does not
+support the 35 standard Postscript fonts; the Hershey fonts must be used
+instead.  (The default font is HersheySerif rather than Helvetica.)  The
+fact that the ZapfDingbats font is not supported means that `graph -T tek'
+does not support marker symbols greater than or equal to 32, or more
+accurately it does not select them from the font (ZapfDingbats) that one
+would expect.
+
+Filling of regions is not supported because Tektronix storage tubes did not
+support filling, for obvious reasons.  The Tektronix emulator in the MS-DOS
+version of kermit apparently supports a restricted sort of region filling,
+but there are currently no plans to extend libplot's Tektronix driver to
+use it.
+
+The 35 Postscript fonts could in principle be supported by libplot's
+Tektronix driver, if Type 1 or TrueType rasterizer code were added to
+libplot.  There are plans for doing this.  But most people are interested
+in using such a driver to produce bitmaps for the Web, not in using it to
+draw Type 1 or TrueType fonts on Tek displays.  (The phrase "bolting a V-8
+onto a Model T" comes to mind.)
+
+In `graph -T tek' the `--line-width' and `--frame-line-width' options also
+do not work, since the Tektronix driver does not support lines with other
+than a default width (it also does not support the setting of `cap mode'
+and `join mode' for polylines).
+
+A final comment. The Tektronix emulator in xterm(1) has a curious feature
+(bug?) that no one seems to have commented on.  When any line of type other
+than "solid" (i.e. "dotted", "dotdashed", "shortdashed", "longdashed") is
+drawn, the pattern of illuminated and non-illuminated pixels along the line
+is the opposite of what one would expect.  So "dotted" lines (obtained
+e.g. with the "-m 2" option to graph) look more like dashed lines.  This
+bug, if that's what it is, is easily fixed by changing the xterm source code.
+
+======================================================================
+
+Problems with thick lines drawn with libplot
+--------------------------------------------
+
+A `line segment' is conceptually a rectangle (usually rather thin).  But if
+the affine transformation from user coordinates to device coordinates is
+not a uniform expansion or contraction, most such rectangles should ideally
+be sheared into parallelograms in the device frame.  However, most display
+devices cannot display sheared line segments: their `lines', no matter how
+thick, are always drawn as rectangles.
+
+X Windows does not support sheared thick lines.  Nor do the xfig or idraw
+drawing editors, or the HP-GL and HP-GL/2 languages.  However, the
+Postscript and SVG file formats do support them.
+
+As a consequence, libplot's PS and SVG drivers are currently the only ones
+that display sheared thick lines correctly.  The problem is evident only
+for unusually thick lines, of course.
+
+A related problem is that a constant-width polyline (polygonal line) drawn
+in the user frame should, ideally, be drawn in the device frame in an
+unusual way: the thickness of each line segment should depend on direction.
+I.e., some segments of a device-frame polyline should be thicker than
+others.  This too is supported only by libplot's PS and SVG drivers.

@@ -1,0 +1,15 @@
+Libplot has its own versioning scheme, independent of the scheme used for
+numbering the releases of the plotutils package.  The version of libplot in
+this directory is 4.4, age=2.  That means
+
+	interface number = 4
+	revision = 4
+	
+	Support for interfaces extending backward by 2 unit from current
+	interface number, i.e., support for the interfaces supplied by
+	libplot 2.x and libplot 3.x.
+
+The libplot 1.x interface is not supported, because its function names did
+not use the "pl_" prefix.  However, if you add a `#include <plotcompat.h>'
+directive to code written for libplot 1.x or for the ancient pre-GNU (Unix)
+libplot, it should be possible to link it with the current version.

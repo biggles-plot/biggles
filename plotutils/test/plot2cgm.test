@@ -1,0 +1,14 @@
+#!/bin/sh
+
+CGM_ENCODING=clear_text BG_COLOR=white ../plot/plot -T cgm <$SRCDIR/graph.xout >plot2cgm.out
+
+egrep -v MFDESC $SRCDIR/plot2cgm.xout > plot2cg0.out
+egrep -v MFDESC plot2cgm.out > plot2cg1.out
+rm plot2cgm.out
+
+if cmp -s plot2cg0.out plot2cg1.out
+	then retval=0;
+	else retval=1;
+	fi;
+
+exit $retval

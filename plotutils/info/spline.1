@@ -1,0 +1,377 @@
+.TH SPLINE 1 "Dec 1998" "FSF" "GNU Plotting Utilities"
+.SH NAME
+spline \- interpolate datasets using splines under tension
+.SH SYNOPSIS
+.B spline
+[ 
+.I options 
+] [ 
+.I files 
+]
+.SH DESCRIPTION
+.LP
+.B spline
+reads datasets from standard input or from one or more files, and
+fits a smooth curve (a "spline") through each dataset.
+An interpolated version of each dataset, consisting of points from the
+smooth curve, is written to standard output.
+.LP
+Unless the
+.B \-a
+or
+.B \-A
+options are used (see below), each dataset should be a sequence of values
+for a vector-valued function of a single scalar variable.
+That is, each dataset should be a sequence of data points, 
+given as alternating \fIt\fP\^
+and \fIy\fP\^ values.
+\fIt\fP\^ is a scalar independent variable, and
+\fIy\fP\^ is a vector-valued dependent variable.
+The dimensionality of
+\fIy\fP\^ is specified with the
+.B \-d 
+option (the default dimensionality is 1).
+Between each data point
+and the next, \fIt\fP\^ should increase.
+.LP
+An input file may contain more than a single dataset.
+If an input file is in 
+.SM ASCII 
+format (the default), its datasets should be separated by blank lines.
+The \fIt\fP\^ and \fIy\fP\^ values of the data points in each dataset
+may be arranged arbitrarily, so long as they are separated by white space.
+Besides datasets, an input file may contain any number of
+comment lines, which should begin with the comment character `#'.
+Comment lines are ignored.
+They are not treated as blank, i.e.,
+they do not interrupt a dataset in progress.
+.LP
+Options and file names may be interspersed on the command line, but
+the options are processed before the file names are read.
+If 
+.B \-\- 
+is seen, it is interpreted as the end of the options.
+If no file names are specified, or the file name 
+.B \- 
+is encountered, the standard input is read.
+.LP
+The type of interpolation, and the format of the input and output files,
+may be selected by command-line options.
+.SH OPTIONS
+.SS "Interpolation-Related Options"
+.TP
+.B \-f
+.br
+.ns
+.TP
+.B \-\-filter
+Use a local interpolation algorithm (the cubic Bessel algorithm), so that 
+.B spline
+can be used as a real-time filter.
+The slope of the interpolating curve at each point in a dataset will be
+chosen by fitting a quadratic function through that point and the two
+adjacent points in the dataset.
+If 
+.B \-f
+is specified then the 
+.B \-t
+option, otherwise optional, must be used as well.
+Also, if 
+.B \-f
+is specified then the \fB\-k\fP, \fB\-p\fP, and \fB\-T\fP options
+may not be used.
+.IP ""
+If 
+.BR \-f
+is \fInot\fP\^ specified, then the default (global) interpolation algorithm
+will be used.
+.TP
+.BI \-k " k"
+.br
+.ns
+.TP
+.BI \-\-boundary\-condition " k"
+Set the boundary condition parameter for each constructed spline to be 
+.IR k .
+(The default value is 1.0.)
+In each of its components, the spline will
+satisfy the two boundary conditions y"[0]=ky"[1] and y"[n]=ky"[n-1].
+Here y[0] and y[1] signify the values of a specified component of the
+vector-valued dependent variable \fIy\fP\^ at the first two points of a
+dataset, and y[n-1] and y[n] the values at the last two points.
+Setting \fIk\fP\^ to zero will yield a "natural" spline, i.e., one that has
+zero curvature at the two ends of the dataset.
+The \fB\-k\fP option may not be used if \fB\-f\fP or \fB\-p\fP is specified.
+.TP
+.BI \-n " n"
+.br
+.ns
+.TP
+.BI \-\-number\-of\-intervals " n"
+Subdivide the interval over which interpolation occurs into \fIn\fP\^
+subintervals.
+The number of data points computed, and written to the
+output, will be
+.IR n+1 .
+The default value for \fIn\fP\^ is 100.
+.TP
+.B \-p
+.br
+.ns
+.TP
+.B \-\-periodic
+Construct a periodic spline.
+If this option is specified, the \fIy\fP\^
+values for the first and last points in each dataset must be equal.
+The
+\fB\-f\fP and \fB\-k\fP options may not be used if \fB\-p\fP is specified.
+.TP
+.BI \-T " tension"
+.br
+.ns
+.TP
+.BI \-\-tension " tension"
+Each interpolating curve will be a spline under tension.
+This option sets the tension value (the default is 0.0).
+.IP ""
+If \fItension\fP\^ equals zero, the curve will be a piecewise cubic spline.
+Increasing the tension above zero makes the curve "tighter", and 
+reduces the likelihood of spurious inflection points.
+That is because between each pair of successive points in a dataset,
+the curve will satisfy the fourth-order differential equation 
+y""=sgn(\fItension\fP\^)*(\fItension\fP\^^2)y" in each of its components.
+As \fItension\fP\^ increases to positive infinity,
+it will converge to a polygonal line.
+The \fB\-T\fP option may not be used if \fB\-f\fP is specified.
+.TP
+.B \-t \fItmin tmax [tspacing]\fP
+.br
+.ns
+.TP
+.B \-\-t\-spacing \fItmin tmax [tspacing]\fP
+For each dataset, set the interval over which interpolation occurs
+to be the interval between 
+\fItmin\fP\^ and
+.IR tmax .
+If \fItspacing\fP\^ is not specified, the interval will be divided into the
+number of subintervals specified by the \fB\-n\fP option.
+.IP ""
+If the \fB\-t\fP
+option is not used, the interval over which interpolation occurs will be
+the entire range of the independent variable in the dataset.
+The \fB\-t\fP
+option must always be used if the \fB\-f\fP option is used to request
+filter-like behavior (see above).
+.SS "Format-Related Options"
+.TP
+.BI \-d " dimension"
+.br
+.ns
+.TP
+.BI \-\-y\-dimension " dimension"
+Set the dimensionality of the dependent variable 
+.IR y " in"
+the input and output files to be 
+.IR dimension .
+The default dimension is 1.
+.TP 
+.BI \-I " data-format"
+.br
+.ns
+.TP
+.BI \-\-input\-format " data-format"
+Set the data format for the input file(s) to be
+.IR data-format ,
+which may be one of the following.
+.RS
+.TP
+.B a
+.SM ASCII
+format (the default).
+Each file is a sequence of floating point numbers, interpreted as the 
+\fIt\fP\^ and \fIy\fP\^ coordinates of the successive data points in a dataset.
+If \fIy\fP\^ is \fId\fP\^-dimensional, 
+there will be \fId+1\fP\^ numbers for each point.
+The \fIt\fP\^ and 
+\fIy\fP\^ coordinates of a point need not appear on the same line, and
+points need not appear on different lines.
+But if a blank line occurs (i.e., two newlines in succession are seen), it
+is interpreted as the end of a dataset, and the beginning of the next.
+.TP
+.B f
+Single precision binary format.
+Each file is a sequence of floating point
+numbers, interpreted as the \fIt\fP\^
+and \fIy\fP\^ coordinates of the successive data
+points in a dataset.
+If \fIy\fP\^ is \fId\fP\^-dimensional, 
+there will be \fId+1\fP\^ numbers for each point.
+Successive datasets are separated by a single occurrence of the quantity 
+.SM FLT_MAX, 
+which is the largest possible single precision floating point number.
+On most machines this is approximately 3.4x10^38.
+.TP
+.B d
+Double precision binary format.
+Each file is a sequence of double
+precision floating point numbers, interpreted as the \fIt\fP\^
+and \fIy\fP\^ coordinates of the successive data points in a dataset.
+If \fIy\fP\^ is \fId\fP\^-dimensional, there will
+be \fId+1\fP\^ numbers for each point.
+Successive datasets are separated by a single occurrence of the quantity 
+.SM DBL_MAX,
+which is the largest possible double precision floating point number.
+On most machines this is approximately 1.8x10^308.
+.TP
+.B i
+Integer binary format.
+Each file is a sequence of integers, interpreted as
+the \fIt\fP\^ and \fIy\fP\^ coordinates of the successive data points 
+in a dataset.
+If \fIy\fP\^ is \fId\fP\^-dimensional, 
+there will be \fId+1\fP\^ numbers for each point.
+Successive datasets are separated by a single occurrence of the quantity 
+.SM INT_MAX,
+which is the largest possible integer.
+On most machines this is 2^31\-1.
+.RE
+.TP
+.B \-a \fI[step_size [lower_limit]]\fP
+.br
+.ns
+.TP
+.B \-\-auto\-abscissa \fI[step_size [lower_limit]]\fP
+Automatically generate values for
+.IR t ,
+the independent variable (the default values of \fIstep_size\fP\^ and
+\fIlower_limit\fP\^ are 1.0 and 0.0, respectively).
+.IP ""
+Irrespective of data format (`a', `f', `d', or `i'), this option specifies
+that the values of \fIt\fP\^ are missing from the input file: the
+dataset(s) to be read contain only values of
+.IR y ,
+the dependent variable.
+So if \fIy\fP\^ is \fId\fP\^-dimensional, there will be
+only \fId\fP\^ numbers for each point.
+The increment from each \fIt\fP\^ value to the next will be
+.IR step_size ,
+and the first 
+\fIt\fP\^ value
+will be 
+.IR lower_limit .
+This option is useful, e.g., when interpolating curves rather than functions.
+.TP
+.B \-A
+.br
+.ns
+.TP
+.B \-\-auto\-dist\-abscissa
+Automatically generate values for 
+.IR t ,
+the independent variable.
+This is a variant form of the \fB\-a\fP option.
+The increment from each \fIt\fP\^ value to the next will be the distance in
+\fId\fP\^-dimensional space between the corresponding \fIy\fP\^ values, and
+the first \fIt\fP\^ value will be 0.0.
+That is, \fIt\fP\^ will be "polygonal arclength".
+This option is useful when interpolating curves rather than functions.
+.TP
+.BI \-O " data-format"
+.br
+.ns
+.TP
+.BI \-\-output\-format " data-format"
+Set the data format for the output file to be 
+.IR data-format .
+The interpretation of \fIdata-format\fP\^ is the same as for the
+\fB\-I\fP option.
+The default is `a', i.e.,
+.SM ASCII
+format.
+.TP
+.BI \-P " significant-digits"
+.br
+.ns
+.TP
+.BI \-\-precision " significant-digits"
+Set the numerical precision for the \fIt\fP\^ and \fIy\fP\^ values in the
+output file to be
+.IR significant-digits .
+This takes effect only if the output file is written in `a' format,
+i.e., in 
+.SM ASCII.
+\fIsignificant-digits\fP\^ must be a positive integer (the default is 6).
+.TP
+.B \-s
+.br
+.ns
+.TP
+.B \-\-suppress\-abscissa
+Omit the independent variable \fIt\fP\^ from the output file; for each
+point, supply only the dependent variable
+.IR y .
+If \fIy\fP\^ is \fId\fP\^-dimensional, there will be only \fId\fP\^ numbers for
+each point, not
+.IR d+1 .
+This option is useful when interpolating curves rather than functions.
+.SS Informational Options
+.TP 
+.B \-\-help
+Print a list of command-line options, and exit.
+.TP
+.B \-\-version
+Print the version number of 
+.B spline
+and the plotting utilities package, and exit.
+.SH EXAMPLES
+.LP
+Typing
+.LP
+.RS
+.B        echo 0 0 1 1 2 0 \||\| spline
+.RE
+.LP
+will produce on standard output an interpolated dataset consisting of 
+101 data points.
+If graphed, this interpolated dataset will yield a parabola.
+.LP
+It is sometimes useful to interpolate between a sequence of
+arbitrarily placed points in \fId\fP\^-dimensional space,
+i.e., to "spline a curve" rather than a function.
+The
+.B \-a
+and
+.B \-s
+options are used for this.
+For example,
+.LP
+.RS
+.B        echo 0 0 1 0 1 1 0 1 \||\| spline \-d 2 \-a \-s 
+.RE
+.LP
+will produce on standard output a 101-point dataset that interpolates
+between the four points (0,0), (1,0), (1,1), and (0,1).
+The
+.B \-d 2
+option specifies that the dependent variable \fIy\fP\^ is two-dimensional.
+The 
+.B \-a
+option specifies that the \fIt\fP\^ values are missing from the input
+and should be automatically generated.
+The
+.B \-s
+option specifies
+that the \fIt\fP\^ values should be stripped from the output.
+.SH AUTHORS
+.B spline
+was written by Robert S. Maier (\fBrsm@math.arizona.edu\fP),
+starting with an earlier version by Rich Murphey (\fBrich@freebsd.org\fP).
+The algorithms for constructing splines under tension are similar
+to those used in the FITPACK
+subroutine library, and are ultimately due to 
+Alan K. Cline (\fBcline@cs.utexas.edu\fP).
+.SH "SEE ALSO"
+"The GNU Plotting Utilities Manual".
+.SH BUGS
+Email bug reports to
+.BR bug\-gnu\-utils@gnu.org .

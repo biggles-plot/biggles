@@ -1,0 +1,5 @@
+This is the build directory for libplotter, the C++ version of libplot.  At
+build time, links are set up from here to the source files in ../libplot
+and ../libxmi.  The source files are crafted so that they can be compiled
+with either a C compiler or a C++ compiler.  In this directory, a C++
+compiler is used.

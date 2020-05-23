@@ -1,0 +1,104 @@
+This directory contains supplementary documentation on GNU libplot, the
+drawing library on which several of the executables in the GNU plotting
+utilities ("plotutils") package, such as graph, plot, tek2plot, plotfont,
+and hersheydemo, are based.
+
+    ./colors.txt: A listing of the color names recognized by libplot,
+  		  and hence by each of the above plotting utilities.  
+  		  A 24-bit RGB representation for each color is given.
+
+  		  For example, you may pop up a simple graph,
+		  drawn in a chocolate color, by typing the command
+
+		    echo 0 0 1 1 2 0 | graph -T X --frame-color chocolate
+
+		  This is because "chocolate" is one of the listed color
+		  names.  In the 24-bit RGB scheme, "chocolate" means
+		  (210,105,30).  The strength of each of R (red), G
+		  (green), and B (blue) is represented as an 8-bit
+		  quantity, i.e., an integer in the range 0..255.
+
+
+    ./h-fonts.txt: A listing of the 22 Hershey fonts supported by GNU
+                   libplot and executables based on it.
+
+
+Hershey fonts are vector ("stroked") fonts, in which each character is made
+up of thickened line segments.  They can look good on high-resolution
+output devices (on which they have a hand-lettered appearance) and on
+medium-resolution output devices (where they may be competitive with other
+types of font).  This is especially the case if anti-aliasing is used.
+
+To see a demo page illustrating the Hershey fonts, do
+
+   hersheydemo -Tps > page.ps
+
+to produce the page in PS (Postscript format), or
+
+   hersheydemo -Tsvg --pen-color blue > page.svg
+
+in SVG (scaled vector graphics) format.  You can send the former to a
+printer, and display the latter from the command line by invoking on it,
+e.g., a Web browser such as firefox, or the `svgdisplay' or `display'
+executables.  (They come respectively from KDE and the ImageMagick
+package.)  The result should look good.  If you do 
+
+   hersheydemo -TX --rotation 45 --bitmap-size 800x800 --bg-color brown
+
+to see the demo page (rotated) in a popped-up 800pixel-by-800pixel
+X window, the result may look less good, as your X display may not use
+anti-aliasing.  That means that every pixel in the window will be either
+black or white, with no gradations that make characters more legible.
+
+The 22 Hershey fonts built into GNU libplot were assembled from glyphs in
+the large family of vector glyphs designed by Dr. Allen V. Hershey in the
+early days of computer graphics, beginning in the 1960s.  His glyphs
+predate modern outline fonts, but are not just of historical interest.  The
+demo page is taken from his 1972 article in Computer Graphics and Image
+Processing (vol. 1, no. 4, pp. 373-385).
+
+Plotting utilities such as `graph' can use Hershey fonts, as well as,
+e.g., such Postscript fonts as Times-Roman.  By doing
+
+ echo 0 0 1 1 2 0 | graph -T ps -F Times-Roman -L 'A Graph' > graph.ps
+ echo 0 0 1 1 2 0 | graph -T ps -F HersheySerif -L 'A Graph' > graph.ps
+ echo 0 0 1 1 2 0 | graph -T ps -F HersheyGothic-English -L 'A Graph' > graph.ps
+
+etc., you can generate graphs with labels and titles in various fonts.  Use
+the --help-fonts option to get a list of fonts, which is
+output-format-specific (though Hershey fonts are supported in all output
+formats).
+
+The Hershey glyph repertory, built into GNU libplot, includes various
+symbols in addition to occidental and Japanese characters.  Some symbol
+glyphs do not belong to any font.  If the current font is a Hershey font,
+you may access any glyph by its number, even if it is not a character in
+the font, in the conventional sense.  For instance,
+
+ echo 0 0 1 1 2 0 | graph -T ps --font-name HersheyGothic-English -L '\#H0745\#H0745' > graph.ps
+
+would label the graph being drawn with a title line consisting of
+two fleurs-de-lys.  That is because the fleur-de-lys is Hershey glyph #745.
+
+The following files are relevant to the Hershey glyph repertory built
+into GNU libplot.  The 
+
+    ./h-glyphs.txt: A high-level survey of the `occidental' Hershey glyphs,
+        in great detail.  Includes an extensive comparison with earlier
+        (pre-GNU) distributions of the Hershey glyphs, and an explanation
+        of how the glyph array was assembled.
+    
+    ./hershey.bib: A bibliography, in BibTeX format, of publications
+        dealing with the Hershey glyphs and with Allen Hershey's system for
+        scientific typography, which was designed to use them.  Most of the
+        cited items are technical reports that are available from the
+        U.S. National Technical Information Service (+1 703 487 4650).
+        Stock numbers are given.
+    
+    ./kana.txt: The encodings used for the Hershey Hiragana and Katakana
+        (syllabic Japanese characters).  These are part of the HersheyEUC
+	font, but may also be accessed by number.
+    
+    ./kanji.txt: The encoding of the 603 available Japanese Kanji
+        (ideographic characters), and their meaning.  These are part of the
+	HersheyEUC font, but may also be accessed by number.

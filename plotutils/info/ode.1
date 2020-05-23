@@ -1,0 +1,251 @@
+.TH ODE 1 "Dec 1998" "FSF" "GNU Plotting Utilities"
+.SH NAME
+ode \- numerical solution of ordinary differential equations
+.\" Not all man macros define SB
+.de SB
+\&\fB\s-1\&\\$1 \\$2\s0\fR
+..
+.SH SYNOPSIS
+.B ode
+[
+.I options
+] [
+.I file
+]
+.SH DESCRIPTION
+.LP
+.B ode
+is a tool that solves, by numerical integration, the initial value problem
+for a specified system of first-order ordinary differential equations.
+Three distinct numerical integration schemes are available:
+Runge\-Kutta\-Fehlberg (the default), Adams\-Moulton, and Euler.  The
+Adams\-Moulton and Runge\-Kutta schemes are available with adaptive step
+size.
+.LP
+The operation of
+.B ode
+is specified by a program, written in its input language.
+The program is simply a list of expressions for the derivatives of the
+variables to be integrated, together with some control statements.
+Some examples are given in the
+.SB EXAMPLES
+section.
+.LP
+.B ode
+reads the program from the specified file, or from standard input if
+no file name is given.  
+If reading from standard input, \fBode\fP
+will stop reading and exit when it sees a single period on a line by
+itself.
+.LP
+At each time step, the values of variables specified in the program are
+written to standard output.
+So a table of values will be produced, with each column showing the
+evolution of a variable.  If there are only two columns, the output
+can be piped to
+.BR graph (1)
+or a similar plotting program.
+.SH OPTIONS
+.SS Input Options
+.TP
+.BI \-f " file"
+.br
+.ns
+.TP
+.BI \-\-input\-file " file"
+Read input from \fIfile\fP\^ before reading from standard input.
+This option makes it possible to work interactively, after reading a
+program fragment that defines the system of differential equations.
+.SS Output Options
+.TP
+.BI \-p " prec"
+.br
+.ns
+.TP
+.BI \-\-precision " prec"
+When printing numerical results,
+use \fIprec\fP\^ significant digits (the default is 6).
+If this option is given, the print format will be scientific notation.
+.TP
+.B \-t
+.br
+.ns
+.TP
+.B \-\-title
+Print a title line at the head of the output, naming the variables
+in each column.
+If this option is given, the print format will be scientific notation.
+.SS Integration Scheme Options
+The following options specify the numerical integration scheme.
+Only one of the three basic options \fB\-R\fP, \fB\-A\fP, \fB\-E\fP
+may be specified.
+The default is \fB\-R\fP (Runge\-Kutta\-Fehlberg).
+.TP
+.BI \-R " [stepsize]"
+.br
+.ns
+.TP
+.BI \-\-runge\-kutta " [stepsize]"
+Use a fifth-order Runge\-Kutta\-Fehlberg algorithm, with an adaptive
+stepsize unless a constant stepsize is specified.
+When a constant stepsize is specified and no error analysis is requested,
+then a classical fourth-order Runge\-Kutta scheme is used.
+.TP
+.BI \-A " [stepsize]"
+.br
+.ns
+.TP
+.BI \-\-adams\-moulton " [stepsize]"
+Use a fourth-order Adams\-Moulton predictor-corrector scheme, with an
+adaptive stepsize unless a constant stepsize, \fIstepsize\fP\^, is
+specified.
+The Runge\-Kutta\-Fehlberg algorithm is used to get past `bad'
+points (if any).
+.TP
+.BI \-E " [stepsize]"
+.br
+.ns
+.TP
+.BI \-\-euler " [stepsize]"
+Use a `quick and dirty' Euler scheme, with a constant stepsize.
+The default value of \fIstepsize\fP\^ is 0.1.
+Not recommended for serious applications.
+.IP ""
+The error bound options \fB\-r\fP and \fB\-e\fP (see below) may not be used
+if \fB\-E\fP is specified.
+.TP
+.BI \-h " hmin [hmax]"
+.br
+.ns
+.TP
+.BI \-\-step\-size\-bound " hmin [hmax]"
+Use a lower bound \fIhmin\fP\^ on the stepsize.
+The numerical scheme will not let the stepsize go below \fIhmin\fP\^.
+The default is to allow the stepsize to shrink to the machine limit, i.e.,
+the minimum nonzero double-precision floating point number.
+.IP ""
+The optional argument \fIhmax\fP\^, if included, specifies a maximum value
+for the stepsize.
+It is useful in preventing the numerical routine from skipping quickly over
+an interesting region.
+.SS Error Bound Options
+.TP
+.BI \-r " rmax [rmin]"
+.br
+.ns
+.TP
+.BI \-\-relative\-error\-bound " rmax [rmin]"
+The \fB\-r\fP option sets an upper bound on the relative single-step error.
+If the \fB\-r\fP option is used, the relative single-step error in any
+dependent variable will never exceed \fIrmax\fP\^ (the default for which is
+10^-9).
+If this should occur, the solution will be abandoned and an error message
+will be printed.
+If the stepsize is not constant, the stepsize will be decreased
+`adaptively', so that the upper bound on the single-step error is not
+violated.
+Thus, choosing a smaller upper bound on the single-step error will cause
+smaller stepsizes to be chosen.
+A lower bound \fIrmin\fP\^ may optionally be specified, to suggest when the
+stepsize should be increased (the default for \fIrmin\fP\^ is
+\fIrmax\fP\^/1000).
+.TP
+.BI \-e " emax [emin]"
+.br
+.ns
+.TP
+.BI \-\-absolute\-error\-bound " emax [emin]"
+Similar to \fB\-r\fP, but bounds the absolute rather than the relative
+single-step error.
+.TP
+.B \-s
+.br
+.ns
+.TP
+.B \-\-suppress\-error\-bound
+Suppress the ceiling on single-step error, allowing \fBode\fP to continue
+even if this ceiling is exceeded.
+This may result in large numerical errors.
+.SS Informational Options
+.TP
+.B \-\-help
+Print a list of command-line options, and exit.
+.TP
+.B \-\-version
+Print the version number of \fBode\fP and the plotting utilities package,
+and exit.
+.SH DIAGNOSTICS
+.LP
+Mostly self-explanatory.
+The biggest exception is `syntax error', meaning there is a grammatical error.
+Language error messages are of the form
+.LP
+.RS
+.B        ode: nnn: message\|.\|.\|.
+.RE
+.LP
+where `nnn' is the number of the input line containing the error.
+If the 
+.B \-f
+option is used, the phrase "(file)" follows the `nnn' for errors encountered
+inside the file.
+Subsequently, when \fBode\fP begins reading the standard input,
+line numbers start over from 1.
+.LP
+No effort is made to recover successfully from syntactic errors in the input.
+However, there is a meager effort to resynchronize so more than one error
+can be found in one scan.
+.LP
+Run-time errors elicit a message describing the problem, and the solution is
+abandoned.
+.SH EXAMPLES
+The program
+.LP
+.RS
+.B y' = y
+.br
+.B y = 1
+.br
+.B print t, y
+.br
+.B step 0, 1
+.RE
+.LP
+solves an initial value problem whose solution is \fIy=e^t\fP\^.
+When \fBode\fP runs this program, it will
+write two columns of numbers to standard output.
+Each line will show the value of the independent variable \fIt\fP\^, and
+the variable \fIy\fP\^, as \fIt\fP\^ is stepped from 0 to 1.
+.LP
+A more sophisticated example would be
+.LP
+.RS
+.B sine' = cosine
+.br
+.B cosine' = \-sine
+.br
+.B sine = 0
+.br
+.B cosine = 1
+.br
+.B print t, sine
+.br
+.B step 0, 2*PI
+.RE
+.LP
+This program solves an initial value problem for a system of two
+differential equations.
+The initial value problem turns out to define the sine and cosine
+functions.
+The program steps the system over a full period.
+.SH AUTHORS
+\fBode\fP was written by Nicholas B. Tufillaro
+.RB ( nbt@reed.edu ),
+and slightly enhanced by Robert S. Maier
+.RB ( rsm@math.arizona.edu )
+to merge it into the GNU plotting utilities.
+.SH "SEE ALSO"
+"The GNU Plotting Utilities Manual".
+.SH BUGS
+Email bug reports to
+.BR bug\-gnu\-utils@gnu.org .

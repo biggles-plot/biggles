@@ -1,0 +1,6 @@
+This directory contains the source for the GNU pic2plot program, which can
+translate a pic language script to a specified graphics file format, or
+display it on an X11 display.
+
+The subdirectory ./doc contains some supplementary documentation on the pic
+language.
