@@ -176,7 +176,7 @@ class build_ext_subclass(build_ext):
             args += ' RANLIB="%s"' % ' '.join(RANLIB)
         """
         p = Popen(
-            "sh ./configure --enable-shared=no --with-pic",
+            "LDFLAGS='-L/usr/X11' sh ./configure --enable-shared=no --with-pic",
             shell=True,
             cwd=self.plotutils_build_dir,
         )
