@@ -28,4 +28,5 @@ jobs:
         pip install numpy
         pip install pytest
         pip install --no-deps .
+        echo "dir is $(pwd)"
         pytest -vv tests
