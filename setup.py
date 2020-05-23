@@ -111,10 +111,6 @@ class build_ext_subclass(build_ext):
 
         self.compile_plotutils()
 
-        # link against the .a library
-        # It should have been a 'static' library of relocatable objects
-        # (-fPIC), since we use the python compiler flags
-
         link_objects = glob.glob(
             os.path.join(self.libplot_dir, '*.a'),
         )
@@ -165,16 +161,6 @@ class build_ext_subclass(build_ext):
             # Makefile already there
             return
 
-        """
-        args = ''
-        args += ' CC="%s"' % ' '.join(CC[:1])
-        args += ' CFLAGS="%s"' % ' '.join(CC[1:])
-
-        if ARCHIVE:
-            args += ' ARCHIVE="%s"' % ' '.join(ARCHIVE)
-        if RANLIB:
-            args += ' RANLIB="%s"' % ' '.join(RANLIB)
-        """
         p = Popen(
             "sh ./configure --enable-shared=no --with-pic",
             shell=True,
