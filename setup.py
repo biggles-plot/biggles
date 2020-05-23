@@ -203,6 +203,7 @@ biggles_ext = Extension(
     "_biggles",
     ["biggles/_biggles.c"],
     include_dirs=['numpy'],
+    library_dirs=['/usr/X11/lib'],
 )
 biggles_libplot_ext = Extension(
     "libplot._libplot_pywrap",
