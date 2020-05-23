@@ -227,7 +227,7 @@ setup(
     license="GPL-2",
     description="simple, elegant python plotting",
     long_description=long_description,
-    packages=["biggles", "biggles.libplot", "biggles.tests"],
+    packages=["biggles", "biggles.libplot"],
     classifiers=classifiers,
     setup_requires=['numpy'],
     install_requires=['numpy'],
