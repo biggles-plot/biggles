@@ -32,7 +32,8 @@ See the full `documentation <http://biggles.readthedocs.io/en/latest/>`_ for mor
 Installation
 ------------
 
-Biggles requires `numpy <http://www.numpy.org/>`_ libpng and X11 libraries
+Biggles requires `numpy <http://www.numpy.org/>`_ libpng, X11 libraries and
+ghostscript
 
 **Homebrew**::
 
@@ -46,7 +47,3 @@ Biggles requires `numpy <http://www.numpy.org/>`_ libpng and X11 libraries
 
     $ sudo apt install build-essential libx11-dev libxft-dev libxt-dev libxaw7-dev libpng-dev ghostscript
     $ pip install biggles
-
-**Windows**
-
-This kind of install is not well tested at the moment. Please report bugs if you find them!
