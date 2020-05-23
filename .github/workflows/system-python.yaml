@@ -23,7 +23,6 @@ jobs:
     - name: Install system deps
       run: sudo apt install libx11-dev libxft-dev libxt-dev libxaw7-dev libpng-dev
 
-    # You can test your matrix by printing the current Python version
     - name: Install code
       run: |
         python -m pip install --upgrade pip
