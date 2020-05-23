@@ -301,29 +301,3 @@ setup(
     ext_modules=ext_modules,
     cmdclass={"build_ext": build_ext_subclass}
 )
-'''
-setup(
-    name="biggles",
-    version="2.0.0",
-    author="Mike Nolta",
-    author_email="mike@nolta.net",
-    url="https://github.com/biggles-plot/biggles",
-    license="GPL-2",
-    description="simple, elegant python plotting",
-    long_description=long_description,
-    packages=["biggles", "biggles.libplot", "biggles.tests"],
-    package_dir={"biggles": "biggles"},
-    ext_package="biggles",
-    ext_modules=[
-        Extension("_biggles",
-                  ["biggles/_biggles.c"],
-                  include_dirs=_biggles_module_inc_dirs),
-        Extension("libplot._libplot_pywrap",
-                  ["biggles/libplot/_libplot_pywrap.c"],
-                  include_dirs=libplot_module_inc_dirs,
-                  library_dirs=libplot_module_lib_dirs,
-                  libraries=libplot_module_libs),
-    ],
-    cmdclass={'build_py': build_py},
-)
-'''
