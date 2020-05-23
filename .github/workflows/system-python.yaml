@@ -1,4 +1,4 @@
-name: biggles
+name: biggles-system-python
 
 on:
     push:
