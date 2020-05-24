@@ -25,11 +25,13 @@ jobs:
         sudo apt update
         sudo apt install build-essential libx11-dev libxft-dev libxt-dev libxaw7-dev libpng-dev ghostscript
 
-    - name: Install code
-      run: |
+    - name: pip install deps
         python -m pip install --upgrade pip
         pip install numpy
         pip install pytest
-        pip install --no-deps .
+
+    - name: Install code
+      run: pip install --no-deps .
+
     - name: Run tests
       run: pytest -vv tests
