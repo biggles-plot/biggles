@@ -1,0 +1,309 @@
+This file explains how to install the fonts that come with the GNU
+plotutils package, and other useful fonts.  Before reading this, you may
+find it useful to read the file INSTALL for generic remarks on installing
+GNU packages, and the file INSTALL.pkg for package-specific installation
+instructions.
+
+The fonts this file discusses are: (1) the 35 standard `Postscript fonts',
+clones of which come with the package, (2) the 4 standard `Tektronix
+fonts', which do also, and (3) the 45 standard `HP LaserJet fonts', which
+do not come with the package, but which you can get for free from
+Hewlett-Packard via the Internet.
+
+1. The 35 standard Postscript fonts
+-----------------------------------
+
+These `Postscript fonts' are the 35 scalable fonts from Adobe that are
+built into nearly all Postscript printers.  They include Times-Roman,
+Helvetica, Courier, New Century Schoolbook, Palatino, Bookman, AvantGarde,
+ZapfChancery, and ZapfDingbats.
+
+You will get the greatest value out of the plotutils package, when running
+under X Windows, if these fonts are available on your X display.  (In some
+cases, versions at fixed font sizes are available, but the scalable font
+that gives rise to them is not.)  For example, the default font which the
+`graph' program uses is `Helvetica'.  If it is unavailable, a scalable
+stroked font (one made up of line segments) named `HersheySerif' will
+automatically be substituted for it.  But it would be good to use the
+default Helvetica font.
+
+Many X servers (for example, many releases of XFree86 for GNU/Linux) do not
+supply all 35 standard Postscript fonts.  In many cases, they can be added
+by installing a freely available package, such as an .rpm file or Debian
+package.  For instance, the 35 standard Postscript fonts can be added to a
+Debian system by installing the `gsfonts-x11' package from Debian.
+Actually, what will be added are clones of the 35 Adobe fonts, since the
+original fonts from Adobe are non-free.
+
+If you cannot locate an add-on package that contains clones of the 35 Adobe
+fonts, you may install the cloned versions that are supplied in the
+subdirectory ./fonts/pfb, in Type 1 format.  These were designed by URW
+GmBH of Germany and contributed for distribution under the GNU License.
+
+Manually adding fonts to an X server is not difficult, though you should
+note that most X servers now support two font systems: the original `core'
+X font system, and a new one based on Xft and the FreeType rasterizer.  For
+backward compatibility, the plotutils package uses only core X fonts.  Core
+fonts (scalable ones, anyway) are usually supplied in Adobe's Type 1
+format.  The files in .fonts/pfb are in this format.
+
+You can manually add Type 1 fonts to the core X font subsystem by using the
+basic command-line `mkfontdir', as root.  The following instructions assume
+that you have a generic X Window System installation.  If you have anything
+more fancy, consult your local documentation to determine how to add fonts
+in Type-1 format to it.
+
+To install the 35 Postscript fonts to a generic X Window System
+installation, first locate the directory on your system in which Type 1
+fonts are stored.  (It will be /usr/share/fonts/X11/Type1,
+/usr/lib/X11/fonts/Type1, or something similar.)  Copy the 35 font files in
+./fonts/pfb to that directory.  There will presumably be a file named
+`fonts.scale' in that directory, which lists scalable fonts the X server
+can use.  To let the X server know about your new font files, copy the
+lines in the file ./fonts/fonts.append to the end of the fonts.scale file,
+and correct the first line of the fonts.scale file (a count of the number
+of scalable fonts) by adding 35 to it.  Then, while in that directory, run
+the `mkfontdir' program.  The `mkfontdir' program creates a file called
+`fonts.dir', which is what the X server will read (it does not actually
+read fonts.scale).  If the X server is currently running, you should also
+do `xset fp rehash' to make the server re-scan the directory; or simply log
+out and log back in again.
+
+NOTE #1: On Solaris machines, the preceding installation instructions may
+or may not work.  Some versions of Solaris contain a Sun demo program
+called `fontadmin' that can install Type1 fonts.  If it is available, it is
+located in `/usr/openwin/demos'.
+
+NOTE #2: On a few systems (e.g., SGI's), following the preceding
+instructions may cause problems, because vendor-supplied versions of (some
+of) the fonts may already appear in the fonts.scale file.  It would be a
+good idea on _any_ system to check whether any of the fonts listed in
+./fonts/fonts.append already appear in fonts.scale.  If so, the
+corresponding lines do not need to be added.
+
+2. The 4 standard Tektronix fonts
+---------------------------------
+
+If you plan to use the `tek2plot' utility, you may wish to install the four
+standard Tektronix fonts on your X server, so that you can view Tektronix
+images containing text with the original fonts.  Bitmap versions of the
+four fonts come with the package.  `tek2plot -T X' will use them if you
+specify the `--use-tek-fonts' option.
+
+To install the 4 Tektronix fonts, first locate the directory on your system
+in which miscellaneous bitmap fonts are stored (it will be
+/usr/share/fonts/X11/misc, /usr/lib/X11/fonts/misc, or something similar).
+Copy the 4 font files in ./fonts/pcf to that directory.  Then, while in
+that directory, run the `mkfontdir' program.  The `mkfontdir' program
+creates a file called `fonts.dir', which is what the X server will read.
+If the X server is currently running, you should also do `xset fp rehash'
+to make the server re-scan the directory; or simply log out, and log back in.
+
+3. The 45 standard LaserJet fonts
+---------------------------------
+
+These fonts are the 45 scalable "LaserJet" fonts that are built into all
+modern HP LaserJets.  (Since the LaserJet 6, 5, and 4 at least; the ancient
+LaserJet III, which was the first one to support scalable fonts, included
+only 8 of the 45.)  They include Times New Roman, Arial, Univers, Garamond,
+CGTimes, CGOmega, Courier, Letter Gothic, Symbol, and Wingdings.
+
+To understand the following instructions, note that all modern high-end
+LaserJets can understand both Postscript and PCL 5 (or these days, its
+extensions PCL 6 or PCL 6e).  PCL 5 incorporates the traditional
+pen-plotter command language for high-end HP pen plotters, HP-GL/2.  PCL 5
+was the original command language understood by high-end LaserJets
+(Postscript from Adobe being added later), and originally it came with its
+own set of 45 scalable fonts.  Eventually, the 45 PCL fonts became
+accessible from the `Postscript side' as well.
+
+The plotting utilities can produce PCL 5 or HP-GL/2 output, which is meant
+to be sent to a LaserJet or similar printer or plotter.  For example,
+`graph -T pcl' and `graph -T hpgl' can do this.  When producing PCL 5 and
+HP-GL/2 output, they can use any of the 45 LaserJet fonts.
+
+You may also wish to use them when producing output for an X Window System
+display, or when producing Postscript output.  Here is how you can do this
+(the first is much easier than the second).
+
+A. When you configure and install the plotting utilities package, be sure
+to do `./configure --enable-lj-fonts-in-x' instead of just `./configure'.
+
+B. Obtain and install the 45 LaserJet fonts.  Hewlett-Packard has made 
+Type 1 versions of these fonts available via the Internet, at
+ftp://ftp.hp.com/pub/printers/software/mp135mu.exe .  
+This is a zipped file, which you can unzip with the `unzip' utility.  You
+will get 45 font files, in .pfb ("Postscript Font, Binary") format.
+
+The following instructions assume that you have a generic X Window System
+installation.  If you have something more fancy, consult your local
+documentation to determine how to intall new fonts.
+
+To install the 45 LaserJet fonts so that your X server will be able to use
+them, first locate the directory on your system in which Type 1 fonts for
+the X Window System are stored.  (It will be
+/usr/share/lib/X11/fonts/Type1, /usr/lib/X11/fonts/Type1, or something
+similar.)  Copy the 45 .pfb files to that directory.  There will probably
+be a file named `fonts.scale' in that directory, which lists scalable fonts
+the X server can use.  To let the X server know about the new font files,
+copy the lines in the file ./fonts/fonts3.append to the end of the
+fonts.scale file, and correct the first line of the fonts.scale file (a
+count of the number of scalable fonts) by adding 45 to it.  Then, while in
+that directory, run the `mkfontdir' program.  The `mkfontdir' program
+creates a file called `fonts.dir', which is what the X server will read.
+If the X server is currently running, you should also do `xset fp rehash'
+to make the server re-scan the directory.
+
+NOTE: On Solaris machines, the preceding installation instructions may or
+may not work.  Some versions of Solaris contain a Sun demo program called
+`fontadmin' that can install Type1 fonts.  If it is available, it is
+located in `/usr/openwin/demos'.
+
+C. After steps (A) and (B) are followed, the plotting utilities will be
+able to use the 45 LaserJet fonts when producing X output.  For example,
+you will be able to do
+
+	echo 0 0 1 1 2 0 | graph -T X -F Arial-Bold
+
+to pop up a simple plot on your screen, labelled in Arial-Bold.  If you do
+`graph -T X --help-fonts' or `plotfont -T X --help-fonts', the list of
+fonts you are shown will include the 45.
+
+D. You may wish to use the 45 new fonts in Postscript output as well.  This
+is harder, and to some extent, you are on your own on this.  What follows
+is a (long!) explanation of what you can do.
+
+If you want to produce, view, and print Postscript files that contain the
+45 LaserJet fonts, you should first add the `--enable-lj-fonts-in-ps'
+option to `./configure'.  In principle, this is enough: it will let you
+produce Postscript output that uses the 45 LaserJet fonts.  The problem is
+that your Postscript interpreter, printer, or printer driver may not know
+about these new fonts.
+
+It is easiest to add support for the new fonts to the Ghostscript engine,
+and to such previewers as Ghostview (`gv') that are built on top of it.  To
+do this, (i) add the 45 .pfb files to the directory in which Ghostscript
+looks for Type 1 fonts, such as /usr/share/fonts/type1/gsfonts, and (ii)
+add 45 new entries to the Ghostscript `Fontmap' file, one per font.  The
+Fontmap file is usually somewhere under /usr/share/ghostscript,
+/usr/share/gs, /usr/share/gs-gpl, or some such directory.  It may be named
+`Fontmap.GS' rather than `Fontmap'.  The format of this file should be
+self-explanatory: it lists the name of each font and the name of the .pfb
+file (presumably, kept in a standard directory such as
+/usr/share/fonts/type1/gsfonts) that contains it.  The 45 .pfb files from
+Hewlett-Packard have obscure names, but by looking at their contents with
+GNU Emacs or another editor, one can figure out which file contains which
+font.  For example, the file `0037____.pfb' contains the Arial-Roman font.
+(It uses the name `Arial-Roman', not `Arial'.)  The fontname <-> filename
+correspondence is documented in the file readme.hp.
+
+In consequence, you should add, at the end of the Fontmap.GS file, the
+following 45 lines:
+
+\AlbertusMedium (0001____.pfb) ;
+\AlbertusExtraBold (0002____.pfb) ;
+\AntiqueOlive (0003____.pfb) ;
+\AntiqueOlive-Italic (0004____.pfb) ;
+\AntiqueOlive-Bold (0005____.pfb) ;
+\ClarendonCondensed (0006____.pfb) ;
+\Coronet (0007____.pfb) ;
+\Courier (0008____.pfb) ;
+\Courier-Italic (0009____.pfb) ;
+\Courier-Bold (0010____.pfb) ;
+\Courier-BoldItalic (0011____.pfb) ;
+\Garamond (0012____.pfb) ;
+\Garamond-Italic (0013____.pfb) ;
+\Garamond-Bold (0014____.pfb) ;
+\Garamond-BoldItalic (0015____.pfb) ;
+\LetterGothic (0016____.pfb) ;
+\LetterGothic-Italic (0017____.pfb) ;
+\LetterGothic-Bold (0018____.pfb) ;
+\Marigold (0020____.pfb) ;
+\CGOmega (0021____.pfb) ;
+\CGOmega-Italic (0022____.pfb) ;
+\CGOmega-Bold (0023____.pfb) ;
+\CGOmega-BoldItalic (0024____.pfb) ;
+\CGTimes (0025____.pfb) ;
+\CGTimes-Italic (0026____.pfb) ;
+\CGTimes-Bold (0027____.pfb) ;
+\CGTimes-BoldItalic (0028____.pfb) ;
+\Univers (0029____.pfb) ;
+\Univers-Italic (0030____.pfb) ;
+\Univers-Bold (0031____.pfb) ;
+\Univers-BoldItalic (0032____.pfb) ;
+\UniversCondensed (0033____.pfb) ;
+\UniversCondensed-Italic (0034____.pfb) ;
+\UniversCondensed-Bold (0035____.pfb) ;
+\UniversCondensed-BoldItalic (0036____.pfb) ;
+\Arial-Roman (0037____.pfb) ;
+\Arial-Italic (0038____.pfb) ;
+\Arial-Bold (0039____.pfb) ;
+\Arial-BoldItalic (0040____.pfb) ;
+\TimesNewRoman (0041____.pfb) ;
+\TimesNewRoman-Italic (0042____.pfb) ;
+\TimesNewRoman-Bold (0043____.pfb) ;
+\TimesNewRoman-BoldItalic (0044____.pfb) ;
+\Symbol (symbol____.pfb) ;
+\Tidbits (tidbits____.pfb) ;
+
+after copying the 45 .pfb files into that directory.  This will be enough
+to make the 45 new fonts accessible to Ghostscript/Ghostview, so that a
+command such as
+
+  echo 0 0 1 1 2 0 | spline | graph -Tps -F Univers -C -q 0.5 | gv -
+
+will work.
+
+In some operating systems, such as Debian GNU/Linux, it is possible to make
+these 45 new fonts available to other applications than
+Ghostscript/Ghostview, without even copying them to other directories.  For
+instance, Debian has the `defoma' font manager, which can be configured to
+do this.  The details of this are not discussed here.
+
+In general, it would be desirable to use the 45 LaserJet fonts not just for
+use by Ghostview (or other screen-using applications), but for printing on
+a printer (Postscript or otherwise).  This can be painful, since
+appropriate font(s) will need to be downloaded to the printer, either
+separately or as part of the document (e.g., plot) that you wish to print.
+(This assumes that your printer driver is not intelligent enough to include
+the font(s), by itself.)
+
+The current release of the plotting utilities unfortunately does not
+support automatically including the fonts in Postscript output files.  But
+if you have a sophisticated printer driver or document manager that
+automatically includes fonts in documents, then it should be easy for you
+to add support for the 45 LaserJet fonts.  (The PS output of such utilities
+as `graph' will indicate to the driver or manager which fonts should be
+included.)  On this, you are on your own, though.
+
+As an alternative, you may manually download the 45 new fonts, or whichever
+ones of them you are using, to your Postscript printer.  This works quite
+well, though whenever you turn the printer off, the fonts go away.  To do
+this, you should first convert the relevant .pfb file(s), which are in
+binary, to .pfa file(s), which are in human readable ["Postscript Font,
+Ascii"] format.  There is a standard program, `t1ascii', which can do this.
+It is part of the `t1utils' package, which is available for many versions
+of GNU/Linux, and in standard archives.  After converting the .pfb files to
+.pfa files, you would send each of the needed .pfa files to your printer,
+as if it were a Postscript document to be printed.  Be sure to precede each
+.pfa file by the magic lines
+
+%!PS-Adobe-3.0 ExitServer
+%%BeginExitServer: 0
+serverdict begin 0 exitserver
+%%EndExitServer
+
+which will ensure the font stays resident in the printer, at least until it
+is turned off.
+
+For example, the file `0037____.pfb' from Hewlett-Packard contains the
+Arial-Roman font.  If you convert it to `0037____.pfa' with `t1ascii' and
+download it to your printer, you will be able to print an Arial-Roman plot
+by doing, e.g.,
+
+	echo 0 0 1 1 2 0 | graph -T ps -F Arial-Roman | lpr
+
+This procedure is awkward, and may be improved in future releases.
+
+One final comment.  The LaserJet font in the file `tidbits_.pfb' from
+Hewlett-Packard is actually Wingdings, despite its name.

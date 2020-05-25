@@ -32,23 +32,18 @@ See the full `documentation <http://biggles.readthedocs.io/en/latest/>`_ for mor
 Installation
 ------------
 
-Biggles requires `numpy <http://www.numpy.org/>`_ and GNU `plotutils <http://www.gnu.org/software/plotutils/>`_.
-
-**Macports**::
-
-    $ sudo port install plotutils +x11
-    $ pip install biggles
+Biggles requires `numpy <http://www.numpy.org/>`_ libpng, X11 libraries and
+ghostscript
 
 **Homebrew**::
 
-    $ brew install plotutils --with-x11
+    $ wget https://dl.bintray.com/xquartz/downloads/XQuartz-2.7.11.dmg
+    $ sudo hdiutil attach XQuartz-2.7.11.dmg
+    $ sudo installer -package /Volumes/XQuartz-2.7.11/XQuartz.pkg -target / 
+    $ brew install ghostscript
     $ pip install biggles
 
 **Debian/Ubuntu**::
 
-    $ sudo apt-get install libplot-dev plotutils
+    $ sudo apt install build-essential libx11-dev libxft-dev libxt-dev libxaw7-dev libpng-dev ghostscript
     $ pip install biggles
-
-**Windows**
-
-This kind of install is not well tested at the moment. Please report bugs if you find them!

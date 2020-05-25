@@ -1,0 +1,332 @@
+Greater priority
+----------------
+
+libplot: take account of the fact that many versions of the Symbol font
+(in PS output, at least) now have the Euro symbol in position #160 of the
+ISO-Latin-1 encoding, rather than having a (nonbreakable) space.
+
+libplot: enhance the SVG driver to keep track of whether the output is
+consistent with the `Full' or `Tiny' SVG profile.  The only relevant
+differences appear to be that in SVGT, "all numbers must be limited in
+range between -32,767.9999 to +32,767.9999 or the scientific notation
+equivalent", and that when drawing paths, the elliptical arc commands 
+`A' (absolute ell. arc) and `a' (relative ell. arc) are not available.
+
+libplot: enhance the SVG driver to use SVG's <tspan>..</tspan> construct
+for styling and positioning substrings.  Our present scheme for changing
+fonts, adding subscripts, etc., in the middle of a label, works fine if the
+font(s) are available on the SVG viewer and have the metrics we believe
+they do.  But either of those two assumptions may fail.  So the
+<tspan>..</tspan> construct should always be used.  Nested tspans will be
+needed.  Note: SVGT does not support tspans.
+
+libplot: enhance the SVG driver to adjust the width of text strings to be
+what it should be, according to our internal font database.  This is
+important if a requested font is unavailable.
+
+libplot: decide whether to provide a workaround for a font problem in
+recent releases of XFree86: the Type 1 versions of the Symbol and
+ZapfDingbats font use an erroneous coding scheme (character codes are
+offset by 0x20 = 32).
+
+libplot: improve the handling of compound paths to support non-nested
+subpaths, i.e. multiple simple paths that may intersect each other, as well
+as themselves.  For this, use Raph Levien's libart?  SVG Plotters already
+support non-nested subpaths, though it isn't documented.
+
+libplot: add support for a user-level `closepath' operation.  Internally,
+drawing of Hershey fonts should use it.
+
+libplot: to CGM Plotters, add support for the version-4 WebCGM features,
+i.e., hyperlinks based on CGM `application structures'.  Maybe set up a
+standard way of defining hyperlinks, which could be used by SVG and
+Illustrator Plotters too?
+
+libplot: add the display list concept, i.e. retained 2-D graphical objects
+(will also facilitate adding support for compound objects and redrawing).
+libplot must become more widget-like; cf. guppi.
+
+libplot: support copying graphics from one Plotter to another (e.g., via
+display list; cf. OpenGL).
+
+libplot: support object-level clipping, via computation of a bounding box;
+maybe precise rectangle-level clipping too?  Will require addition of
+clipping support to libxmi.  Maybe PS-style clipping by arbitrary paths?
+If so, a new PS-like drawing model, with a new interpretation of
+savestate/restorestate, will be needed.
+
+libplot: add support for gradient fill.  Which output formats provide
+native support for it?  WebCGM, SVG and Illustrator certainly do.
+
+graph: continue librarifying the plotting routines, and incorporate them in
+libsciplot?  Maybe a GUILE interface?
+
+graph: need better clipping for filled regions (present gnuplot-style
+clipping scheme is right for unfilled regions but wrong for filled ones)
+
+libplot: add support for compound objects (supported by Fig, idraw, AI).
+Support should be compatible with support for SVG's `containers'.
+
+libplot: add support for rectangular raster objects ("device independent
+rasters").  Supported in SVG and CGM format, etc.
+
+libplot: add support for tiling of paths (with device-dependent rasters).
+libxmi already supports this.
+
+libplot: compare its functionality with other graphics libraries,
+e.g. Allegro's shading and texture-mapping features, and gd.
+
+Intermediate Priority
+---------------------
+
+libplot: extend parsing of BITMAPSIZE parameter to include options
+xsize,ysize,xorigin,yorigin,xoffset,yoffset, just like PAGESIZE.  This
+would affect the graphing utilities (--bitmap-size option, when producing
+bitmap output, would be invoked similarly to to --page-size).
+
+libsciplot: new graphing library.  Incorporate all functionality of VOGLE,
+PGPLOT, and PLPLOT libraries; check into GLE, PLOTPLUS, XYPLOT, DISLIN (not
+open-source; see http://www.linmpi.mpg.de/dislin/).  Think about Guile, and
+Tcl/Tk, and Python.  libsciplot will support contouring, but not 3d surface
+plots yet.
+
+libsciplot: when plotting a curve containing data points, symbols should be
+plotted _last_, after endpath() is called.
+
+libplot: In Illustrator format, colors may be specified by CMYK values or
+(in recent Illustrator versions) by RGB values.  Illustrator's mapping
+between them is not documented, and does not seem to be the usual one.
+When generating Illustrator format we use CMYK, but maybe we should use RGB
+instead?
+
+libplot: distinguish between PSPlotter and IdrawPlotter (latter will use
+current PSPlotter code for emitting `stateless PS', former has yet to be
+written).
+
+libplot bitmap Plotter support: add sub-parameters to the BITMAPSIZE
+parameter, for specifying offset of viewport within bitmap?  Clipping too?
+
+pic2plot: extend parser to support the Bell Labs `picasso' constructions
+(extensions of the pic grammar).
+
+libplot: use freeware rasterizer for type 1 fonts [t1lib, by Rainer
+Menzner; see
+ftp://ftp.neuroinformatik.ruhr-uni-bochum.de/pub/software/t1lib ].
+Or, if patent worries can be overcome, FreeType or FreeType2.
+
+libplot: PNG driver should optionally use indexed rather than true color.
+Also, should include a user-specifiable gAMA chunk?
+
+libplot: add alpha support to color specification.  Maybe via new
+operations penalpha(), fillalpha().  (WebCGM format already includes alpha
+support, via a registered escape element.)
+
+libplot: if the pen level has been set to `0' by invoking pentype(),
+thereby turning off the edging of paths, and the drawing of marker symbols
+and points, then the drawing of text should be turned off too?  In the
+texinfo documentation we've promised to do this.
+
+libplot: when path edges are not drawn (i.e. when `pentype' is called with
+an argument of 0), the scheme used by the PS driver for quantizing fill
+colors for idraw is suboptimal.  Could be much improved (would need to
+optimize over choices of idraw's fg color, bg color, and shading level,
+i.e. a 3D search).
+
+ode: extend parser to plot functions as well as solve differential equations.
+
+libplot: redo X driver, to support window reuse (`persistence') by any
+X Plotter.  Will require forking off an outboard process.
+
+graph: allow all command-line options in input data files, on comment
+lines; maybe write alternative parser for interactive version (gnuplot
+replacement).
+
+libplot: add interactivity (e.g. getloc()), during openpl()...closepl().
+Need to translate back to user coordinates.  [For libsciplot, even
+further?]  For Tektronix driver, implement GIN mode (need stty twiddling?).
+Also need char input (cf. starbase).
+
+Break out spline() as subroutine(s), cf. fitpack?  Cf. IMSL interface.
+Similarly with plot frame / axis drawing.  For this, check into NCAR
+Graphics package, `autograph' routines.
+
+ode: should support popen() for output; cf. gnuplot.
+
+graph: add `boxes', `steps', `impulses', `bars' plot types (as in gnuplot).
+Boxes, bars should properly support --fill-fraction option.
+
+graph: add support for polar/spherical plots, 3-D (surface) plotting.
+
+Low-priority (and idle thoughts)
+--------------------------------
+
+libplot: PNG driver, when outputing a grayscale image, should use the
+optimal bit depth.  PNG grayscale (without alpha channel) supports bit
+depths of 1, 2, 4, 8, 16.  Right now, we use bit depth 1 for bitonal
+images, as we should, but for grayscale images that aren't bitonal, we
+always use bitdepth 8.  We should use 2 or 4 instead, if reasonable.
+
+libplot: Fig output format now supports specifying a `transparent color',
+for use when xfig exports GIF files.  It would be good to support this.
+
+libplot: add a warning about color exhaustion to the GIF driver (cf. the
+warnings issued by the Fig and X drivers).
+
+libplot: internally, text string handling oscillates wildly back and forth
+between (char *) and (unsigned char *).  Fix this.
+
+libplot: _flush_plotter_outstreams() method, a non-public member function
+of the Plotter class, should really be static.
+
+libplot: there should be a way for the "none" background color to take
+effect on Metafile Plotters; currently, it does not.
+
+libplot: add support for a `rounded rectangle' primitive (pic2plot will use
+it).  SVG and Fig formats support rounded rectangles, though xfig insists
+that the rounded corners be quarter circles, not just quarter ellipses.
+
+libplot: finish adding support for the filling of paths to the ReGIS driver
+(i.e. handle the case when the paths to be filled extend beyond the edge of
+the ReGIS display, requiring clipping).  Also make the driver do real-time
+display of unfilled paths, segment by segment, like the Tektronix driver.
+
+libplot: Tektronix driver used to have a feature of waiting for 1 second
+after performing a screen erasure, if -DGENUINE_TEKTRONIX was defined
+during compilation (Tektronix storage tubes took that long to clear).
+Restore it?
+
+plot: the --line-width and --font-size options, which are useful only when
+plotting old files in Unix plot(5) format, are implemented poorly.  The
+computation, from the command-line arguments (fractional line width and
+font size), of the line width and font size in user coordinates, is
+currently correct only for graphics displays that are square.
+
+libplot: pl_parampl_r should support taking a NULL pointer (to a
+plPlotterParams struct), as its final argument.
+
+libplot: if HP-GL/2 driver draws with a restricted palette of pens (the
+default), it follows a policy of never quantizing a nonwhite color to
+white, i.e. to pen #0.  Is this the right thing to do?  (Note: this policy
+applies only to the pen color, not the fill color.)
+
+libplot: Ponder the comment taken from an earlier version of the source
+code: "We don't allow openpl() to reset the frame number to zero (in
+XDrawable Plotters that is, unlike XPlotters).  Incrementing the frame
+number monotonically facilitates color cell management, since we've only
+got one connection to the X display (see x_erase.c)."
+
+plot: should document that `plot -TX' will use double buffering if
+environment variable USE_DOUBLE_BUFFERING is "yes".  Maybe make that
+user-settable via an option?  Similarly, effect of setting X_AUTO_FLUSH on
+graphics utilities needs to be documented.
+
+libplot: should document that a user of X Drawable Plotters or X Plotters,
+if desiring true thread-safety, must manually invoke XInitThreads() and
+possibly XtToolkitThreadInitialize().  Also, in libplot code
+(e.g. libplot/p_defplot.c) must add appropriate #define's so that ctime_r()
+and localtime_r() are defined and used.  Haven't figured out how to do that
+yet; on some systems, defining _REENTRANT and _POSIX_SOURCE is not enough.
+libplot: subclass the GIF Plotter class from the generic Bitmap Plotter
+class.  Will facilitate importing a bitmap file to serve as a background
+for drawing.
+
+libplot: need a queryable PRECISE_DASHING capability, indicating whether or
+not a Plotter supports linedash().
+
+spline: add support for smoothing splines as well as interpolatory splines?
+
+graph: add legend support (need new --legend :string1:string2: option),
+i.e. gnuplot-style `key'.  Maybe arbitrarily positioned arrows, text
+strings also.  See how NCAR Graphics does it.
+
+internationalization: think about removing strcasecmp (what if user called
+setlocale i.e. set LOCALE env var)?  Similarly worry about . vs , everywhere, 
+e.g. in PS files.
+
+libplot: improve appearance of octagonal marker symbols (symbol #30 and
+#31), i.e., make the octagon regular.  Present non-regular shape dates back
+to Bob Beach's mid-1970s Unified Graphics System, from which many marker
+symbols were taken.
+
+libplotter: add overloaded (floating point) versions of integer operations?
+
+graph: tweak positioning of top labels, especially at large sizes.
+
+ode: add atan2() function.
+
+documentation: write more man pages.
+
+double: document it in plotutils.texi.
+
+libplot: after doing XCreatePixmap(), should check for success.  See
+John Cwikla's article on the Motif Zone site (no graceful thread-safe way?).
+
+libplot: CQVXuv<>" are the remaining metafile op codes (printable ASCII
+characters other than space).  Of these, CQVX are flagged as recently
+obsolete and should not soon be reused.  What to do when op codes run out?
+
+libplot: should X driver use a non-default visual if the default visual
+isn't read-only?  Do we wish other applications to be able to modify our
+color cells?  Is this a genuine concern?  Also, should we use a non-default
+visual if user specifies double buffering and the default visual doesn't
+support it via the X11 extension?  (E.g. Xsgi.)
+
+libplot: check that Corel Draw can import generated HP-GL and HP-GL/2
+files, and CGM files too.  As of Corel Draw 8, a single font seems to be
+used for all text (by default TrueType Courier New).  Check also Adobe
+Photoshop, Illustrator.
+
+HP-GL/2 Java viewer available at
+http://www.vanguard.at/products/partshpgl/english/index.htm .  Should check
+whether it can parse our HP-GL/2 output.
+
+libplot: could spline the Hershey fonts, and use Bezier primitives to draw
+them?
+
+libplot: kern the HP vector fonts (Stick and Arc) that are available when
+producing PCL5 and HP-GL/2 output.  Kerning was apparently dropped by HP in
+the transition from HP-GL to HP-GL/2, but we have the kerning tables.
+
+Marker symbol #1 should really be drawn as a pendown-penup motion in both
+HP-GL and pre-HP-GL/2, in the same way that a `point' is drawn.
+
+Very old HP-GL pen plotters can't handle full range of coordinates in many
+of our page types.  [See our viewport sizes in libplot/g_pagetype.h; the
+sizes we use, taken from AutoCAD, may not be appropriate for very old pen
+plotters?]
+
+libplot: improve error reporting: change libplot error handler to allow use
+of name of executable.
+
+libplot: to the API, add a comment() method, taking printable string as
+argument (no control chars).  For some drivers, it would appear in the
+output file.  Could also add a title() or description() method, since some
+output formats support a document-level title or description string.
+
+ode: need to avoid any possibility, no matter how theoretical, of a stack
+blowout.
+
+Hershey fonts: add euro and cedilla.
+
+graph, plot, tek2plot, plotfont, etc.: add --display and --geometry
+options, for use with `-T X'?
+
+tests: check into test/plot2ai.test, test/plot2gif.test, test/plot2tek.test
+(not currently run, seem to give system-dependent behavior, possibly
+depending on rounding of floating-point numbers?)
+
+libplot: in text string format, \mk..\rt etc. could be stack machine;
+should also include overline, underline, radical, display fractions etc.
+Cf. eqn and Allen Hershey's typesetting.
+
+libplot: support hatch-filling of paths, as well as solid filling?  HP-GL
+and CGM support hatching natively.  For other formats, will need to wait
+until clipping is added.
+
+Other needed math software:
+
+	fitting capability
+	contour plotting via level curves; also compute enclosed area
+	surface plotting	(cf. IDL for plotting and contouring)
+
+EBCDIC.  Need I say more?

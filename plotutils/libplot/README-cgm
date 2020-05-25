@@ -1,0 +1,120 @@
+By default, libplot's CGM driver emits version 3 CGM format, conforming to
+the WebCGM profile.  The output may include the following CGM primitives.
+For their semantics, see "The CGM Handbook" (cited below).  Many of the
+names should be self-explanatory.
+
+By setting the libplot parameter or environment variable CGM_MAX_VERSION to
+"2" or "1", you can produce a CGM file whose version is less than 3.  This
+is often desirable, because many CGM viewers can handle only version 1 CGM
+files.  If the CGM version is 2 or 1, the primitives below that are not
+allowed to appear in version 2 or 1 CGM files will be emulated using
+allowed primitives, or simply dropped (if appropriate).  The table
+indicates which primitives may appear only in version 2 and higher, 
+and 3 and higher.
+
+CGM Delimiter Elements:
+	 BEGMF
+	 BEGPIC
+	 BEGPICBODY
+	 ENDPIC
+	 ENDMF
+
+CGM Metafile Descriptor Elements:
+	 MFVERSION
+	 MFELEMLIST
+	 MFDESC
+	 VDCTYPE
+	 INTEGERPREC
+	 REALPREC
+	 COLRPREC
+	 COLRVALUEEXT
+	 FONTLIST
+	 CHARSETLIST
+	 CHARCODING
+	 FONTPROP (version 3 or higher)
+
+CGM Picture Descriptor Elements:
+	SCALEMODE
+	COLRMODE
+	LINEWIDTHMODE
+	EDGEWIDTHMODE
+	MARKERSIZEMODE
+	VDCEXT
+	BACKCOLR
+	LINEEDGETYPEDEF (version 3 or higher)
+
+CGM Control Elements:
+	VDCINTEGERPREC
+	MITRELIMIT (version 3 or higher)
+
+CGM Graphical Primitive Elements:
+	LINE
+	MARKER
+	RESTRTEXT
+	POLYGON
+	RECT
+	CIRCLE
+	ARCCTR
+	ELLIPSE
+	ELLIPARC
+	ARCCTRREV (version 2 or higher)
+	POLYBEZIER (version 3 or higher)
+
+CGM Attribute Elements:
+	LINETYPE
+	LINEWIDTH
+	LINECOLR
+	MARKERTYPE
+	MARKERSIZE
+	MARKERCOLR
+	TEXTFONTINDEX
+	TEXTPREC
+	TEXTCOLR
+	CHARHEIGHT
+	CHARORI
+	TEXTALIGN
+	CHARSETINDEX
+	ALTCHARSETINDEX
+	INTSTYLE
+	FILLCOLR
+	EDGETYPE
+	EDGEWIDTH
+	EDGECOLR
+	EDGEVIS
+	LINECAP (version 3 or higher)
+	LINEJOIN (version 3 or higher)
+	LINETYPEINITOFFSET (version 3 or higher)
+	EDGECAP (version 3 or higher)
+	EDGEJOIN (version 3 or higher)
+	EDGETYPEINITOFFSET (version 3 or higher)
+	RESTRTEXTTYPE (version 3 or higher)
+
+----------------------------------------------------------------------
+
+References used when writing the CGM driver include:
+
+    The WebCGM profile, available at http://www.w3.org/TR/REC-WebCGM as an
+    official recommendation of the World Wide Web Consortium.
+
+    "The CGM Handbook", L. R. Henderson and A. Mumford (Academic, 1992).
+
+    "CGM and CGI", D. B. Arnold and P. R. Bono (Springer-Verlag, 1988).
+
+    Sourcecode for cd-1.3, also called CD, cgmdraw 1.3, and CGM Draw 1.3, a
+    freely available C function library for generating version-1 CGM files.
+    cd-1.3 was developed at NIST (the U.S. National Institute for Standards
+    and Technology) by G. Edward Johnson (formerly, lorax@nist.gov).
+    However, it no longer seems to be available through NIST Web pages.
+
+    Sourcecode for RALCGM, a free viewer for version-1 CGM files developed
+    at Rutherford Appleton Laboratory in the U.K.  Available at
+    ftp://ftp.cc.rl.ac.uk/pub/graphics/ralcgm/unix/ .
+
+    http://www.posc.org/Epicentre.2_2/GraphicsMetafile/SeismicExtensions/ .
+    Contains a GIF image of the section from the CGM specification dealing
+    with the format of SDR's (structured data records, used in specifying
+    font properties in version-3 CGM files).
+
+    http://www.nist.gov/itl/div897/ctg/cgm_form.htm .
+    Sample CGM files, forming test suites, distributed by the US NIST
+    (National Institute of Standards and Technology).

@@ -1,0 +1,28 @@
+This directory contains the files needed for validation tests of several of
+the plot utilities.  The tests are run by doing `make check'.
+
+The `plot2fig' validation test has been observed to fail on MS-DOS and NeXT
+machines, due to incorrect formatting of floating-point numbers.  If any of
+the other tests should fail, please report it.
+
+HOW THE TESTS ARE DONE
+
+Each .test script generates a .out output file, which is compared with the
+corresponding .xout (`expected output') file.  If there are any significant
+differences, the test fails.
+
+Most of the generated .out files are translations of the file `graph.xout'
+to other graphics formats.  The file `graph.xout' is in the portable
+(human-readable) variant of GNU Metafile format.  You may view it in a
+popped-up X window, if you are interested, by doing `plot -TX graph.xout'.
+
+SPECIAL FEATURES
+
+The plot2pcl.test script compares the generated output against either
+plot2pcl.xout or plot2pcl.yout.  The latter is used if the
+`--enable-ps-fonts-in-pcl' option was passed to `configure'.  In that case
+a different comparison file is needed, because `--enable-ps-fonts-in-pcl'
+allows the output from `plot -Tpcl' to contain any of the 35 PS fonts, such
+as Times-Roman.
+
+The comparison performed by plot2hpgl.test is similar.

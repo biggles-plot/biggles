@@ -1,0 +1,410 @@
+These are some release notes that deal with new features and backward
+compatibility of the plotutils package, on both user and programmer levels.
+
+Release 2.6, dated 9/2009
+-------------------------
+
+This release fixes a problem lurking in ode/specfun.c for a long time:
+copyrighted code, dating to the days when that file was a modified version
+of the file specfun.c in the gnuplot distribution.  The gnuplot folks have
+since rewritten their specfun.c to remove most of the copyright notices.
+(At the cost of introducing new ones, dealing with the Cephes
+library... but I digress.)  The plotutils ode/specfun.c has been totally
+rewritten: it is based on published algorithms, cited in the code, and
+contains no non-GNU copyrights.
+
+The SVG compatibility problems mentioned below seem to be going away.  In
+the past, outline fonts in libplot's SVG output have not been rendered
+correctly by many SVG viewers, mostly because they are drawn by libplot in
+an intricate way, involving a coordinate reflection.  But firefox and
+svgdisplay (part of KDE) now render reflected fonts correctly.  The GIMP
+SVG plugin may not yet, but then it has problems with fonts in general.
+inkscape may be improving as well (slowly).  Rewriting libplot's SVG export
+code to work around such problems no longer seems necessary.  (Horizontal
+and especially vertical justification of text strings are not yet widely
+supported, but when exporting SVG, libplot now does its own justification.)
+
+Release 2.5.1, dated 7/2008
+---------------------------
+
+This release fixes a few bugs.  However, there are persistent problems with
+text-strings in the SVG output format.  Many applications that can view or
+edit SVG files (in particular, inkscape) do not correctly implement the SVG
+1.1 specification.  So, they may position text strings incorrectly, and
+even position incorrectly individual characters within a text string.
+
+If you encounter this problem, the fix is to specify a stroked ("Hershey")
+font, such as HersheySerif or HersheySerif-Bold.  A list of available
+fonts, in SVG output, is obtained by doing `graph -Tsvg --help-fonts'.
+Each character in any Hershey font is made up of stroked line segments, and
+most SVG viewers can display line segments correctly.
+
+This problem may be worked around in future releases of the SVG output
+driver.
+
+Release 2.5, dated 12/2005
+--------------------------
+
+This is primarily a bug fix release, but the number of bug fixes is large.
+The biggest change is to the X11 driver.
+
+The font support in X11 (the X Window System) is in a state of overturn,
+and previous releases of the plotutils package do not produce good-looking
+output (of rotated text strings, especially) on many current X11 displays.
+This is for the following reason.  The traditional `core' X fonts stored on
+any X11 display, each of which has a long name (a so-called XLFD name), are
+going away.  The new model is for fonts to be stored on the client side,
+and to be rasterized by the FreeType rasterizer via the Xft library.  Even
+in advance of this change, X servers such as XFree86 are starting to drop
+support for the more sophisticated features of the core X font subsystem,
+such as its ability to supply rotated or sheared glyphs.
+
+So the libplot library now produces its own rotated and sheared glyphs.  It
+still uses the core X fonts, but it no longer requests rotation or shearing
+when retrieving rasterized characters (glyphs) from those fonts.  Instead,
+it rotates or shears them itself.  The result looks fairly good.  For
+example, the output from the `rotating A' sample program in the plotutils
+manual looks as good as it always did, and takes no longer to generate.
+
+The command-line graphics utilities (e.g., `graph') support a `--rotation'
+option, to rotate graphics within their `viewport' or `plotting box'.  (For
+X11 output, requested by `-T X', this viewport is simply the popped-up X
+window.)  The argument of this option can now be an arbitrary number,
+interpreted as a counterclockwise rotation in degrees.  (It used to be
+required to be 0,90,180, or 270.)  You can now do this sort of thing:
+
+echo 0 0 1 1 2 0 | graph -T X -C -L 'A Postmodern Plot' -W 0.01 --rotation 45
+
+The same thing can be done in any other output format (e.g., as requested
+by `-T ps' or `-T svg'.)  This enhancement is independent of the rewriting
+of the X11 driver, but was suggested by it.
+
+A bad bug in the output of the PS driver, which prevented its being
+displayed by some versions of ghostscript/ghostview/gv, has been fixed.
+
+The output of the SVG driver has been improved, to be more compatible with
+the SVG parsers in Firefox and the ImageMagick package.  Unfortunately,
+font handling in both of them is somewhat broken.  If you have trouble
+using the standard builtin `Postscript' fonts (meaning, Adobe's standard
+set of 35 fonts such as Helvetica, Times-Roman, Courier, etc.), you should
+use the builtin Hershey fonts instead.  Each character in any Hershey font
+is `stroked': it is made up of line segments.  The Hershey fonts look quite
+good in Firefox, for example, due to its anti-aliasing.
+
+To check the drawing of SVG text strings, first do
+
+echo 0 0 1 1 2 0 | graph -T svg -C -L 'A Postmodern Plot' -W 0.01 --rotation 45 > plot.svg
+
+to obtain an SVG plot.  To display it using Firefox and the ImageMagick
+package respectively, do
+
+firefox file:${PWD}/plot.svg
+display plot.svg
+
+If there are problems with your copy of Firefox or the `display'
+application, some of the axis labels may be missing or displaced.  If so,
+add the option `-F HersheySerif' to the `graph' command, to request the
+HersheySerif font rather than the default font (Helvetica).
+
+Release 2.4.1, dated 7/2000
+---------------------------
+
+The `--page-size' option supported by the command-line graphics utilities
+has been extended, to allow precise specification of viewport size and
+location in the output, e.g., on a printed page.  For example,
+`--page-size=letter,xsize=5in,ysize=3in,xorigin=1in,yorigin=2in' is now a
+possible command-line option.  Previously, only `xoffset' and `yoffset'
+fields were supported.
+
+You can get some interesting visual effects by setting xsize or ysize to a
+negative value.  For example,
+
+echo 0 0 1 1 2 0 | graph -Tps --page-size letter,xsize=-8in,ysize=8in
+
+will write to standard output a Postscript graph for a letter-size page.
+The graph will be drawn into a viewport that has the same size as usual
+(8in x 8in), but it will be reflected from left to right.
+
+The ability to specify a custom viewport size should be useful when
+producing SVG or WebCGM graphics for Web pages.  When producing SVG or
+WebCGM output, only the xsize,ysize fields are meaningful; xorigin,
+yorigin, xoffset, and yoffset are ignored.
+
+The syntax of the libplot Plotter parameter `PAGESIZE' has been similarly
+extended.
+
+Libplot version number is now 4.1.
+
+Release 2.4, dated 6/2000
+-------------------------
+
+SVG output is now supported.  SVG is a new XML-based vector graphics format
+being developed by the W3 Consortium.
+
+The command-line plotting utilities now support `-T svg --bg-color none'
+and `-T cgm --bg-color none' options, to turn off the background (which by
+default is white) in SVG and WebCGM output.  This is useful when generating
+graphics files for use in Web pages.  Similarly, in libplot, SVG and CGM
+Plotters now allow the parameter `BG_COLOR' to equal "none".
+
+PNG output is now supported.  A PNG driver will be installed in libplot,
+and made available to the command-line plotting utilities, if libpng and
+libz are found at installation time.  The version number of libpng must be
+0.95 or larger (libpng 0.95 was released in March 1997).
+
+If the PNG driver is included, you must now include the additional options
+`-lpng -lz' when compiling and linking a program with libplot or
+libplotter.  `configure' now supports a `--without-libpng' option to
+disable PNG support.
+
+ReGIS output is now supported, for display on older graphics terminals like
+the VT340 (color), the VT330 (monochrome), and emulators.  The ReGIS driver
+contains a blemish: paths that extend beyond the boundary of a ReGIS
+display are never filled, even if filling is requested, because they need
+to be clipped against the boundary, and the required clipping code hasn't
+yet been written.
+
+Colors may now be specified, both on the command line and when using the
+libplot API, by their 24-bit RGB representation, expressed as six
+hexadecimal digits.  For example, "#ffffff" is equivalent to "white".
+
+The command-line plotting utilities now support an `--emulate-color yes'
+option, and all Plotters now support a corresponding parameter,
+"EMULATE_COLOR".  If emulation is performed, all colors in the output will
+be replaced by grayscale approximations.  This is particularly useful when
+producing PCL 5 output to be printed on a monochrome PCL 5 device, such as
+a monochrome LaserJet.  Many monochrome PCL 5 devices, on their own, do a
+poor job of emulating color (they print every nonwhite solid color as
+black).
+
+libplot now supports compound paths, i.e. paths that are made up of
+multiple simple paths, so long as the simple paths do not intersect each
+other (they are allowed to intersect themselves).  You draw each simple
+path of a compound path in the usual way, but you end each one by calling
+endsubpath().  The compound path is terminated and drawn by calling
+endpath().  Just as when traditional non-compound paths are drawn, the call
+to endpath() can usually be omitted.
+
+So the libplot API has been expanded to include endsubpath(), and
+orientation() too.  orientation() specifies the direction in which
+circles/ellipses/boxes are traversed.  (Specifying this, for any
+circle/ellipse/box that is a subpath of a compound path, affects the
+filling of the compound path by determining which points are `inside' or
+`outside'.)
+
+Handling of device-resident HP vector fonts ("stick fonts"), when drawing
+text strings in HP-GL/2 output, has been improved.  Previously, no account
+was taken of device-resident font kerning.  That's appropriate when
+producing PCL 5 output for a LaserJet with an HP-GL/2 emulation module,
+since LaserJets don't do sophisticated kerning of stick fonts, even when
+they support them.  But any full-featured HP-GL/2 plotter can do kerning of
+variable-width stick fonts.  So when producing HP-GL/2 output, we now take
+that into account when computing the width of text strings.  This affects
+the positioning of text strings on an output page.
+
+The StickANK and ArcANK HP vector fonts, which provide JIS ASCII and
+half-width Katakana, are now available when producing HP-GL/2 output.
+
+The miter limit (for line joins) which is placed in any HP-GL/2 or PCL 5
+output file is now always rounded to the closest integer, downward.  That's
+because at least one HP-GL/2 pen plotter (the HP 7550B, which was HP's
+first) had buggy firmware that couldn't parse a non-integer miter limit.
+
+When HPGL_VERSION is set to 1 or 1.5, the filling of solid regions now uses
+cross-hatching, instead of the filling with a single pen color that used to
+be used.  This occurs whenever the fill color is not one of the defined pen
+colors.  The algorithm employed, for emulating shading by cross-hatching,
+is the one used by HP's HP-GL/2 pen plotters.
+
+A new function, fsetmatrix(), has been added to the libplot/libplotter API,
+as an alternative to space().  It sets the transformation matrix from user
+coordinates to NDC (normalized device coordinates).  In NDC space, the
+graphics display, i.e. viewport, has corners (0,0), (1,0), (1,1), (0,1).
+space() and/or fsetmatrix() no longer need to be called at the beginning of
+each page of graphics.
+
+The alabel() function in the libplot/libplotter API now accepts a new
+vertical positioning option, `C', to request alignment of a text string's
+cap line with the present vertical position.
+
+Color drawing on X displays has been speeded up.  If the X display uses a
+truecolor `visual', pixel value computations are performed in libplot
+itself, rather than in the X server.  This removes the need to call
+XAllocColor() whenever a new pen color or fill color is selected (which
+used to require a round-trip to the server, slowing things down).  Also, a
+Plotter parameter `XDRAWABLE_VISUAL' has been added.  It should be set by
+the programmer if a non-default colormap is used.  libplot can determine
+from it whether or not the visual is of the truecolor class.
+
+Libplot version number is now 4.0.
+
+Release 2.3, dated 10/1999
+--------------------------
+
+CGM output is now supported.  By default, a CGM Plotter emits
+binary-encoded version-3 CGM format, conforming to the WebCGM profile.
+(For information on WebCGM, see http://www.cgmopen.org .)  The CGM format
+version number may be reduced by setting the libplot parameter (or
+environment variable) CGM_MAX_VERSION.  Irrespective of version, a
+human-readable CGM file, i.e., one encoded as clear text, may be produced
+by setting CGM_ENCODING to "clear_text".  Clear text CGM files are valid
+CGM files, though technically they don't conform to the WebCGM profile
+(a WebCGM file is meant to be binary).
+
+The package is now based on libplot version 3.0, which has new thread-safe
+C and C++ APIs, i.e. APIs which (1) maintain no global state, and (2) are
+pthread-aware.  The names of all new thread-safe libplot functions end in
+"_r", for `reentrant' or `revised'.  Each of them takes a pointer to an
+opaque plPlotter object as its first argument.
+
+There are new functions in both libplot and libplotter for creating and
+manipulating PlotterParams objects, which store Plotter parameters.
+Parameters are copied from such an object when the Plotter class is
+instantiated.
+
+The old C and C++ API's are still supported, though deprecated.  So you can
+still use pl_newpl() and pl_openpl(), etc., instead of pl_newpl_r() and
+pl_openpl_r(), etc.
+
+A new API function, pl_pentype_r(), has been added.  If its argument is 0,
+stroking of paths, as opposed to filling, will be turned off.  So `edgeless
+polygons' can now be drawn.
+
+Fig and PCL Plotters now position their viewports (i.e. "graphics displays")
+in the center of their pages, like PS Plotters.  So the PCL_XOFFSET and
+PCL_YOFFSET parameters have been removed, and PCL_ROTATE too.  Similarly,
+HPGL_XOFFSET and HPGL_YOFFSET parameters have been removed, even though tbe
+viewport position for HP-GL Plotters has not changed.
+
+Shifting of the viewport on the page, for PCL, HP-GL, Fig, and PS Plotters,
+is now accomplished through the PAGESIZE parameter.  E.g., its value could
+be "letter,xoffset=1in,yoffset=-2cm" or "a4,yoffset=12mm".
+
+A new parameter, ROTATION, has been introduced; it applies to PCL, HP-GL,
+Fig, and PS Plotters.  It defines rotation of the viewport on the page,
+which is not the same as what the HPGL_ROTATE parameter, previously
+introduced for HPGL Plotters, defines.  Values of ROTATION can be "no",
+"yes", "0", "90", "180", "270".
+
+A new scan-conversion library, called libxmi, is optionally built and
+installed, together with documentation.  It contains the scan-conversion
+code that is used by libplot's GIF and PNM drivers, which is based on the
+X11 sample server code.  libxmi is also distributed independently.  The
+libxmi version number is 1.1.
+
+Release 2.2, dated 3/1999
+-------------------------
+
+Massive expansion of the C API, with new drivers, and introduction of
+libplotter (C++ class library).  Backward compatibility of the C API
+maintained, except that all functions now begin with "pl_".  Header file
+"plotcompat.h", if needed, will redefine old function names as new function
+names.  Libplot version number is now 2.0.
+
+outfile() function, always more or less deprecated, now declared
+obsolescent.  No longer documented.
+
+Release 2.1.6
+-------------
+
+AI driver added, but libplot API unchanged.  Libplot version number is now
+1.6.
+
+Support in plot.h header file for old names for endpath() and filltype(),
+which began in plotutils-2.0 (see below), finally dropped.
+
+Release 2.1.5
+-------------
+
+PCL 5 driver added.  Kerning of device-resident `HP stick fonts' accessible
+to the HP-GL driver, when HPGL_VERSION=1.5, also added.  Libplot API
+unchanged, but libplot version number is now 1.5.
+
+
+Release 2.1.2, 2.1.3, 2.1.4
+---------------------------
+
+No additions to libplot API, but the semantics of closepl() vs. deletepl()
+have finally changed (programmers were warned about this in the texinfo
+documentation).  The libplot version number is now 1.2 (upped to 1.3 for
+release 2.1.3 and 1.4 for 2.1.4).
+
+Plotter output, for non-realtime plotting, is now guaranteed to be emitted
+only when deletepl() is called.  I.e., graphic output is not necessarily
+written to the output stream after each page is closed.  In practice, this
+affects only Postscript output.  Emitting PS only after the final page of a
+multi-page graphics file is closed enables the PS to conform to the DSC
+(Postscript Document Structuring Conventions).  
+
+Support for many new stick fonts added (mostly available only if using 
+`-T hpgl', with HPGL_VERSION=1.5.  `Stick fonts' are HP's device-resident 
+vector fonts.
+
+If using `-T hpgl' with HPGL_VERSION=1, circles and rectangles aligned 
+with the coordinate axes can now be filled.
+
+Names of many Hershey fonts changed, but old names continue to work.
+
+
+Release 2.1.1
+-------------
+
+No additions to libplot API, though libplot was improved in various ways.
+The libplot version number is now 1.1.
+
+Release 2.1
+-----------
+
+No incompatibilities with plotutils release 2.0.  But many new command-line
+options added to user-level utilities, and the libplot API was expanded by
+the addition of bgcolor() and bgcolorname().  The libplot version number is
+now 1.0.
+
+Release 2.0
+-----------
+
+In release 2.0 the idea of separate variants of the `graph', `plot', and
+`tek2plot' programs for each display device was finally done away with.
+There is now only a single instance of each program.  The display device is
+specified by the `-T' option.
+
+The merging of the device-specific variants was made possible by the
+merging of the device-specific variants of the libplot library on which
+they were based.  There is now only a single library, which is structured
+in an object-oriented way.  There are new functions, newpl(), selectpl(),
+openpl(), which allow the creation of an arbitrarily large number of
+`Plotter' objects simultaneously.  Each Plotter produces output for one
+display device.
+
+On startup of libplot, a single default Plotter is created and selected,
+namely one that produces GNU metafile format.  This is for backward
+compatibility: it allows programs written for earlier versions of GNU
+libplot, and even Unix libplot, to link with it and run as expected.  If
+you prefer a different default Plotter type, you should select it at
+installation time.  For example, including -DDEFAULT_PLOTTER_TYPE=\"ps\"
+in your CFLAGS option will cause the default Plotter to produce
+Postscript output instead.
+
+The libplot API changed in release 2.0 in a few other ways.
+
+1. falabel() was dropped from the API, and alabel() no longer returns a
+value related to the width of the text string that it renders.  If you need
+to get the width of a text string, use flabelwidth() or labelwidth().
+
+2. The semantics of the arc() primitive have changed.  It now draws an arc
+that may be clockwise as well as counterclockwise, but is restricted to
+have opening angle no more than 180 degrees.  Also, it moves the graphics
+cursor position to the endpoint of the arc.
+
+3. The box() primitive now moves the graphics cursor to the midpoint of the
+box, rather than to the second-specified vertex.
+
+4. endpoly() has been renamed endpath(), and fill() has been renamed
+filltype().  These last changes are temporarily supported by the plot.h
+include file.
+
+As of release 2.0 of the package, libplot has its own, independent,
+versioning system.  The version of libplot distributed with release 2.0 is
+numbered 0.0.  Beginning with version 0.0, libplot is installed both as a
+static library and as a shared library (a DLL), on machines that support
+shared libraries.

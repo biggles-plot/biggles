@@ -1,0 +1,31 @@
+This directory contains supplementary documentation on GNU pic2plot.
+`pic2plot' is a translator from the pic language to numerous graphics
+formats such as X11, PS/EPS, PCL 5, PNM, GIF, Tektronix, and to editable
+formats such as idraw, xfig, Illustrator, and CGM.
+
+The pic language makes it easy to create and modify box-and-arrow diagrams
+of the kind frequently found in technical papers and textbooks.  It was
+originally designed to be translated to the troff text-processing language,
+so that diagrams could be interspersed with text.  The utility program
+`pic', the GNU version of which is `gpic', can perform this translation.
+It is usually invoked on the command line by doing `groff -p', where
+`groff' is the GNU version of the troff text-processing utility.  `gpic'
+can also translate pic diagrams to TeX macros, for inclusion in a TeX
+document.
+
+`pic2plot' provides a third alternative.  By using `pic2plot', you may
+translate diagrams, written in the pic language, directly to graphics
+formats.
+
+In this directory, the file pic0.ps is Brian Kernighan's original Bell Labs
+technical report on the pic language.  The file pic1.ps is Eric Raymond's
+report "Making Pictures with GNU pic", which contains additional details.
+Neither of these mentions `pic2plot', however.
+
+The documentation file picmacros.ps was kindly contributed by the late
+W. Richard Stevens, who died on Sept. 1, 1999.  Rich Stevens wrote many
+fine books on programming and network programming, including `TCP/IP
+Illustrated' (Addison-Wesley, 1994).  picmacros.ps shows how pic macros may
+be used to draw diagrams (the diagrams are taken from his books).  The
+macros themselves are given in the file macros.pic.  Rich asked me to
+describe them as "work in progress".

@@ -1,0 +1,12 @@
+GNU libplot is dedicated to Allen V. Hershey, whose Fortran system for
+integrated cartographic plotting and scientific typography, with full
+support for affine coordinate transformations, served as an inspiration.
+
+   @Article{Hershey72,
+     author =       {Allen V. Hershey},
+     title =        {A Computer System for Scientific Typography},
+     journal =      {Computer Graphics and Image Processing},
+     year =         {1972},
+     volume =       {1},
+     number =       {4},
+     pages =        {373--385}}.

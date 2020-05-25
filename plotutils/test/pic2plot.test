@@ -1,0 +1,11 @@
+#!/bin/sh
+
+../pic2plot/pic2plot -O \
+    <$SRCDIR/sample.pic >pic2plot.out
+
+if cmp -s $SRCDIR/pic2plot.xout pic2plot.out
+	then retval=0;
+	else retval=1;
+	fi;
+
+exit $retval

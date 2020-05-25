@@ -1,0 +1,37 @@
+Rob Maier <rsm@math.arizona.edu> wrote the libplot/libplotter library and
+the graphics programs graph, plot, tek2plot, plotfont, and hersheydemo,
+beginning in 1995.  The old `GNU graphics' package (written by Rich Murphey
+in 1989-1991) served as a starting point, but the plotutils package is over
+an order of magnitude larger.  Probably none of the code from the earlier
+package remains in libplot/libplotter or the graphics programs.
+
+spline and double were originally written by Rich.  They have been extended
+by Rob, but some of Rich's code is still present.
+
+tek2plot was based by Rob on the Tektronix parser written in the mid-1980's
+by Edward Moy (then of Berkeley, later at Xerox, and as of last report at
+Apple).  This is the parser used by the standard terminal emulator `xterm',
+when it is in Tektronix mode.  The idea of tek2plot originated with Rich,
+though.  (The old `GNU graphics' package contained a tek2plot.)
+
+ode was written by Nick Tufillaro <nbt@reed.edu> in 1978-1994, and was
+somewhat modified and extended by Rob so as to merge it into the package.
+The file ode/specfun.c, which provide gnuplot-style special function
+support to ode, was written by Rob in 2009, replacing a file (distributed
+in earlier releases) that had copyright problems.
+
+Most of the code in pic2plot (the scanner and parser code, in particular)
+is taken from gpic, i.e. GNU pic.  gpic was written in 1989-1992 by 
+James J. Clark <jjc@jclark.com> as part of groff, i.e. GNU troff.
+A libplot driver was added by Rob, to turn it into pic2plot.
+
+Rob wrote the texinfo manual, but the chapter on ode draws heavily on
+Nick's original ode documentation, dating in part to the late 1970s.
+
+The libxmi scan-conversion library was extracted by Rob from source files
+in the X11 distribution, with modifications.  The source files were written
+in the mid-to-late 1980's by Brian Kelleher, Joel McCormack, Todd Newman,
+Keith Packard, Bob Scheifler and Ken Whaley, who worked for Digital
+Equipment Corp., MIT, and/or the X Consortium.  Their contributions are
+copyright 1985-89 by the X Consortium.  See ./libxmi/README-X for X
+Consortium permission notices.

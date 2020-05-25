@@ -1,0 +1,31 @@
+References used when writing the HP-GL/2 (and HP-GL and PCL 5) driver include:
+
+    "The HP-GL/2 and HP RTL Reference Guide", 3e (Addison-Wesley, 1997).
+    	
+    "HP LaserJet Programming", A. Binstock, B. P. Babcock, and M. Luse
+    (Addison-Wesley, 1991).
+
+    "The Product Comparison Guide for HP-GL/2 and HP RTL Peripherals", HP
+    Manual Part No. 5959-9734.
+
+    "The HP 7550A Interfacing and Programming Manual", HP Manual Part
+    No. 07550-90001.  Second edition, 11/86.
+
+    "The HP 7475A Interfacing and Programming Manual", HP Manual Part
+    No. 07475-90001.  Fourth edition, 7/86.
+
+    "Firmware Determines Plotter Personality", by L. W. Hennessee,
+    A. K. Frankel, M. A. Overton, and R. B. Smith, Hewlett-Packard Journal,
+    Nov. 1981, pp. 16-25.
+
+    "Firmware Provides Simple and Powerful Plotter Operation",
+    T. J. Halpenny, Hewlett-Packard Journal, April 1985, pp. 34-36.
+
+    "PCL 5 Comparison Guide", HP Manual Part No. 5021-0329.
+
+    "PCL 5 Printer Language Technical Reference Manual", HP Manual Part
+    No. 5961-0509.
+
+As of this writing, the last two manuals are only available from HP as part
+of a larger `technical reference bundle' ("The PCL Documentation Package",
+Part No. 5021-0330).

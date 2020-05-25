@@ -1,0 +1,14 @@
+.PS
+scale=1
+A: box filled dotted rad .1 thickness 2 "\fBSTART\fP" "(\fIor\fP\r^ STOP)";
+arrow; D: box "box"; arrow ; ellipse "document"; arrow; ellipse "PostScript" dashed; arrow; box "\fIgtroff\fP\r^(1)"; arrow; 
+B: box "\fBEND\fP";
+up
+arrow from A.t
+circle filled 0.3 dotted; arrow; circle "circle" dotted; arrow; circle dashed thickness 2; arrow; circle; arrow; 
+C: ellipse "ellipse" dotted
+arrow from C.r to B.t "x\sp2\ep: A Long Long Long Long Long Long \fBArrow\fP, symbolizing x\sp2\ep" "FOOBAR goes here" aligned dotted
+up; arc cw from D.t; arc; arc cw; arc; arc cw; arc ->; circle "\r!SI!" "\r!NO!"
+right; 
+D: circle at (4,4); right; line dotted; ellipse; spline dashed from D.t up then up then right then down then right; move; spline right then up; box dotted thickness 2
+.PE

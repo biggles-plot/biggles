@@ -1,0 +1,9 @@
+graph
+-----
+
+Filling of regions (i.e., the polygonal regions whose vertices are the data
+points), when requested by the -q option, works as long as the regions are
+entirely within the plotting box.  Filling does not work properly if the
+regions extend outside the box, since the clipping algorithm which is used
+is appropriate for unfilled regions only.  This will be fixed in a later
+release.

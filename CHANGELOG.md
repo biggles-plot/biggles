@@ -1,3 +1,12 @@
+2.0.0
+========================
+
+* Bundle plotutils, including fixes for recent libpng
+* Fix install instructions in readme (w/ help from MrAureliusR)
+* Allow row and col fractions to be sent to Table 
+* Internal: pass on plot constructor keywords to the base class
+* Moved to github actions for CI
+
 1.7.3 (not yet released)
 ========================
 

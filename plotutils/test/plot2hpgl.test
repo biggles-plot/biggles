@@ -1,0 +1,24 @@
+#!/bin/sh
+
+../plot/plot -T hpgl <$SRCDIR/graph.xout >plot2hpgl.out 2>/dev/null
+
+# Two possibilities: either the HP-GL/2 output file isn't allowed to
+# contain PS fonts such as Times-Roman, or it is (because the
+# --enable-ps-fonts-in-pcl option was added to `configure').  If the
+# former, `plot' will replace Times-Roman by the default font,
+# HersheySerif.
+
+if test "$PS_FONTS_IN_PCL" = "0"
+then	
+	if cmp -s $SRCDIR/plot2hpgl.xout plot2hpgl.out
+		then retval=0;
+		else retval=1;
+		fi;
+else
+	if cmp -s $SRCDIR/plot2hpgl.yout plot2hpgl.out
+		then retval=0;
+		else retval=1;
+		fi;
+fi
+
+exit $retval

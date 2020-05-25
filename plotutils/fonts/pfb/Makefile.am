@@ -1,0 +1,2 @@
+EXTRA_DIST = a010013l.pfb a010015l.pfb a010033l.pfb a010035l.pfb b018012l.pfb b018015l.pfb b018032l.pfb b018035l.pfb c059013l.pfb c059016l.pfb c059033l.pfb c059036l.pfb d050000l.pfb n019003l.pfb n019004l.pfb n019023l.pfb n019024l.pfb n019043l.pfb n019044l.pfb n019063l.pfb n019064l.pfb n021003l.pfb n021004l.pfb n021023l.pfb n021024l.pfb n022003l.pfb n022004l.pfb n022023l.pfb n022024l.pfb p052003l.pfb p052004l.pfb p052023l.pfb p052024l.pfb s050000l.pfb z003034l.pfb
+

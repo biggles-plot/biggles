@@ -1,0 +1,241 @@
+This file explains how to install the GNU plotutils (plotting utilities)
+package.  The file README summarizes the contents of the package.  Please
+send bug reports to <bug-plotutils@gnu.org>, and suggestions for
+longer-range improvements to both <bug-plotutils@gnu.org> and the principal
+author and current maintainer, Robert S. Maier <rsm@math.arizona.edu>.
+
+These are package-specific installation instructions: PLEASE READ THEM.
+
+Before reading them, you should glance through the generic installation
+instructions in the file INSTALL.  The instructions in that file may be
+summed up as follows.  You build a GNU package by typing `./configure' and
+then `make'.  After building, you may run validation tests on the package
+by typing `make check'.  To install the package, you type `make install'.
+A documentation file, in `info' format, is installed as part of this
+process.  You may produce a copy of the documentation for the package, in
+dvi format, by typing `make dvi'.  This assumes that you have the TeX
+document formatter installed.
+
+The most important points not mentioned in the file INSTALL are these.
+
+    **********************************************************************
+    If you have a working C++ compiler and would like to build the
+    `libplotter' class library and the pic2plot utility, both of which are
+    written in C++, you should add the `--enable-libplotter' option to the
+    `./configure' command.
+    **********************************************************************
+
+    **********************************************************************
+    By default, if the `libpng' library and its header file are found at
+    installation time, then support for PNG graphics will be included in
+    libplot and all command-line utilities.  If for any reason you wish to
+    omit PNG support despite libpng being present, you should add the
+    `--without-libpng' option to the `./configure' command.
+    **********************************************************************
+
+    **********************************************************************
+    It is not unknown for one or more of the validation tests that are run
+    by doing `make check' to fail for harmless reasons.  See B.6, below.
+    **********************************************************************
+
+    **********************************************************************
+    If you would like to build and a standalone version of the `libxmi'
+    2D rasterization library, and install the library and its documentation,
+    you should add the `--enable-libxmi' option to the `./configure'
+    command.  This is not done by default because libxmi is also distributed
+    as a separate package.
+    **********************************************************************
+
+The rest of this file discusses possible installation problems.  There are
+some additional options that you can add to the `./configure' command.
+They are mentioned too, in passing.
+
+----------------------------------------------------------------------
+
+Possible problems not mentioned in the INSTALL file are summarized in the
+following three sections.  They cover:
+
+(A) Problems related to building the GNU libplot graphics library.
+
+(B) Miscellaneous problems.
+
+(C) Problems related to support for the X Window System.
+
+----------------------------------------------------------------------
+
+A. This section covers problems related to building both the unshared
+version and the shared version of the GNU libplot graphics library.  Except
+on older systems, GNU libplot will normally be built as both an unshared
+library and a shared library.  A script called `libtool' is used for this.
+By default, the application programs `graph', `plot', `tek2plot', and
+`plotfont' will be configured to use the shared library.
+
+If for any reason you wish to disable support for the shared version of
+libplot, you may begin by doing `./configure --disable-shared' instead of
+`./configure'.
+
+----------------------------------------------------------------------
+
+B. This section covers miscellaneous installation problems.
+
+
+B.1. On some systems, there are potential minor problems having to do with
+installing (rather than building) the shared version of libplot.  By
+default, it is installed in `/usr/local/lib'.  On some systems you may need
+to run a command (such as `ldconfig'), or even reboot, to let your system
+know that a new shared library has been installed.  On some systems you may
+need to add `/usr/local/lib' to your LD_LIBRARY_PATH environment variable
+in order to use the `graph', `plot', `tek2plot', `plotfont', and `pic2plot'
+programs after they have been installed.  You will be cautioned about
+problems of this sort, if any, at installation time.
+
+B.2. If you have a recent laser printer that can use the 35 standard
+Postscript fonts even when in PCL 5 or HP-GL/2 mode, such as a 2100-series,
+4000-series, or 8000-series HP LaserJet, you may wish to add the
+`--enable-ps-fonts-in-pcl' option to `./configure'.  No additional actions
+on your part, such as installing fonts, are required, since the Postscript
+fonts, if present, are internal to the printer.  
+
+*** It is recommended that you add this option, since it is innocuous. ***
+
+B.3. By default, the standard 45 `HP LaserJet' fonts, such as Arial,
+Univers, etc., which are built into recent HP LaserJets, are available to
+the plotting utilities when you produce PCL 5 or HP-GL/2 output, e.g., when
+you do `graph -T pcl' or `graph -T hpgl'.
+
+But there are many Postscript viewers that can display these fonts; and
+also, in modern LaserJets, which understand both Postscript and PCL, the
+fonts are available on the Postscript side as well as the PCL side.  Hence,
+you may wish to have these 45 fonts available when you produce Postscript
+output.  To arrange this, you would add the `--enable-lj-fonts-in-ps'
+option to `./configure'.  
+
+*** It is recommended that you add this option, since it is innocuous. ***
+
+Of course you may well need to acquire the 45 fonts and install them, so
+that your Postscript previewer will be able to use them.  This is fairly
+easy.  Instructions are in the file INSTALL.fonts.
+
+You may also wish to add these 45 fonts to your X Window System display, so
+that, e.g., when you use `graph -T X', you will be able to use them.  This
+is possible (instructions are in the file INSTALL.fonts).  To make these
+fonts available when producing X output, e.g., by `graph -T X', you would 
+add the `--enable-lj-fonts-in-x' option to `./configure'.
+
+*** It is recommended that you add this option, since it is innocuous. ***
+
+B.4. As part of the installation process, the header file ./include/plot.h
+will be installed in a place on your system where the gcc C compiler will
+find it.  If you wish to use cc as well as (or instead of) gcc, you should
+copy plot.h manually to the directory `/usr/include', where cc will find
+it.  plot.h is not installed in `/usr/include' by default, since many
+administrators prefer not to add files to that directory.
+
+B.5. If you are installing this package with DJGPP under MS-DOS, the very
+first thing you should do is rename the file `install-sh' in this directory
+to `install.sh'.  That is on account of filename length limitations in
+MS-DOS.  If `./configure' reports that it is unable to find certain
+executable programs that it should in fact find, you may also need to
+replace many of the occurrences of `test -f' in `./configure' and
+`./ltmain' by `test -x' (to compensate for the ".exe" extension that MS-DOS
+uses).  These potential problems are reported by Michel de Ruiter
+<mdruiter@cs.vu.nl>.  Please contact him for additional information on
+MS-DOS installations.
+
+B.6.  It is not at all unusual for one or more of the validation tests
+performed by doing `make check' to fail on account of innocuous differences
+in formatting floating-point numbers, or differences in the rounding of
+floating-point numbers.  In particular, the `plot2fig' validation test may
+fail if you are installing with DJGPP under MS-DOS, or if you are
+installing the package on an old NeXT machine.
+
+To emphasize: the failure of two or three of the validation tests, in
+particular the `plot2fig' test, is almost certainly quite harmless.  But if
+a large number of the validation tests should fail, please report it to
+<bug-plotutils@gnu.org>.  For some additional remarks on the validation
+tests, see the file ./test/README.
+
+----------------------------------------------------------------------
+
+C. This section covers installation problems related to the X Window
+System.  If for any reason you wish to omit the X Window System support,
+you may begin by doing `./configure --without-x' instead of `./configure'.
+
+
+C.1. To make maximum use of the X support in this package, you will need to
+have the 35 standard Postscript fonts installed on your X server.  For
+instructions on installing Type 1 versions of these fonts, clones of which
+are included in the package, see the file ./INSTALL.fonts.
+
+C.2. There is a possible installation problem having to do with X widget
+sets.  By default, this package uses the free Athena widgets, which are
+provided on most but not all machines.  Some machines provide Motif widgets
+instead of Athena widgets.  On such machines (e.g. Hewlett-Packard systems
+running HP/UX, and some IBM systems) you should normally begin by doing
+`./configure --with-motif' instead of just `./configure', to ensure that
+the software is configured correctly.
+
+The only advantage of using Motif widgets, which are not free, is that you
+may be able to use Motif's drag-and-drop facility to drag graphics out of
+popped-up X Windows, e.g., the window popped up by `graph -T X'.
+
+C.3 On a few machines, the auto-configuration process may not be able to
+find the library files containing the X widgets (whether Athena or Motif),
+or the corresponding header files.  If this problem occurs, you can specify
+their location manually at configure time, as follows.
+    
+C.3a. If you have the Athena widgets and wish to use them, even though the
+auto-configuration process does not find them, you may specify their
+location by doing `./configure --with-athena=DIR' instead of just
+`./configure'.  Here DIR should be a directory whose subdirectory `lib'
+contains the Athena widget library files libXaw and libXmu, and whose
+subdirectory `include' contains the Athena header files, such as
+X11/Xaw/Label.h.
+
+An example would be old Hewlett-Packard systems running HP/UX 10.xx.  If
+you are installing the package on such a system, you should check whether
+the directories /usr/contrib/X11R6/{lib,include} exist.  If so, you can use
+the Athena widgets.  To use them, you would do
+
+	  ./configure --with-athena=/usr/contrib/X11R6
+
+instead of just `./configure'.  If these directories do not exist on your
+system, you do not have the Athena widgets: you must use `--with-motif'
+instead.
+
+Extremely old HP/UX 10.xx systems may have X11R5 instead of X11R6, in which
+case you should modify the directory name appropriately.
+
+C.3.b. It is also possible that you have only Motif widgets, but the
+autoconfigure process is unable to find the Motif files.  In such a
+situation, you may specify the location of the Motif files by doing
+`./configure --with-motif=DIR' instead of just `./configure'.  Here DIR
+should be a directory whose subdirectory `lib' contains the Motif widget
+library file libXm, and whose subdirectory `include' contains the Motif
+header files, such as X11/Xm/Label.h.
+
+C.3.c. There are a very few systems where the widget files must be
+specified manually by an even more complicated procedure.  An example would
+be truly ancient Hewlett-Packard systems that are running HP/UX 9.xx or
+earlier.  They have Motif widgets, but the Motif files are stored in
+unusual places.  If you have an HP/UX 9.xx system that X11R6 was installed
+on, besides doing `./configure' (or possibly `./configure --with-motif'),
+you may need to do
+
+	make CFLAGS="-O -I/usr/include/Motif1.2 -L/usr/lib/Motif1.2"
+
+rather than just `make'.
+
+You should note, however, that for HP/UX 9.xx systems, X11R6, presumably
+including the Athena widgets and not the Motif widgets, was available as a
+patch.  If you have an HP/UX 9.xx system that the X11R6 patch was installed
+on, you can probably do `./configure --with-athena=/usr/contrib/X11R6'.
+
+C.4. Some version of Motif require that executables that are linked with
+Motif be linked, also, with the `libXpm' library.  `configure' knows about
+this.  But if for some reason it is unable to find libXpm and the
+corresponding header file, you can specify their location manually at
+configuration time, by doing not just `./configure --with-motif', but
+rather `./configure --with-motif --with-libxpm=DIR'.  Here DIR should be a
+directory whose subdirectory `lib' contains libXpm, and whose subdirectory
+`include' contains the corresponding header file, X11/xpm.h.

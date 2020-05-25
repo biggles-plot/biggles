@@ -22,8 +22,8 @@
 import os
 import sys
 import io
-import confit
-from config_base import CONFIG_BASE
+from . import confit
+from .config_base import CONFIG_BASE
 
 _config = confit.Confit()
 

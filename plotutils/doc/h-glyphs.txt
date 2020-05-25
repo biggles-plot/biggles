@@ -1,0 +1,163 @@
+The GNU libplot library and the plotting utilities based on it, such as
+GNU `graph', can display text strings in any of 21 `Hershey fonts', such as
+HersheySerif and HersheySerif-Bold.  Hershey fonts are built from `Hershey
+glyphs'.  There are two sorts of glyph: standard (`occidental') and
+Japanese (`oriental').  The glyphs were digitized by Dr. Allen V. Hershey
+at what is now the U.S. Naval Surface Weapons Center in Dahlgren, VA
+(formerly the U.S. Naval Weapons Laboratory), mostly during the late
+1960's.
+
+There are many glyphs that are not part of any Hershey font.  Such glyphs
+must be referred to by number.  For example, the string "\#H0744\#H0745"
+uses escape sequences to refer to Hershey glyphs #744 and #745, which are a
+shamrock and a fleur-de-lys respectively.  All occidental Hershey glyphs
+have numbers in the 0..3999 range, but there are many gaps.  In this file
+we explain how the array of occidental glyphs now in GNU libplot was
+constructed, and give more information on the numbering scheme.
+
+The array was assembled in large part from earlier (pre-GNU) public
+distributions of the occidental glyphs.  These included the following.
+
+#0. Distributions by Dr. Hershey himself, in the late 1960's and 1970's.
+These were distributions of his typographic software, of which the glyph
+distribution was a part.  Initial distributions were on punched cards and
+later ones were on magnetic tape.  At least 120 copies of the typographic
+software were distributed.  It is not known how many distinct releases
+there were, either of the software or of the glyphs.
+
+#1. The U.S. NBS [U.S. National Bureau of Standards, since renamed the
+National Institute of Standards and Technology] publication "A Contribution
+to Computer Typesetting Techniques", dated 1976, and the accompanying
+magnetic tape.  This presumably included all glyphs in use at that time.
+In Figure 15 of that publication, 43 additional glyphs (digitized by Norman
+Wolcott at NBS) were shown, but the data for them were not given.  (Glyphs
+2250, 2260 were probably included in Figure 15 erroneously; they were also
+listed among the standard glyphs).
+
+#2. The Usenet distribution of Pete Holzmann <pete@xc.org> and Jim Hurt
+(to the newsgroup mod.sources, now defunct).  Circa 1985, but based on the
+above 1976 tape.  It introduced the scheme for encoding vector glyphs as
+strings which is now used in libplot.  Almost identical to the above (none
+of the 43 new Wolcott glyphs), but included three additional glyphs: 997,
+998, 999.  These were merely horizontal strokes.
+
+#3. The glyph database incorporated in the PGPLOT subroutine library of Tim
+Pearson <tjp@astro.caltech.edu>, still available from
+ftp://ftp.astro.caltech.edu and from the astro.caltech.edu web server.
+This was probably based, c. 1980, on a distribution obtained either from
+Nelson Beebe (see #4 below) or directly from Dr. Hershey.  It included data
+for the 43 new Wolcott glyphs, and 10 additional glyphs numbered 236 (an
+cartographic-sized `@'), 590 (an underscore), 2078 (Aring), 3330, 3331,
+3332, 3430, 3431, 3432 (umlaut-accented German letters), and 4000 (a boxed
+inverted questionmark).  The last of these (#4000) apparently did not
+originate with Dr. Hershey, but the others may have.  The horizontal stroke
+glyphs 997, 998, 999 from distribution #2 were not present.  Ten glyphs
+were revised: 1225, 1226, 1407, 1408, 2225, 2226, 2407, 2408, 3010, and
+3159.  The first eight of these were braces.  There were 1642 separately
+indexed glyphs in all.
+
+#4.  The glyph database incorporated in the PLOT79 utility of Nelson Beebe
+<beebe@math.utah.edu>.  Also dates back to c. 1980; based on a tape from
+Dr. Hershey himself, with local additions.  All the 1642 glyphs from #3 are
+present, except that 590 (an underscore) and 2078 (Aring) are missing.
+(The Hershey tape may have been a slightly earlier one than the tape used
+for #3?)  Also, 911..922 (twelve outline and filled arrows) and 923..926
+(four large pointing hands) were added by Dr. Beebe.  As well, 256 small
+fixed-width glyphs (marker symbols taken from a plotter in the 1970's, and
+low-resolution alphabets based on the plotter alphabet) in the 1500..1627
+and 1700..1827 ranges were added.  There were 1912 separately indexed
+glyphs in all.
+
+#5.  The glyph database accompanying Dr. Hershey's distribution in the
+1980's of typographic software in True Basic, for PC's.  For details, see
+his 1981 technical report `Advanced Computer Typography' and his 1995
+technical report `Cartography and Typography with True Basic'.  The 43
+Wolcott glyphs (see above) were not present, and the 10 extra glyphs from
+the PGPLOT distribution were not present either.  However, an entire new
+alphabet (Triplex Greek) was included.  The small upper-case alphabet
+(`Cartographic Roman') was extended to include lower-case characters, and a
+small `Cartographic Italic' alphabet was added as well.  Many alphabets
+were extended by crafting such characters as @, <, >, #, and % for them.
+Also, several glyphs were revised.  13 cartographic symbols in the 700..899
+range were dropped, probably inadvertently.
+
+
+The glyph array built into GNU libplot, and accessible to the GNU plotting
+utilities, is a merged version.  It includes all glyphs from distribution
+#5, the 43 Wolcott glyphs, and 7 of the 10 additional glyphs from
+distribution #3, i.e., 2078 (Aring), and 3330, 3331, 3332, 3430, 3431, 3432
+(umlaut-accented German letters).  The 13 cartographic symbols in the
+700..899 range that were inadvertently dropped from distribution #5 have
+been restored.
+
+Many non-Hershey glyphs were also included in the GNU libplot array of
+occidental glyphs, to facilitate the construction of ISO-Latin-1 Hershey
+fonts.  The 4000..4194 range contains a large number of such non-Hershey
+glyphs.  Nelson Beebe's large pointing hands (923..926 in distribution #4)
+were included as 4040..4043.  An important source of non-Hershey glyphs was
+Robert Beach's UGS [Unified Graphics System], which was developed at the
+SLAC [Stanford Linear Accelerator Center] Computation Research Group in the
+1970's.  (See Computer Graphics, Fall 1974, pp. 22-23.  The UGS source code
+may still be available at ftp://ftp.slac.stanford.edu/software/ugs77/ .)
+A number of glyphs in the 4000..4025 range were taken from the UGS glyph
+repertory.
+
+The following is a breakdown of the original Hershey glyphs (defined to
+include the 43 Wolcott glyphs and the 10 additional glyphs mentioned
+above).  They occupy the 1..3926 range of the occidental array, and may be
+accessed individually by escape sequences in the range "\#H0001".."\#H3926".  
+They fall into the following groups:
+
+0001..0284	alphanumeric symbols, cartographic [small] size
+0501..0746	alphanumeric symbols, principal [large] size
+0750..0909	centered symbols
+0910		alphanumeric symbols, principal [large] size
+1001..1295	alphanumeric symbols, indexical [medium] size
+1401..2312	alphanumeric symbols, principal [large] size
+2317..2382	centered symbols
+2401..3926	alphanumeric symbols, principal [large] size
+
+`Alphanumeric symbols' means not just alphabetic symbols and numerals, but
+also punctuation marks, mathematical symbols, etc.; in general, any symbol
+that can be viewed as having a well-defined `baseline', and which could
+appear in a string of characters resting on that baseline.
+
+`Centered symbols' are different.  In practice they would seldom be
+displayed in such a way that they are resting on a baseline.  Instead, they
+would be drawn so as to be centered on a specified point.  Also, they would
+seldom appear in a string.  An example would be the `sand' symbol, Hershey
+glyph #0764, which is clearly designed to be drawn on a map rather than to
+appear in text.
+
+In the original distributions of the Hershey glyphs, no distinction was
+made between alphanumeric symbols and centered symbols.  That was possible
+because in the coordinate system used by Dr. Hershey, all are centered on
+the point (0,0).  The `baseline' concept was not used.  Each alphanumeric
+symbols had a well-defined baseline, but the baselines differed for the
+three sizes.
+
+When strings are drawn with the alabel() function of GNU libplot, e.g.,
+when GNU `graph' labels axes, a baseline must be chosen.  For alphanumeric
+symbols of all kinds and also centered symbols, we have chosen it to be the
+baseline appropriate for the principal [large] size alphanumeric symbols.
+This determines a choice of vertical elevation of each symbol, when it is
+rendered as an element of a string.
+
+If the `x' option to alabel() is used, to place characters on a baseline,
+the vertical elevation may not be appropriate for indexical [medium] and
+cartographic [small] alphanumeric symbols.  But nowadays the indexical and
+cartographic glyphs are seldom accessed.  The only reason for drawing
+smaller characters is to draw superscripts and subscripts, and our
+rendering algorithm uses miniaturized principal-size characters for that.
+
+If you are using the alabel() function to display strings, you may specify
+`c' as the third argument to obtain vertical centering, instead of the
+usual `x', which places characters on a baseline.  You would use `c' to
+place a centered symbol at a specified point.  For example, the function
+call
+
+	alabel ('c', 'c', "\#H0764");
+
+would place the `sand' symbol, glyph #764, at the current position.  The
+first argument `c' requests horizontal centering, so the symbol will be
+centered both horizontally and vertically.

@@ -1,0 +1,37 @@
+name: biggles-system-python
+
+on:
+    push:
+        branches: [ master ]
+    pull_request:
+        branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [2.7, 3.6, 3.7, 3.8]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install system deps
+      run: |
+        sudo apt update
+        sudo apt install build-essential libx11-dev libxft-dev libxt-dev libxaw7-dev libpng-dev ghostscript
+
+    - name: pip install deps
+        python -m pip install --upgrade pip
+        pip install numpy
+        pip install pytest
+
+    - name: Install code
+      run: pip install --no-deps .
+
+    - name: Run tests
+      run: pytest -vv tests

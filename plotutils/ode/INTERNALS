@@ -1,0 +1,108 @@
+1.  Language Implementation Details
+
+The ode input language is implemented with a bison-generated parser and a
+flex-generated lexical analyzer.  The benefits of this approach are great.
+The original version of the basic recognizer was completed in about two
+days.  And adding comments to the language required that exactly one line
+of the lexical analyzer source code be changed.
+
+Differential equations are compiled into linked lists of stack operations,
+one list per dynamic variable.  The function evaluator (eval) traverses one
+of these lists, applying the indicated operations to a small operand stack.
+At the completion of the traverse, the new derivative is on top of the
+stack.  The routine pops and returns this result.  Another routine (field)
+is called by the numerical routines whenever a re-evaluation of the
+gradient is required.  It calls eval() for each dynamic variable in turn.
+
+Changes to the language involve modifications to the bison grammar, the
+flex rules, and/or the semantics stored with the grammar and rules.  The
+steps required to add a new builtin function, for example, are (aside from
+writing the function itself) as follows.
+
+(1)  Invent a new terminal symbol name for the reserved word.
+
+(2)  Add the new reserved word to the flex rules.
+
+(3)  Add the new productions to the right-hand side of
+     "expr" in the grammar, together with whatever semantic
+     action is required (using the included macros if possible).
+
+(4)  Define a new value for exper and add the stack code to eval.
+
+2.  Numerical Schemes
+
+The numerical and language procedures were designed in accordance with the
+Jesuit maxim.  The major elements manipulated by both are the symbol table,
+and the functions field() and printq().  Addition of a new numerical scheme
+requires that the numerical routine be written, and perhaps that some
+fields inside the symbol table entry be expanded or added.  None of these
+changes affects the performance or compromise the integrity of the parser,
+although they may change the space-cost of a dynamic variable.  Similarly,
+modifications to the lexical analyzer or the grammar only affect the parse
+tables and related data structures, and have no effect on the numerical
+routines.
+
+At each step the numerical scheme fills each symbol table entry with
+relevant values.  Then a call to field() evaluates every differential
+equation and puts the result in the symbol table element syrime.  The
+evaluator gets current values for the dynamics from the field syalue.  Both
+syalue and syrime are in some sense temporary variables.  All correct
+results eventually find their way into syal[0] and syri[0]; these are never
+touched by the language processor.  Thus the real interface between the
+language and numerical procedures is merely syalue and syrime.  It is
+important to maintain meaningful values in syalue and syrime, since a
+floating-point exception may disrupt the control flow at any moment.  It is
+recommended that the pointer fsp be used in traversing the symbol table, so
+that arithmetic exceptions can be diagnosed as accurately as possible.
+
+Fourth and fifth order schemes were chosen as the best compromise between
+speed and accuracy.  The adaptive stepsize has proved a boon in both areas.
+
+3.  Details of Error and Fault Recovery
+
+Command-line errors are diagnosed at initialization time and are generally
+fatal.
+
+Errors in the input stream are diagnosed during the lexical scan or at
+parse time.  They elicit an appropriate message.  The error recovery method
+used in the parser is the vanilla Yacc scheme.  (see S. Johnson, "Yacc: Yet
+Another Compiler-Compiler", 1978, pp. 16-18).
+
+Run-time errors are detected by the function evaluator, the numerical
+routines, or the floating-point unit hardware.  In each case a message is
+printed describing the error, and ode returns to a known state awaiting
+input.  The current step is abandoned, but all variable values are left
+reflecting the state of the machine just prior to the fault.  All of the
+numerical schemes scan the symbol table, computing values for each dynamic
+variable, using a common pointer known to the error recovery routines named
+fsp.  This pointer provides a way of identifying the offending dynamic
+variable when a trap occurs.
+
+4. Space Utilization
+
+The data space used in numerically solving a system of ODEs consists of
+both fixed and dynamic regions.  The fixed space is used efficiently
+regardless of the complexity of the problem being solved.  The dynamic
+space contains the symbol table, the expression lists, and several other
+data structures whose sizes vary.  The space for these structures comes out
+of a common pool; they play against each other.
+
+Every identifier in an ODE description requires 254 bytes; this space can
+never be reclaimed.  Each operator in an equation costs 14 bytes.  For the
+sake of speed, some operators are expanded into a sequence of simpler
+operations, each of which requires 14 bytes.  In particular, some common
+powers are reduced to sequences of square roots, squares, cubes, and
+inversions.  The extent of these transformations can be seen with the help
+of the `examine' statement.  The operator space for an equation is
+reclaimed whenever a new equation is defined for that particular dynamic
+variable.  Each lexical token in the most complex statement costs 10 bytes,
+but this space is reclaimed during the scan.  Thus, the most complex
+statement circumscribes this requirement.  Each element in a `print'
+statement costs 6 bytes.  Upon execution of the next `print' statement this
+space is reclaimed.
+
+In addition to these absolute space limitations, the maximum depth of the
+operand stack used for evaluating derivatives is 30 cells.  This limit
+could conceivably be exceeded for a very complex differential equation.
+The solution is to simplify the equation if possible, and where not, to
+recompile ode with a larger operand stack.

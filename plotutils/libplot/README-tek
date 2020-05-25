@@ -1,0 +1,32 @@
+These are some comments on the interface provided by GNU libplot to
+Tektronix emulators.
+
+The Tektronix device driver included in libplot produces output for several
+types of Tektronix-compatible display.  This includes the Tektronix
+emulators built into `xterm' (the X Window System terminal emulator) and
+the MS-DOS version of `kermit'.  They are recognized by the environment
+variable TERM equalling "xterm" (or "xterms" or "kterm"), and "kermit" (or
+"ansi.sys, "ansi.sysk", "ansisys", or "ansisysk"), respectively.
+
+Some historical comments on the Tektronix 4010/4014 follow. 
+
+A Tektronix 4010 had what was effectively a 1024x780 display, as did the
+first Tektronix 4014 models.  Effective coordinate space was
+[0..1023]x[0..779].  Extended resolution, available for Tektronix 4014's
+equipped with the Enhanced Graphics Module [EGM], yielded
+[0..4095]x[0..3119] as coordinate space.  Actually the range of the two
+position registers was always [0..4095], even before the EGM was
+introduced.  (On displays without EGM, the low two bits in each coordinate
+were dropped.)  So the upgrade path to the 4014-with-EGM was smooth.
+
+In pre-EGM days a Tekpoint increment (display measurement unit) equalled
+four increments of the x or y position register.  `Home cursor position'
+was (0,767) in terms of Tekpoints, since the character matrix was 7x9.
+After the introduction of the EGM, a Tekpoint increment equalled one
+increment of the x or y position register, not four.  Home position became
+(0,3071).
+
+There were approximately 70 Tekpoints/inch in pre-EGM days, 280/inch with
+EGM.  In other words, the resolution was better than that of high-end
+workstation displays today.  Who says raster graphics is an improvement
+over vector graphics?

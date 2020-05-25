@@ -1,0 +1,10 @@
+#!/bin/sh
+
+../plot/plot -T svg <$SRCDIR/graph.xout >plot2svg.out
+
+if cmp -s $SRCDIR/plot2svg.xout plot2svg.out
+	then retval=0;
+	else retval=1;
+	fi;
+
+exit $retval

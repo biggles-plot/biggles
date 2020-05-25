@@ -1,0 +1,17 @@
+This directory contains libcommon, a library of miscellaneous support
+functions, independent of libplot, which is statically linked with several
+of the package executables.  It also contains the file fontlist.c, which is
+symlinked at build time into the home directory of any executable that
+needs to get font information, such as lists of supported font names, from
+libplot.
+
+The reason fontlist.c is not in a library of its own (as it used to be) is
+that it accesses internal, undocumented data structures of libplot.  On AIX
+systems, it seems libtool can't link the executables with both a
+`libfontlist' and libplot, due to some AIX foolishness about libraries not
+being allowed to contain undefined symbols.
+
+The functions in libcommon are declared in ../include/libcommon.h, with the
+exception of those in getopt.c and getopt1.c, which are declared in
+../include/getopt.h.  The functions in fontlist.c are declared in
+../include/fontlist.h.

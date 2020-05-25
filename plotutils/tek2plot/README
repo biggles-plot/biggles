@@ -1,0 +1,6 @@
+This directory contains the source for the GNU tek2plot program, which
+translates Tektronix graphics commands to graphics commands for other
+display devices. 
+
+The subdirectory ./teksamples contains a few Tektronix files, some of
+unknown provenance, which may be used to test tek2plot.

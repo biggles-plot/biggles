@@ -1,0 +1,85 @@
+Version 1.3 of package released, 12/05.  (Library version is now 1.3.)
+
+Fixed a minor bug in miFillRectangles that rendered it ineffective (thanks
+to several people for pointing this out).
+
+The package may now be compiled with a C++ compiler; if desired, request
+this by doing e.g. `CC=g++ ./configure'.
+
+Support for pre-ANSI C compilers has been largely dropped.  Non-working
+`const' is still checked for, but support for prototypes and void is now
+assumed.  Removal of the preprocessor macros that supported pre-ANSI C,
+from many source files, has considerably improved maintainability.
+
+Updated GNU autotools have been used to prepare this release
+(autoconf-2.59, libtool-1.5.6; and automake-1.4-p6 for safety's sake).
+
+Copyright and license notices have been added to all source files.
+
+----------------------------------------------------------------------
+
+Version 1.2 of package released, 6/00.  (Library version is now 1.2.)
+
+Fixed bugs in mi_spans.c (in miUniquifySpanGroup, especially) dealing with
+empty SpanGroups.  They were causing memory allocation problems, and even
+segfaulting, whenever a region in one pixel color was completely covered by
+a region in another pixel color.
+
+libxmi now contains a version string, `mi_libxmi_ver'.  The xmi.h header
+file now contains both the version string and a numeric variant of it, as
+macros.  Cf. libpng.
+
+Fixed a bug in miDrawArcs[_r] that was affecting the drawing of solid arcs.
+(Sometimes they were incorrectly drawn in the background color, i.e., in
+pixel color #0 rather than pixel color #1.)
+
+The internal function `miAddSpansToPaintedSet' now has an underscore
+prepended to its name, so that it won't pollute the user-level namespace.
+Our policy: only the API functions should have external names that begin
+with a letter.  This is arranged via #defines in extern.h.
+
+At installation time, if CFLAGS is set, it will not be ignored.
+
+----------------------------------------------------------------------
+
+Version 1.1.1 of package released, 9/99.  (First official GNU release
+of package; library version is now 1.1.)
+
+No changes to source code; minor changes to packaging.
+
+----------------------------------------------------------------------
+
+Version 1.1 of package released, 7/99.  (Library version is now 1.1.)
+
+Changed first argument of miCopyPaintedSetToCanvas from (miPaintedSet *)
+to (const miPaintedSet *).
+
+Fixed a bug that caused miDrawPoints() to segfault from when called on a
+set consisting of only one point.
+
+Fixed a bug in miCopyPaintedSetToCanvas() that was leading to intermittent
+null pointer dereferencing.
+
+----------------------------------------------------------------------
+
+Version 1.0 released, 6/99.  (Library version is now 1.0.)
+
+Wrote a texinfo manual.
+
+Added support for triangular joins, of both polylines and polyarcs.
+Triangular caps are now supported too, but only for polyarcs.  Triangular
+joins and caps are defined as in HP-GL/2.
+
+Added miGCSetAttribs() function, to set multiple GC attributes with a
+single function call.
+
+Changed names of values of enumerated variables defined in xmi.h to modern
+style (e.g. changed miJoinMiter to MI_JOIN_MITER).
+
+In declarations of miSetPixelMerge{2|3}, changed typedef'd datatype of
+second argument (miPixelMerge{2|3}) from a function to a pointer to a
+function, for compatibility with very old C compilers.
+
+----------------------------------------------------------------------
+
+Version 0.0 released, 6/99.
